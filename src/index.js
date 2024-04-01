@@ -2,14 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { BrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import { LoginForm } from './pages/Login';
+import Places from './pages/Places';
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path='/' element={<App />}>
+      <Route index={true} path='/' element={<Places />} />
+      <Route path="/login" element={<LoginForm/>} />
+
+    </Route>
+  )
+)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-    <App />
-    </BrowserRouter>
+    <div className='theme-wrapper'>
+    <RouterProvider router={router} />
+    </div>
   </React.StrictMode>
 );
 
