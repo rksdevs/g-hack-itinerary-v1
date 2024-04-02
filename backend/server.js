@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 import { connect } from "./config/db.js";
 import { basicErrorHandler, notFound } from "./middlewares/errorHandlerMiddleware.js";
-import loginRoute from "./routes/loginRoute.js"
+import loginRoute from "./routes/authRoute.js"
 
 const app = express();
 const PORT = process.env.PORT || 8800
