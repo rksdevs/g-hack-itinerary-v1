@@ -6,6 +6,9 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import { LoginForm } from './pages/Login';
 import Places from './pages/Places';
 import { Destination } from './pages/Destination';
+import { store } from './store';
+import { Provider } from 'react-redux';
+import { Register } from './pages/Register';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -13,6 +16,7 @@ const router = createBrowserRouter(
       <Route index={true} path='/' element={<Places />} />
       <Route path="/login" element={<LoginForm/>} />
       <Route path='/destination' element={<Destination />} />
+      <Route path='/register' element={<Register />} />
 
     </Route>
   )
@@ -21,9 +25,11 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <Provider store={store}>
     <div className='theme-wrapper'>
     <RouterProvider router={router} />
     </div>
+    </Provider>
   </React.StrictMode>
 );
 

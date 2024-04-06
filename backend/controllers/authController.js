@@ -13,7 +13,7 @@ const login = asyncHandler(async (req, res) => {
       res.status(200).json({
         _id: user._id,
         email: user.email,
-        name: user.name,
+        name: user.username,
         isAdmin: user.isAdmin,
       });
     } else {
@@ -48,7 +48,7 @@ const register = asyncHandler(async (req, res) => {
 
     res.status(201).json({
       _id: user._id,
-      name: user.name,
+      name: user.username,
       email: user.email,
       isAdmin: user.isAdmin,
     });

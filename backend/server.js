@@ -5,6 +5,7 @@ dotenv.config();
 import { connect } from "./config/db.js";
 import { basicErrorHandler, notFound } from "./middlewares/errorHandlerMiddleware.js";
 import loginRoute from "./routes/authRoute.js"
+import cors from 'cors'
 
 const app = express();
 const PORT = process.env.PORT || 8800
@@ -13,6 +14,7 @@ connect();
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
+app.use(cors())
 
 
 app.get("/", (req, res)=> {
