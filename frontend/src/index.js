@@ -9,14 +9,16 @@ import { Destination } from './pages/Destination';
 import { store } from './store';
 import { Provider } from 'react-redux';
 import { Register } from './pages/Register';
+import SetupDestination from './pages/SetupDestination';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
-      <Route index={true} path='/' element={<Places />} />
+      <Route index={true} path='/' element={<SetupDestination />} />
       <Route path="/login" element={<LoginForm/>} />
       <Route path='/destination' element={<Destination />} />
       <Route path='/register' element={<Register />} />
+      <Route path='/places' element={<Places />} />
 
     </Route>
   )
