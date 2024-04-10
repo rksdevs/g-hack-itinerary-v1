@@ -5,7 +5,7 @@ import App from './App';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import { LoginForm } from './pages/Login';
 import Places from './pages/Places';
-import { Destination } from './pages/Destination';
+import Planner from './pages/Planner';
 import { store } from './store';
 import { Provider } from 'react-redux';
 import { Register } from './pages/Register';
@@ -16,7 +16,7 @@ const router = createBrowserRouter(
     <Route path='/' element={<App />}>
       <Route index={true} path='/' element={<SetupDestination />} />
       <Route path="/login" element={<LoginForm/>} />
-      <Route path='/destination' element={<Destination />} />
+      <Route path='/planner' element={<Planner />} />
       <Route path='/register' element={<Register />} />
       <Route path='/places' element={<Places />} />
 
