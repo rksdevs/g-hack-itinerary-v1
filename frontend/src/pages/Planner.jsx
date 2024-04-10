@@ -16,7 +16,7 @@ import {
   SquareUser,
   Triangle,
   Turtle,
-  MapPin
+  MapPin,
 } from "lucide-react";
 
 import { Badge } from "../components/ui/badge";
@@ -53,39 +53,66 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../components/ui/accordion"
+} from "../components/ui/accordion";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../components/ui/carousel";
+
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "../components/ui/card";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addPlaceOne,
+  addPlaceTwo,
+  addPlaceOneOptions,
+} from "../slices/plannerSlice";
 
 function Planner() {
+  const dispatch = useDispatch();
+  const { placeOneDetails, placeOneOptions } = useSelector(
+    (state) => state.plannerDetails
+  );
   const [placeOne, setPlaceOne] = useState("Religious");
   const [topTenList, setTopTenList] = useState([]);
-  const [currentPlace, setCurrentPlace] = useState("Bangalore, India")
+  const [currentPlace, setCurrentPlace] = useState("Bangalore, India");
 
   const genAi = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_KEY);
-  const model = genAi.getGenerativeModel({model: "gemini-pro"})
+  const model = genAi.getGenerativeModel({ model: "gemini-pro" });
 
-  const generatePlaceOneOptions = async(e) => {
+  const generatePlaceOneOptions = async (e) => {
     // e.preventDefault();
-    console.log("triggered generating options")
+    console.log("triggered generating options");
     // setPlaceOne(e)
     try {
-     const placeOnePrompt = `List the top 5 ${placeOne} places in the ${currentPlace}`;
-     const result = await model.generateContent(placeOnePrompt);
-     const segments = result.response.text().split(/\b(?:1|2|3|4|5|6|7|8|9|10)\./);
-     const listItems = segments
-        .filter((segment) => segment.trim() !== "")
-        .map((segment) => `${segment.trim()}`);
-     setTopTenList(listItems);
-    // const segments = result.response.text();
-    // console.log(segments)
+      const placeOnePrompt = `top 3 ${placeOne} places to visit in ${currentPlace}, send the response as a Javascript JSON array of objects, each object is a place, each object has two properties first is a "title" property and its value is a string of the Name of the place, second is the "details" property and its value is a string of details about the place`;
+      const result = await model.generateContent(placeOnePrompt);
+      const response = result.response.text();
+      console.log(response, "seg");
+      const regex = /(\[.*?\])/s;
+      const expectedJSON = response.match(regex);
+      console.log(JSON.parse(expectedJSON[0]));
+      setTopTenList(JSON.parse(expectedJSON[0]));
+      dispatch(addPlaceOneOptions(JSON.parse(expectedJSON[0])));
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-
-  useEffect(()=> {
+  useEffect(() => {
     console.log(topTenList, "top 10");
-  }, [topTenList])
+  }, [topTenList]);
+
+  const handlePlaceOneSelection = (item) => {
+    dispatch(addPlaceOne(item));
+  };
 
   return (
     <div className="grid w-full">
@@ -360,21 +387,14 @@ function Planner() {
             </Badge>
             <div className="flex-1">
               {/* {topTenList.length > 1 && <PlaceAccordions placeList = {topTenList} />} */}
-              <Accordion type="single" collapsible className="w-full">
-                {topTenList.length > 1 &&
-                  topTenList?.map((placeItem, index) => (
-                    <AccordionItem key={index} value={`item-${index}`}>
-                      <AccordionTrigger>{placeItem}</AccordionTrigger>
-                      <AccordionContent>{placeItem}</AccordionContent>
-                    </AccordionItem>
-                  ))}
-              </Accordion>
+
               {/* {placeList.length > 1 && placeList?.map((placeItem, index)=>(<AccordionItem key={index} value = {`item-${index}`}>
             <AccordionTrigger>{placeItem}</AccordionTrigger>
             <AccordionContent>
                 {placeItem}
             </AccordionContent>   
         </AccordionItem>))} */}
+              {placeOneOptions.length > 1 && <PlaceAccordions />}
             </div>
             <form
               className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
