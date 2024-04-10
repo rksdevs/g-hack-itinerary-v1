@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Bird,
   Book,
@@ -15,6 +16,7 @@ import {
   SquareUser,
   Triangle,
   Turtle,
+  MapPin
 } from "lucide-react";
 
 import { Badge } from "../components/ui/badge";
@@ -44,7 +46,47 @@ import {
   TooltipTrigger,
 } from "../components/ui/tooltip";
 
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import PlaceAccordions from "../components/assets/PlaceAccordions";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../components/ui/accordion"
+
 function Planner() {
+  const [placeOne, setPlaceOne] = useState("Religious");
+  const [topTenList, setTopTenList] = useState([]);
+  const [currentPlace, setCurrentPlace] = useState("Bangalore, India")
+
+  const genAi = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_KEY);
+  const model = genAi.getGenerativeModel({model: "gemini-pro"})
+
+  const generatePlaceOneOptions = async(e) => {
+    // e.preventDefault();
+    console.log("triggered generating options")
+    // setPlaceOne(e)
+    try {
+     const placeOnePrompt = `List the top 5 ${placeOne} places in the ${currentPlace}`;
+     const result = await model.generateContent(placeOnePrompt);
+     const segments = result.response.text().split(/\b(?:1|2|3|4|5|6|7|8|9|10)\./);
+     const listItems = segments
+        .filter((segment) => segment.trim() !== "")
+        .map((segment) => `${segment.trim()}`);
+     setTopTenList(listItems);
+    // const segments = result.response.text();
+    // console.log(segments)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  useEffect(()=> {
+    console.log(topTenList, "top 10");
+  }, [topTenList])
+
   return (
     <div className="grid w-full">
       <div className="flex flex-col">
@@ -190,7 +232,7 @@ function Planner() {
                 </legend>
                 <div className="grid gap-3">
                   <Label htmlFor="place-one">Place One</Label>
-                  <Select>
+                  <Select onValueChange={generatePlaceOneOptions}>
                     <SelectTrigger
                       id="place-one"
                       className="items-start [&_[data-description]]:hidden"
@@ -200,48 +242,68 @@ function Planner() {
                     <SelectContent>
                       <SelectItem value="Religious">
                         <div className="flex items-start gap-3 text-muted-foreground">
-                          <Rabbit className="size-5" />
+                          <MapPin className="size-5" />
                           <div className="grid gap-0.5">
                             <p>
-                              Neural{" "}
+                              Heritages{" "}
                               <span className="font-medium text-foreground">
-                                Genesis
+                                Religious & Cultural Gatherings
                               </span>
                             </p>
                             <p className="text-xs" data-description>
-                              Our fastest model for general use cases.
+                              Places that best describes the culture & heritage
+                              of the city.
                             </p>
                           </div>
                         </div>
                       </SelectItem>
-                      <SelectItem value="explorer">
+                      <SelectItem value="Nature">
                         <div className="flex items-start gap-3 text-muted-foreground">
-                          <Bird className="size-5" />
+                          <MapPin className="size-5" />
                           <div className="grid gap-0.5">
                             <p>
-                              Neural{" "}
+                              Nature{" "}
                               <span className="font-medium text-foreground">
-                                Explorer
+                                Get close to Nature
                               </span>
                             </p>
                             <p className="text-xs" data-description>
-                              Performance and speed for efficiency.
+                              Get closer to nature in places like mountains,
+                              beaches, forests, zoo etc.
                             </p>
                           </div>
                         </div>
                       </SelectItem>
-                      <SelectItem value="quantum">
+                      <SelectItem value="Shopping">
                         <div className="flex items-start gap-3 text-muted-foreground">
-                          <Turtle className="size-5" />
+                          <MapPin className="size-5" />
                           <div className="grid gap-0.5">
                             <p>
-                              Neural{" "}
+                              Lifestyle{" "}
                               <span className="font-medium text-foreground">
-                                Quantum
+                                Shopping, Malls & Lifestyle
                               </span>
                             </p>
                             <p className="text-xs" data-description>
-                              The most powerful model for complex computations.
+                              Explore the city's biggest and best places for
+                              shopaholic
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Misc">
+                        <div className="flex items-start gap-3 text-muted-foreground">
+                          <MapPin className="size-5" />
+                          <div className="grid gap-0.5">
+                            <p>
+                              Something Else{" "}
+                              <span className="font-medium text-foreground">
+                                Nothing particular, let the app decide
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Populates the best places in the city for you to
+                              choose
                             </p>
                           </div>
                         </div>
@@ -296,7 +358,24 @@ function Planner() {
             <Badge variant="outline" className="absolute right-3 top-3">
               Output
             </Badge>
-            <div className="flex-1" />
+            <div className="flex-1">
+              {/* {topTenList.length > 1 && <PlaceAccordions placeList = {topTenList} />} */}
+              <Accordion type="single" collapsible className="w-full">
+                {topTenList.length > 1 &&
+                  topTenList?.map((placeItem, index) => (
+                    <AccordionItem key={index} value={`item-${index}`}>
+                      <AccordionTrigger>{placeItem}</AccordionTrigger>
+                      <AccordionContent>{placeItem}</AccordionContent>
+                    </AccordionItem>
+                  ))}
+              </Accordion>
+              {/* {placeList.length > 1 && placeList?.map((placeItem, index)=>(<AccordionItem key={index} value = {`item-${index}`}>
+            <AccordionTrigger>{placeItem}</AccordionTrigger>
+            <AccordionContent>
+                {placeItem}
+            </AccordionContent>   
+        </AccordionItem>))} */}
+            </div>
             <form
               className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
               x-chunk="dashboard-03-chunk-1"

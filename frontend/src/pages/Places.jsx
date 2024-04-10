@@ -52,7 +52,7 @@ function Places() {
   const [reply, setReply] = useState("Awaiting Response...");
   const [topTenList, setTopTenList] = useState([]);
   const genAI = new GoogleGenerativeAI(
-    "AIzaSyAoSmlxBAoFFgVcTSXrwCN1CuFMhQGjP8U"
+    process.env.REACT_APP_GOOGLE_GEMINI_KEY
   );
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
