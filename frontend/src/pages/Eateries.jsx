@@ -83,9 +83,16 @@ import {
   addPlaceTwoTiming,
   addBreakfast,
   addBreakfastOptions,
+  addLunchOptions,
+  addBrunchOptions,
+  addDinnerOptions,
+  skipBreakfast,
 } from "../slices/plannerSlice";
 import PlaceTwoAccordions from "../components/assets/PlaceTwoAccordions";
 import BreakfastAccordion from "../components/assets/BreakfastAccordion";
+import LunchAccordion from "../components/assets/LunchAccordion";
+import BrunchAccordion from "../components/assets/BrunchAccordion";
+import DinnerAccordion from "../components/assets/DinnerAccordion";
 
 function Eateries() {
   const dispatch = useDispatch();
@@ -143,11 +150,11 @@ function Eateries() {
       if (foodPlanType === "breakfast") {
         dispatch(addBreakfastOptions(JSON.parse(expectedJSON[0])));
       } else if (foodPlanType === "lunch") {
-        dispatch(addPlaceTwoOptions(JSON.parse(expectedJSON[0])));
+        dispatch(addLunchOptions(JSON.parse(expectedJSON[0])));
       } else if (foodPlanType === "brunch") {
-        dispatch(addPlaceTwoOptions(JSON.parse(expectedJSON[0])));
+        dispatch(addBrunchOptions(JSON.parse(expectedJSON[0])));
       } else {
-        dispatch(addPlaceTwoOptions(JSON.parse(expectedJSON[0])));
+        dispatch(addDinnerOptions(JSON.parse(expectedJSON[0])));
       }
     } catch (error) {
       console.log(error);
@@ -160,7 +167,14 @@ function Eateries() {
 
   const openBreakfastInput = (e) => {
     e.preventDefault();
-    setOpenBreakfast(!openBreakfast);
+    //clear breakfast.skip from state and localstorage
+    setOpenBreakfast(true);
+  };
+
+  const skipBreakfastHandler = (event) => {
+    event.preventDefault();
+    dispatch(skipBreakfast());
+    setOpenBreakfast(false);
   };
 
   const openLunchInput = (e) => {
@@ -325,8 +339,19 @@ function Eateries() {
                   <div>
                     <Label htmlFor="breakfast">Breakfast</Label>
                     <div className="flex my-2 gap-3">
-                      <Button onClick={openBreakfastInput} className="w-[80px]">
-                        {openBreakfast ? "Skip" : "Choose"}
+                      <Button
+                        onClick={openBreakfastInput}
+                        className={!openBreakfast ? "w-[80px]" : "hidden"}
+                      >
+                        {/* {openBreakfast ? "Skip" : "Choose"} */}
+                        Choose
+                      </Button>
+                      <Button
+                        onClick={(event) => skipBreakfastHandler(event)}
+                        className={openBreakfast ? "w-[80px]" : "hidden"}
+                      >
+                        {/* {openBreakfast ? "Skip" : "Choose"} */}
+                        Skip
                       </Button>
                       <div className="relative">
                         <Search
@@ -401,12 +426,17 @@ function Eateries() {
                               : "pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
                           }
                           disabled={!openLunch}
+                          value={lunchCuisine}
+                          onChange={(e) => setLunchCuisine(e.target.value)}
                         />
                         <Button
                           className={
                             !openLunch
                               ? "hidden"
                               : "absolute right-[5px] top-[3px] h-[29px] w-10"
+                          }
+                          onClick={(event) =>
+                            generateFoodOptions(event, lunchCuisine, "lunch")
                           }
                         >
                           Go
@@ -430,6 +460,8 @@ function Eateries() {
                               ? "hidden"
                               : "absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
                           }
+                          value={brunchCuisine}
+                          onChange={(e) => setBrunchCuisine(e.target.value)}
                         />
                         <Input
                           type="search"
@@ -450,6 +482,9 @@ function Eateries() {
                             !openBrunch
                               ? "hidden"
                               : "absolute right-[5px] top-[3px] h-[29px] w-10"
+                          }
+                          onClick={(event) =>
+                            generateFoodOptions(event, brunchCuisine, "brunch")
                           }
                         >
                           Go
@@ -487,12 +522,17 @@ function Eateries() {
                               : "pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
                           }
                           disabled={!openDinner}
+                          value={dinnerCuisine}
+                          onChange={(e) => setDinnerCuisine(e.target.value)}
                         />
                         <Button
                           className={
                             !openDinner
                               ? "hidden"
                               : "absolute right-[5px] top-[3px] h-[29px] w-10"
+                          }
+                          onClick={(event) =>
+                            generateFoodOptions(event, dinnerCuisine, "dinner")
                           }
                         >
                           Go
@@ -567,7 +607,16 @@ function Eateries() {
             </Badge>
 
             <div className="flex-1 pt-2">
-              {foodPlanOptions?.breakfast?.length > 1 && <BreakfastAccordion />}
+              {foodPlanOptions?.breakfastOptions?.length > 1 && (
+                <BreakfastAccordion />
+              )}
+              {foodPlanOptions?.lunchOptions?.length > 1 && <LunchAccordion />}
+              {foodPlanOptions?.brunchOptions?.length > 1 && (
+                <BrunchAccordion />
+              )}
+              {foodPlanOptions?.dinnerOptions?.length > 1 && (
+                <DinnerAccordion />
+              )}
               {/* {placeTwoOptions.length > 1 && <PlaceTwoAccordions />} */}
             </div>
             <form

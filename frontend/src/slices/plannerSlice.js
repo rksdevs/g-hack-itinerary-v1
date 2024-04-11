@@ -345,6 +345,31 @@ const plannerDetailsSlice = createSlice({
             plannerDetails.foodPlan.dinner = action.payload;
             localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails))
         },
+        skipBreakfast: (state)=> {
+            state.foodPlan.breakfast = {skip: true};
+            state.foodPlanOptions.breakfastOptions = [];
+            const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
+                placeOneDetails: null,
+                placeTwoDetails: null,
+                foodPlan: {
+                    breakfast: null,
+                    lunch: null,
+                    brunch: null,
+                    dinner: null,
+                },
+                placeOneOptions: [],
+                placeTwoOptions: [],
+                foodPlanOptions: {
+                    breakfastOptions: [],
+                    lunchOptions: [],
+                    brunchOptions: [],
+                    dinnerOptions: [],
+                }
+            };
+            plannerDetails.foodPlan.breakfast = {skip: true};
+            plannerDetails.foodPlanOptions.breakfastOptions = [];
+            localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails)) 
+        },
         clearPlanner: (state) => {
             localStorage.removeItem("plannerDetails")
             return initialState;
@@ -352,6 +377,6 @@ const plannerDetailsSlice = createSlice({
     }
 })
 
-export const {addPlaceOne, addPlaceTwo, addPlaceOneOptions, addPlaceTwoOptions, clearPlanner, addPlaceOneTiming, addPlaceTwoTiming, addBreakfast, addBreakfastOptions, addLunch, addLunchOptions, addBrunch, addBrunchOptions, addDinner, addDinnerOptions} = plannerDetailsSlice.actions;
+export const {addPlaceOne, addPlaceTwo, addPlaceOneOptions, addPlaceTwoOptions, clearPlanner, addPlaceOneTiming, addPlaceTwoTiming, addBreakfast, addBreakfastOptions, addLunch, addLunchOptions, addBrunch, addBrunchOptions, addDinner, addDinnerOptions, skipBreakfast} = plannerDetailsSlice.actions;
 
 export default plannerDetailsSlice.reducer;

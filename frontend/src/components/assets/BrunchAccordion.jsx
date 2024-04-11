@@ -9,20 +9,21 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Button } from "../ui/button";
-import { addBreakfast, addPlaceOne } from "../../slices/plannerSlice";
+import { addBrunch } from "../../slices/plannerSlice";
 
-const BreakfastAccordion = () => {
+const BrunchAccordion = () => {
   const dispatch = useDispatch();
-  const { placeOneOptions, placeOneDetails, foodPlanOptions, foodPlan } =
-    useSelector((state) => state.plannerDetails);
-  const handleBreakfastSelection = (item) => {
-    dispatch(addBreakfast(item));
+  const { foodPlanOptions, foodPlan } = useSelector(
+    (state) => state.plannerDetails
+  );
+  const handleBrunchSelection = (item) => {
+    dispatch(addBrunch(item));
   };
   // console.log(placeList);
   return (
     <Accordion type="single" collapsible className="w-full">
-      {foodPlanOptions?.breakfastOptions?.length > 1 && !foodPlan?.breakfast ? (
-        foodPlanOptions?.breakfastOptions?.map((placeItem, index) => (
+      {foodPlanOptions?.brunchOptions?.length > 1 && !foodPlan?.brunch ? (
+        foodPlanOptions?.brunchOptions?.map((placeItem, index) => (
           <AccordionItem key={index} value={`item-${index}`}>
             <AccordionTrigger>{placeItem?.title}</AccordionTrigger>
             <AccordionContent>
@@ -42,7 +43,7 @@ const BreakfastAccordion = () => {
                   </p>
                 </CardContent>
                 <CardFooter>
-                  <Button onClick={() => handleBreakfastSelection(placeItem)}>
+                  <Button onClick={() => handleBrunchSelection(placeItem)}>
                     Add to Itinerary
                   </Button>
                 </CardFooter>
@@ -79,59 +80,32 @@ const BreakfastAccordion = () => {
                       </AccordionContent> */}
           </AccordionItem>
         ))
-      ) : foodPlan?.breakfast?.skip ? (
-        <AccordionItem value="selected-place">
-          <AccordionTrigger className="flex">
-            <div className="font-bold">You're Skipping Breakfast</div>
-            <div>
-              <span className="font-bold">Skipped</span>
-            </div>
-            {/* <div className="text-muted-foreground">
-          {foodPlan?.breakfast?.timings}
-        </div> */}
-          </AccordionTrigger>
-          <AccordionContent>
-            <Card className="flex flex-col">
-              {/* <CardHeader className="font-bold">
-            ** About {foodPlan?.breakfast?.title} **
-          </CardHeader> */}
-              <CardContent>
-                <p className="float-left mb-[10px]">
-                  Please carry something to snack upon!
-                </p>
-              </CardContent>
-              {/* <CardFooter>
-            <Button>Change Selection</Button>
-          </CardFooter> */}
-            </Card>
-          </AccordionContent>
-        </AccordionItem>
       ) : (
         <AccordionItem value="selected-place">
           <AccordionTrigger className="flex">
-            <div className="font-bold">You're Having Breakfast At: </div>
+            <div className="font-bold">You're Having Brunch At: </div>
             <div>
-              <span className="font-bold">{foodPlan?.breakfast?.title}</span>
+              <span className="font-bold">{foodPlan?.brunch?.title}</span>
               {" : "}
-              {foodPlan?.breakfast?.location?.address}
+              {foodPlan?.brunch?.location?.address}
             </div>
             {/* <div className="text-muted-foreground">
-              {foodPlan?.breakfast?.timings}
+              {foodPlan?.brunch?.timings}
             </div> */}
           </AccordionTrigger>
           <AccordionContent>
             <Card className="flex flex-col">
               <CardHeader className="font-bold">
-                ** About {foodPlan?.breakfast?.title} **
+                ** About {foodPlan?.brunch?.title} **
               </CardHeader>
               <CardContent>
                 <p className="float-left mb-[10px]">
-                  {foodPlan?.breakfast?.details}
+                  {foodPlan?.brunch?.details}
                 </p>
               </CardContent>
               <CardContent>
                 <p className="float-left mb-[10px]">
-                  {foodPlan?.breakfast?.location?.address}
+                  {foodPlan?.brunch?.location?.address}
                 </p>
               </CardContent>
               <CardFooter>
@@ -174,4 +148,4 @@ const BreakfastAccordion = () => {
   );
 };
 
-export default BreakfastAccordion;
+export default BrunchAccordion;
