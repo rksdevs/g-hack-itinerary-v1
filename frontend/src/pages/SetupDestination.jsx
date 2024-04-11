@@ -483,7 +483,7 @@ function SetupDestination() {
                   <Button
                     className="w-full"
                     onClick={() => {
-                      navigate("/destination");
+                      navigate("/planner");
                     }}
                   >
                     Proceed

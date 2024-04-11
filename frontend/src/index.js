@@ -10,6 +10,7 @@ import { store } from './store';
 import { Provider } from 'react-redux';
 import { Register } from './pages/Register';
 import SetupDestination from './pages/SetupDestination';
+import Eateries from './pages/Eateries';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
       <Route path='/planner' element={<Planner />} />
       <Route path='/register' element={<Register />} />
       <Route path='/places' element={<Places />} />
+      <Route path='/eateries' element={<Eateries />} />
 
     </Route>
   )

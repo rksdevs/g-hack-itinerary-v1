@@ -46,7 +46,7 @@ const Navbar = () => {
           Planner
         </Link>
         <Link
-          href="#"
+          to="/eateries"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
           Eateries
