@@ -87,6 +87,13 @@ import {
   addBrunchOptions,
   addDinnerOptions,
   skipBreakfast,
+  chooseBreakfast,
+  chooseLunch,
+  skipLunch,
+  skipBrunch,
+  chooseBrunch,
+  chooseDinner,
+  skipDinner,
 } from "../slices/plannerSlice";
 import PlaceTwoAccordions from "../components/assets/PlaceTwoAccordions";
 import BreakfastAccordion from "../components/assets/BreakfastAccordion";
@@ -167,7 +174,7 @@ function Eateries() {
 
   const openBreakfastInput = (e) => {
     e.preventDefault();
-    //clear breakfast.skip from state and localstorage
+    dispatch(chooseBreakfast());
     setOpenBreakfast(true);
   };
 
@@ -179,17 +186,38 @@ function Eateries() {
 
   const openLunchInput = (e) => {
     e.preventDefault();
-    setOpenLunch(!openLunch);
+    dispatch(chooseLunch());
+    setOpenLunch(true);
+  };
+
+  const skipLunchHandler = (event) => {
+    event.preventDefault();
+    dispatch(skipLunch());
+    setOpenLunch(false);
   };
 
   const openBrunchInput = (e) => {
     e.preventDefault();
-    setOpenBrunch(!openBrunch);
+    dispatch(chooseBrunch());
+    setOpenBrunch(true);
+  };
+
+  const skipBrunchHandler = (event) => {
+    event.preventDefault();
+    dispatch(skipBrunch());
+    setOpenBrunch(false);
   };
 
   const openDinnerInput = (e) => {
     e.preventDefault();
-    setOpenDinner(!openDinner);
+    dispatch(chooseDinner());
+    setOpenDinner(true);
+  };
+
+  const skipDinnerHandler = (event) => {
+    event.preventDefault();
+    dispatch(skipDinner());
+    setOpenDinner(false);
   };
 
   return (
@@ -343,14 +371,12 @@ function Eateries() {
                         onClick={openBreakfastInput}
                         className={!openBreakfast ? "w-[80px]" : "hidden"}
                       >
-                        {/* {openBreakfast ? "Skip" : "Choose"} */}
                         Choose
                       </Button>
                       <Button
                         onClick={(event) => skipBreakfastHandler(event)}
                         className={openBreakfast ? "w-[80px]" : "hidden"}
                       >
-                        {/* {openBreakfast ? "Skip" : "Choose"} */}
                         Skip
                       </Button>
                       <div className="relative">
@@ -402,8 +428,17 @@ function Eateries() {
                   <div>
                     <Label htmlFor="place-one">Lunch</Label>
                     <div className="flex my-2 gap-3">
-                      <Button onClick={openLunchInput} className="w-[80px]">
-                        {openLunch ? "Skip" : "Choose"}
+                      <Button
+                        onClick={openLunchInput}
+                        className={!openLunch ? "w-[80px]" : "hidden"}
+                      >
+                        Choose
+                      </Button>
+                      <Button
+                        onClick={(event) => skipLunchHandler(event)}
+                        className={openLunch ? "w-[80px]" : "hidden"}
+                      >
+                        Skip
                       </Button>
                       <div className="relative">
                         <Search
@@ -450,8 +485,17 @@ function Eateries() {
                   <div>
                     <Label htmlFor="place-one">Brunch</Label>
                     <div className="flex my-2 gap-3">
-                      <Button onClick={openBrunchInput} className="w-[80px]">
-                        {openBrunch ? "Skip" : "Choose"}
+                      <Button
+                        onClick={openBrunchInput}
+                        className={!openBrunch ? "w-[80px]" : "hidden"}
+                      >
+                        Choose
+                      </Button>
+                      <Button
+                        onClick={(event) => skipBrunchHandler(event)}
+                        className={openBrunch ? "w-[80px]" : "hidden"}
+                      >
+                        Skip
                       </Button>
                       <div className="relative">
                         <Search
@@ -498,8 +542,17 @@ function Eateries() {
                   <div>
                     <Label htmlFor="place-one">Dinner</Label>
                     <div className="flex my-2 gap-3">
-                      <Button onClick={openDinnerInput} className="w-[80px]">
-                        {openDinner ? "Skip" : "Choose"}
+                      <Button
+                        onClick={openDinnerInput}
+                        className={!openDinner ? "w-[80px]" : "hidden"}
+                      >
+                        Choose
+                      </Button>
+                      <Button
+                        onClick={(event) => skipDinnerHandler(event)}
+                        className={openDinner ? "w-[80px]" : "hidden"}
+                      >
+                        Skip
                       </Button>
                       <div className="relative">
                         <Search
@@ -607,14 +660,20 @@ function Eateries() {
             </Badge>
 
             <div className="flex-1 pt-2">
-              {foodPlanOptions?.breakfastOptions?.length > 1 && (
+              {(foodPlan?.breakfast?.skip ||
+                foodPlanOptions?.breakfastOptions?.length > 1) && (
                 <BreakfastAccordion />
               )}
-              {foodPlanOptions?.lunchOptions?.length > 1 && <LunchAccordion />}
-              {foodPlanOptions?.brunchOptions?.length > 1 && (
+              {(foodPlan?.lunch?.skip ||
+                foodPlanOptions?.lunchOptions?.length > 1) && (
+                <LunchAccordion />
+              )}
+              {(foodPlan?.brunch?.skip ||
+                foodPlanOptions?.brunchOptions?.length > 1) && (
                 <BrunchAccordion />
               )}
-              {foodPlanOptions?.dinnerOptions?.length > 1 && (
+              {(foodPlan?.dinner?.skip ||
+                foodPlanOptions?.dinnerOptions?.length > 1) && (
                 <DinnerAccordion />
               )}
               {/* {placeTwoOptions.length > 1 && <PlaceTwoAccordions />} */}

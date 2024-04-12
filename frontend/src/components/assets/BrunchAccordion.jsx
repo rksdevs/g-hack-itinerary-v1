@@ -80,6 +80,33 @@ const BrunchAccordion = () => {
                       </AccordionContent> */}
           </AccordionItem>
         ))
+      ) : foodPlan?.brunch?.skip ? (
+        <AccordionItem value="selected-place">
+          <AccordionTrigger className="flex">
+            <div className="font-bold">You're Skipping Brunch</div>
+            <div>
+              <span className="font-bold">Skipped</span>
+            </div>
+            {/* <div className="text-muted-foreground">
+          {foodPlan?.breakfast?.timings}
+        </div> */}
+          </AccordionTrigger>
+          <AccordionContent>
+            <Card className="flex flex-col">
+              {/* <CardHeader className="font-bold">
+            ** About {foodPlan?.breakfast?.title} **
+          </CardHeader> */}
+              <CardContent>
+                <p className="float-left mb-[10px]">
+                  Please carry something to snack upon!
+                </p>
+              </CardContent>
+              {/* <CardFooter>
+            <Button>Change Selection</Button>
+          </CardFooter> */}
+            </Card>
+          </AccordionContent>
+        </AccordionItem>
       ) : (
         <AccordionItem value="selected-place">
           <AccordionTrigger className="flex">

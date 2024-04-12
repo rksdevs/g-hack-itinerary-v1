@@ -370,6 +370,181 @@ const plannerDetailsSlice = createSlice({
             plannerDetails.foodPlanOptions.breakfastOptions = [];
             localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails)) 
         },
+        chooseBreakfast: (state)=> {
+            state.foodPlan.breakfast = null;
+            state.foodPlanOptions.breakfastOptions = [];
+            const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
+                placeOneDetails: null,
+                placeTwoDetails: null,
+                foodPlan: {
+                    breakfast: null,
+                    lunch: null,
+                    brunch: null,
+                    dinner: null,
+                },
+                placeOneOptions: [],
+                placeTwoOptions: [],
+                foodPlanOptions: {
+                    breakfastOptions: [],
+                    lunchOptions: [],
+                    brunchOptions: [],
+                    dinnerOptions: [],
+                }
+            };
+            plannerDetails.foodPlan.breakfast = null;
+            plannerDetails.foodPlanOptions.breakfastOptions = [];
+            localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails)) 
+        },
+        skipLunch: (state)=> {
+            state.foodPlan.lunch = {skip: true};
+            state.foodPlanOptions.lunchOptions = [];
+            const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
+                placeOneDetails: null,
+                placeTwoDetails: null,
+                foodPlan: {
+                    breakfast: null,
+                    lunch: null,
+                    brunch: null,
+                    dinner: null,
+                },
+                placeOneOptions: [],
+                placeTwoOptions: [],
+                foodPlanOptions: {
+                    breakfastOptions: [],
+                    lunchOptions: [],
+                    brunchOptions: [],
+                    dinnerOptions: [],
+                }
+            };
+            plannerDetails.foodPlan.lunch = {skip: true};
+            plannerDetails.foodPlanOptions.lunchOptions = [];
+            localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails)) 
+        },
+        chooseLunch: (state)=> {
+            state.foodPlan.lunch = null;
+            state.foodPlanOptions.lunchOptions = [];
+            const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
+                placeOneDetails: null,
+                placeTwoDetails: null,
+                foodPlan: {
+                    breakfast: null,
+                    lunch: null,
+                    brunch: null,
+                    dinner: null,
+                },
+                placeOneOptions: [],
+                placeTwoOptions: [],
+                foodPlanOptions: {
+                    breakfastOptions: [],
+                    lunchOptions: [],
+                    brunchOptions: [],
+                    dinnerOptions: [],
+                }
+            };
+            plannerDetails.foodPlan.lunch = null;
+            plannerDetails.foodPlanOptions.lunchOptions = [];
+            localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails)) 
+        },
+        skipBrunch: (state)=> {
+            state.foodPlan.brunch = {skip: true};
+            state.foodPlanOptions.brunchOptions = [];
+            const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
+                placeOneDetails: null,
+                placeTwoDetails: null,
+                foodPlan: {
+                    breakfast: null,
+                    lunch: null,
+                    brunch: null,
+                    dinner: null,
+                },
+                placeOneOptions: [],
+                placeTwoOptions: [],
+                foodPlanOptions: {
+                    breakfastOptions: [],
+                    lunchOptions: [],
+                    brunchOptions: [],
+                    dinnerOptions: [],
+                }
+            };
+            plannerDetails.foodPlan.brunch = {skip: true};
+            plannerDetails.foodPlanOptions.brunchOptions = [];
+            localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails)) 
+        },
+        chooseBrunch: (state)=> {
+            state.foodPlan.brunch = null;
+            state.foodPlanOptions.brunchOptions = [];
+            const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
+                placeOneDetails: null,
+                placeTwoDetails: null,
+                foodPlan: {
+                    breakfast: null,
+                    lunch: null,
+                    brunch: null,
+                    dinner: null,
+                },
+                placeOneOptions: [],
+                placeTwoOptions: [],
+                foodPlanOptions: {
+                    breakfastOptions: [],
+                    lunchOptions: [],
+                    brunchOptions: [],
+                    dinnerOptions: [],
+                }
+            };
+            plannerDetails.foodPlan.brunch = null;
+            plannerDetails.foodPlanOptions.brunchOptions = [];
+            localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails)) 
+        },
+        skipDinner: (state)=> {
+            state.foodPlan.dinner = {skip: true};
+            state.foodPlanOptions.dinnerOptions = [];
+            const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
+                placeOneDetails: null,
+                placeTwoDetails: null,
+                foodPlan: {
+                    breakfast: null,
+                    lunch: null,
+                    brunch: null,
+                    dinner: null,
+                },
+                placeOneOptions: [],
+                placeTwoOptions: [],
+                foodPlanOptions: {
+                    breakfastOptions: [],
+                    lunchOptions: [],
+                    brunchOptions: [],
+                    dinnerOptions: [],
+                }
+            };
+            plannerDetails.foodPlan.dinner = {skip: true};
+            plannerDetails.foodPlanOptions.dinnerOptions = [];
+            localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails)) 
+        },
+        chooseDinner: (state)=> {
+            state.foodPlan.dinner = null;
+            state.foodPlanOptions.dinnerOptions = [];
+            const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
+                placeOneDetails: null,
+                placeTwoDetails: null,
+                foodPlan: {
+                    breakfast: null,
+                    lunch: null,
+                    brunch: null,
+                    dinner: null,
+                },
+                placeOneOptions: [],
+                placeTwoOptions: [],
+                foodPlanOptions: {
+                    breakfastOptions: [],
+                    lunchOptions: [],
+                    brunchOptions: [],
+                    dinnerOptions: [],
+                }
+            };
+            plannerDetails.foodPlan.dinner = null;
+            plannerDetails.foodPlanOptions.dinnerOptions = [];
+            localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails)) 
+        },
         clearPlanner: (state) => {
             localStorage.removeItem("plannerDetails")
             return initialState;
@@ -377,6 +552,6 @@ const plannerDetailsSlice = createSlice({
     }
 })
 
-export const {addPlaceOne, addPlaceTwo, addPlaceOneOptions, addPlaceTwoOptions, clearPlanner, addPlaceOneTiming, addPlaceTwoTiming, addBreakfast, addBreakfastOptions, addLunch, addLunchOptions, addBrunch, addBrunchOptions, addDinner, addDinnerOptions, skipBreakfast} = plannerDetailsSlice.actions;
+export const {addPlaceOne, addPlaceTwo, addPlaceOneOptions, addPlaceTwoOptions, clearPlanner, addPlaceOneTiming, addPlaceTwoTiming, addBreakfast, addBreakfastOptions, addLunch, addLunchOptions, addBrunch, addBrunchOptions, addDinner, addDinnerOptions, skipBreakfast, chooseBreakfast, skipBrunch, skipLunch, skipDinner, chooseBrunch, chooseDinner, chooseLunch} = plannerDetailsSlice.actions;
 
 export default plannerDetailsSlice.reducer;

@@ -80,6 +80,33 @@ const DinnerAccordion = () => {
                       </AccordionContent> */}
           </AccordionItem>
         ))
+      ) : foodPlan?.dinner?.skip ? (
+        <AccordionItem value="selected-place">
+          <AccordionTrigger className="flex">
+            <div className="font-bold">You're Skipping Dinner</div>
+            <div>
+              <span className="font-bold">Skipped</span>
+            </div>
+            {/* <div className="text-muted-foreground">
+          {foodPlan?.breakfast?.timings}
+        </div> */}
+          </AccordionTrigger>
+          <AccordionContent>
+            <Card className="flex flex-col">
+              {/* <CardHeader className="font-bold">
+            ** About {foodPlan?.breakfast?.title} **
+          </CardHeader> */}
+              <CardContent>
+                <p className="float-left mb-[10px]">
+                  Please carry something to snack upon!
+                </p>
+              </CardContent>
+              {/* <CardFooter>
+            <Button>Change Selection</Button>
+          </CardFooter> */}
+            </Card>
+          </AccordionContent>
+        </AccordionItem>
       ) : (
         <AccordionItem value="selected-place">
           <AccordionTrigger className="flex">
@@ -113,35 +140,6 @@ const DinnerAccordion = () => {
               </CardFooter>
             </Card>
           </AccordionContent>
-          {/* <AccordionContent className="flex justify-center">
-                        <Carousel
-                          opts={{
-                            align: "start",
-                          }}
-                          className="w-full max-w-sm"
-                        >
-                          <CarouselContent>
-                            {Array.from({ length: 5 }).map((_, index) => (
-                              <CarouselItem
-                                key={index}
-                                className="md:basis-1/2 lg:basis-1/3"
-                              >
-                                <div className="p-1">
-                                  <Card>
-                                    <CardContent className="flex aspect-square items-center justify-center p-6">
-                                      <span className="text-3xl font-semibold">
-                                        {index + 1}
-                                      </span>
-                                    </CardContent>
-                                  </Card>
-                                </div>
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                          <CarouselPrevious />
-                          <CarouselNext />
-                        </Carousel>
-                      </AccordionContent> */}
         </AccordionItem>
       )}
     </Accordion>
