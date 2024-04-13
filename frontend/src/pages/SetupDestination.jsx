@@ -93,6 +93,8 @@ import {
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api";
+import { useDispatch } from "react-redux";
+import { setupDestination } from "../slices/plannerSlice";
 
 function SetupDestination() {
   const [libraries] = useState(["places"]);
@@ -111,6 +113,8 @@ function SetupDestination() {
   const [mode, setMode] = useState(null);
   const [date, setDate] = useState();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [openCalendar, setOpenCalendar] = useState(false);
 
   useEffect(() => {
     // Fetch user's current location
@@ -130,7 +134,15 @@ function SetupDestination() {
   }, []);
 
   // useEffect(() => {
-  //   console.log(date, "date...");
+  //   if (date) {
+  //     const dateObj = new Date(date);
+
+  //     const year = dateObj.getFullYear();
+  //     const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+  //     const day = String(dateObj.getDate()).padStart(2, "0");
+  //     const formattedDate = `${year}-${month}-${day}`;
+  //     setDate(formattedDate);
+  //   }
   // }, [date]);
 
   const originRef = useRef();
@@ -201,6 +213,36 @@ function SetupDestination() {
     originRef.current.value = "";
     destinationRef.current.value = "";
   };
+
+  const handleDateSelection = (date) => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+    setDate(formattedDate);
+    setOpenCalendar(false);
+  };
+
+  const handleProceed = (e) => {
+    e.preventDefault();
+    dispatch(
+      setupDestination({
+        origin: originRef?.current?.value
+          ? `${originRef.current.value.split(",")[0]}`
+          : "Origin",
+        destination: destinationRef?.current?.value
+          ? `${destinationRef.current.value.split(",")[0]}`
+          : "Destination",
+        travelDate: date,
+        modeOfTravel: mode,
+        travelDuration: duration,
+        travelDistance: distance,
+      })
+    );
+    navigate("/planner");
+  };
+
   return (
     <div className="grid">
       <div className="flex flex-col">
@@ -436,7 +478,7 @@ function SetupDestination() {
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="date">Date</Label>
-                    <Popover>
+                    <Popover open={openCalendar}>
                       <PopoverTrigger asChild>
                         <Button
                           variant={"outline"}
@@ -444,6 +486,7 @@ function SetupDestination() {
                             "justify-start text-left font-normal",
                             !date && "text-muted-foreground"
                           )}
+                          onClick={() => setOpenCalendar(!openCalendar)}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {date ? (
@@ -457,7 +500,9 @@ function SetupDestination() {
                         <Calendar
                           mode="single"
                           selected={date}
-                          onSelect={setDate}
+                          onSelect={(date) => {
+                            handleDateSelection(date);
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
@@ -480,12 +525,7 @@ function SetupDestination() {
                   <Button className="w-full" onClick={calculateRoute}>
                     Confirm
                   </Button>
-                  <Button
-                    className="w-full"
-                    onClick={() => {
-                      navigate("/planner");
-                    }}
-                  >
+                  <Button className="w-full" onClick={(e) => handleProceed(e)}>
                     Proceed
                   </Button>
                 </div>
@@ -506,7 +546,7 @@ function SetupDestination() {
                           ? `${destinationRef.current.value.split(",")[0]}`
                           : "Destination"}
                       </p>
-                      <p>Your travel date is ${}</p>
+                      <p>Your travel date is {date}</p>
                       <p>
                         You're about to cover {distance} by {mode} in
                         approximately {duration}

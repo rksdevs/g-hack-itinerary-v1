@@ -16,6 +16,14 @@ const initialState = localStorage.getItem("plannerDetails") ? JSON.parse(localSt
         lunchOptions: [],
         brunchOptions: [],
         dinnerOptions: [],
+    },
+    destinationDetails: {
+        origin: null,
+        destination: null,
+        travelDate: null,
+        modeOfTravel: null,
+        travelDuration: null,
+        travelDistance: null,
     }
 }
 
@@ -23,6 +31,37 @@ const plannerDetailsSlice = createSlice({
     name: "plannerDetails",
     initialState,
     reducers: {
+        setupDestination: (state, action) => {
+            state.destinationDetails = action.payload;
+            const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
+                placeOneDetails: null,
+                placeTwoDetails: null,
+                foodPlan: {
+                    breakfast: null,
+                    lunch: null,
+                    brunch: null,
+                    dinner: null,
+                },
+                placeOneOptions: [],
+                placeTwoOptions: [],
+                foodPlanOptions: {
+                    breakfastOptions: [],
+                    lunchOptions: [],
+                    brunchOptions: [],
+                    dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,
+                    travelDistance: null,
+                }
+            };
+            plannerDetails.destinationDetails = action.payload;
+            localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails))
+        },
         addPlaceOne: (state, action) => {
             state.placeOneDetails = action.payload;
             const plannerDetails = localStorage.getItem("plannerDetails") ? JSON.parse(localStorage.getItem("plannerDetails")) : {
@@ -41,6 +80,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.placeOneDetails = action.payload;
@@ -64,6 +110,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.placeTwoDetails = action.payload;
@@ -87,6 +140,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.placeOneOptions = action.payload;
@@ -110,6 +170,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.placeTwoOptions = action.payload;
@@ -133,6 +200,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.placeOneDetails.timings = action.payload;
@@ -156,6 +230,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.placeTwoDetails.timings = action.payload;
@@ -179,6 +260,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlanOptions.breakfastOptions = action.payload;
@@ -202,6 +290,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.breakfast = action.payload;
@@ -225,6 +320,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlanOptions.lunchOptions = action.payload;
@@ -248,6 +350,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.lunch = action.payload;
@@ -271,6 +380,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlanOptions.brunchOptions = action.payload;
@@ -294,6 +410,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.brunch = action.payload;
@@ -317,6 +440,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlanOptions.dinnerOptions = action.payload;
@@ -340,6 +470,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.dinner = action.payload;
@@ -364,6 +501,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.breakfast = {skip: true};
@@ -389,6 +533,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.breakfast = null;
@@ -414,6 +565,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.lunch = {skip: true};
@@ -439,6 +597,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.lunch = null;
@@ -464,6 +629,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.brunch = {skip: true};
@@ -489,6 +661,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.brunch = null;
@@ -514,6 +693,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.dinner = {skip: true};
@@ -539,6 +725,13 @@ const plannerDetailsSlice = createSlice({
                     lunchOptions: [],
                     brunchOptions: [],
                     dinnerOptions: [],
+                },
+                destinationDetails: {
+                    origin: null,
+                    destination: null,
+                    travelDate: null,
+                    modeOfTravel: null,
+                    travelDuration: null,travelDistance: null,
                 }
             };
             plannerDetails.foodPlan.dinner = null;
@@ -552,6 +745,6 @@ const plannerDetailsSlice = createSlice({
     }
 })
 
-export const {addPlaceOne, addPlaceTwo, addPlaceOneOptions, addPlaceTwoOptions, clearPlanner, addPlaceOneTiming, addPlaceTwoTiming, addBreakfast, addBreakfastOptions, addLunch, addLunchOptions, addBrunch, addBrunchOptions, addDinner, addDinnerOptions, skipBreakfast, chooseBreakfast, skipBrunch, skipLunch, skipDinner, chooseBrunch, chooseDinner, chooseLunch} = plannerDetailsSlice.actions;
+export const {setupDestination,addPlaceOne, addPlaceTwo, addPlaceOneOptions, addPlaceTwoOptions, clearPlanner, addPlaceOneTiming, addPlaceTwoTiming, addBreakfast, addBreakfastOptions, addLunch, addLunchOptions, addBrunch, addBrunchOptions, addDinner, addDinnerOptions, skipBreakfast, chooseBreakfast, skipBrunch, skipLunch, skipDinner, chooseBrunch, chooseDinner, chooseLunch} = plannerDetailsSlice.actions;
 
 export default plannerDetailsSlice.reducer;
