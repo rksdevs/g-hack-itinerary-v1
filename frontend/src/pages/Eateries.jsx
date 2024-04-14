@@ -94,15 +94,18 @@ import {
   chooseBrunch,
   chooseDinner,
   skipDinner,
+  readyToBuildItinerary,
 } from "../slices/plannerSlice";
 import PlaceTwoAccordions from "../components/assets/PlaceTwoAccordions";
 import BreakfastAccordion from "../components/assets/BreakfastAccordion";
 import LunchAccordion from "../components/assets/LunchAccordion";
 import BrunchAccordion from "../components/assets/BrunchAccordion";
 import DinnerAccordion from "../components/assets/DinnerAccordion";
+import { useNavigate } from "react-router-dom";
 
 function Eateries() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     placeOneDetails,
     placeOneOptions,
@@ -110,6 +113,7 @@ function Eateries() {
     placeTwoDetails,
     foodPlanOptions,
     foodPlan,
+    destinationDetails,
   } = useSelector((state) => state.plannerDetails);
   const [placeOne, setPlaceOne] = useState("Religious");
   const [topTenList, setTopTenList] = useState([]);
@@ -146,7 +150,7 @@ function Eateries() {
     console.log("triggered generating options");
     // setPlaceOne();
     try {
-      const foodOptionsPrompt = `top 3 places to have ${foodPlanType} with ${cuisine} cuisines, in ${currentPlace}, send the response as a Javascript JSON array of objects, each object is a place, each object has three properties first is a "title" property and its value is a string of the Name of the place, second is the "details" property and its value is a string of details about the place and third is "location" property which has the location information of the place`;
+      const foodOptionsPrompt = `top 3 places to have ${foodPlanType} with ${cuisine} cuisines, in ${destinationDetails.destination}, send the response as a Javascript JSON array of objects, each object is a place, each object has three properties first is a "title" property and its value is a string of the Name of the place, second is the "details" property and its value is a string of details about the place and third is "location" property which has the location information of the place`;
       const result = await model.generateContent(foodOptionsPrompt);
       const response = result.response.text();
       console.log(response, "seg");
@@ -218,6 +222,12 @@ function Eateries() {
     event.preventDefault();
     dispatch(skipDinner());
     setOpenDinner(false);
+  };
+
+  const handleContinueToItinerary = (event) => {
+    event.preventDefault();
+    dispatch(readyToBuildItinerary());
+    navigate("/itinerary");
   };
 
   return (
@@ -481,7 +491,7 @@ function Eateries() {
                     </div>
                   </div>
                 </div>
-                <div className="grid gap-3">
+                {/* <div className="grid gap-3">
                   <div>
                     <Label htmlFor="place-one">Brunch</Label>
                     <div className="flex my-2 gap-3">
@@ -534,10 +544,9 @@ function Eateries() {
                           Go
                         </Button>
                       </div>
-                      {/* <Button>Skip</Button> */}
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="grid gap-3">
                   <div>
                     <Label htmlFor="place-one">Dinner</Label>
@@ -632,6 +641,9 @@ function Eateries() {
                   />
                 </div>
               </fieldset>
+              <Button onClick={(event) => handleContinueToItinerary(event)}>
+                Continue to Itinerary
+              </Button>
             </form>
           </div>
           <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">

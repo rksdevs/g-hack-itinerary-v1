@@ -52,10 +52,10 @@ const Navbar = () => {
           Eateries
         </Link>
         <Link
-          href="#"
+          to="/itinerary"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
-          History
+          Itinerary
         </Link>
         {/* <Link
             href="#"

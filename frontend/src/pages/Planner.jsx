@@ -84,8 +84,13 @@ import PlaceTwoAccordions from "../components/assets/PlaceTwoAccordions";
 
 function Planner() {
   const dispatch = useDispatch();
-  const { placeOneDetails, placeOneOptions, placeTwoOptions, placeTwoDetails } =
-    useSelector((state) => state.plannerDetails);
+  const {
+    placeOneDetails,
+    placeOneOptions,
+    placeTwoOptions,
+    placeTwoDetails,
+    destinationDetails,
+  } = useSelector((state) => state.plannerDetails);
   const [placeOne, setPlaceOne] = useState("Religious");
   const [topTenList, setTopTenList] = useState([]);
   const [currentPlace, setCurrentPlace] = useState("Bangalore, India");
@@ -104,14 +109,12 @@ function Planner() {
     }
   }, [placeOneDetails, placeTwoDetails]);
 
-  const testFunc = () => {};
-
-  const generatePlaceOneOptions = async (e, placeType) => {
+  const generatePlaceOptions = async (e, placeType) => {
     // e.preventDefault();
     console.log("triggered generating options");
     // setPlaceOne();
     try {
-      const placeOnePrompt = `top 3 ${e} places to visit in ${currentPlace}, send the response as a Javascript JSON array of objects, each object is a place, each object has two properties first is a "title" property and its value is a string of the Name of the place, second is the "details" property and its value is a string of details about the place`;
+      const placeOnePrompt = `top 3 ${e} places to visit in ${destinationDetails?.destination}, send the response as a Javascript JSON array of objects, each object is a place, each object has three properties first is a "title" property and its value is a string of the Name of the place, second is the "details" property and its value is a string of details about the place and third is "location" property which has the location information of the place, the value of location is an object with three properties first "address" which has the value of the full address of the place, second is "lng" which is the longitude coordinates of the place and third is "lat" which is the latitude coorinates of the place`;
       const result = await model.generateContent(placeOnePrompt);
       const response = result.response.text();
       console.log(response, "seg");
@@ -280,9 +283,7 @@ function Planner() {
                   <div>
                     <Label htmlFor="place-one">Select Place One</Label>
                     <Select
-                      onValueChange={(e) =>
-                        generatePlaceOneOptions(e, "placeOne")
-                      }
+                      onValueChange={(e) => generatePlaceOptions(e, "placeOne")}
                     >
                       <SelectTrigger
                         id="place-one"
@@ -456,9 +457,7 @@ function Planner() {
                   <div>
                     <Label htmlFor="place-one">Select Place Two</Label>
                     <Select
-                      onValueChange={(e) =>
-                        generatePlaceOneOptions(e, "placeTwo")
-                      }
+                      onValueChange={(e) => generatePlaceOptions(e, "placeTwo")}
                     >
                       <SelectTrigger
                         id="place-two"

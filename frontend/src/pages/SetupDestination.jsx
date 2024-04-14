@@ -215,11 +215,26 @@ function SetupDestination() {
   };
 
   const handleDateSelection = (date) => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
     const dateObj = new Date(date);
     const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-    const day = String(dateObj.getDate()).padStart(2, "0");
-    const formattedDate = `${year}-${month}-${day}`;
+    const month = monthNames[dateObj.getMonth()];
+    const day = dateObj.getDate();
+    const formattedDate = `${month} ${day}, ${year}`;
     setDate(formattedDate);
     setOpenCalendar(false);
   };
@@ -232,7 +247,9 @@ function SetupDestination() {
           ? `${originRef.current.value.split(",")[0]}`
           : "Origin",
         destination: destinationRef?.current?.value
-          ? `${destinationRef.current.value.split(",")[0]}`
+          ? `${destinationRef.current.value.split(",")[0]}, ${
+              destinationRef.current.value.split(",")[1]
+            }`
           : "Destination",
         travelDate: date,
         modeOfTravel: mode,
