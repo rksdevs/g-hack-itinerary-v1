@@ -4,6 +4,7 @@ const initialState = localStorage.getItem("plannerDetails")
   ? JSON.parse(localStorage.getItem("plannerDetails"))
   : {
       placeOneDetails: null,
+      placeToStayDetails: null,
       itineraryReadyToBuild: false,
       placeTwoDetails: null,
       foodPlan: {
@@ -41,6 +42,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -76,6 +78,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -111,6 +114,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -146,6 +150,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -181,6 +186,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -216,6 +222,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -251,6 +258,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -286,6 +294,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -321,6 +330,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -356,6 +366,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -391,6 +402,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -426,6 +438,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -461,6 +474,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -496,6 +510,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -531,6 +546,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -567,6 +583,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -604,6 +621,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -641,6 +659,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -678,6 +697,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -715,6 +735,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -752,6 +773,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -789,6 +811,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -826,6 +849,7 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -860,12 +884,13 @@ const plannerDetailsSlice = createSlice({
       localStorage.removeItem("plannerDetails");
       return initialState;
     },
-    readyToBuildItinerary: (state)=> {
-        state.itineraryReadyToBuild = true;
-        const plannerDetails = localStorage.getItem("plannerDetails")
+    readyToBuildItinerary: (state) => {
+      state.itineraryReadyToBuild = true;
+      const plannerDetails = localStorage.getItem("plannerDetails")
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+            placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
             foodPlan: {
@@ -894,7 +919,43 @@ const plannerDetailsSlice = createSlice({
           };
       plannerDetails.itineraryReadyToBuild = true;
       localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
-    }
+    },
+    addPlaceToStay: (state, action) => {
+      state.placeToStayDetails = action.payload;
+      const plannerDetails = localStorage.getItem("plannerDetails")
+        ? JSON.parse(localStorage.getItem("plannerDetails"))
+        : {
+            placeOneDetails: null,
+            placeToStayDetails: null,
+            itineraryReadyToBuild: false,
+            placeTwoDetails: null,
+            foodPlan: {
+              breakfast: null,
+              lunch: null,
+              brunch: null,
+              dinner: null,
+            },
+            placeOneOptions: [],
+            placeTwoOptions: [],
+            foodPlanOptions: {
+              breakfastOptions: [],
+              lunchOptions: [],
+              brunchOptions: [],
+              dinnerOptions: [],
+            },
+            destinationDetails: {
+              origin: null,
+              destination: null,
+              travelDate: null,
+              modeOfTravel: null,
+              travelDuration: null,
+              travelDistance: null,
+              arrivalDate: null,
+            },
+          };
+      plannerDetails.placeToStayDetails = action.payload;
+      localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
+    },
   },
 });
 
@@ -923,7 +984,8 @@ export const {
   chooseBrunch,
   chooseDinner,
   chooseLunch,
-  readyToBuildItinerary
+  readyToBuildItinerary,
+  addPlaceToStay
 } = plannerDetailsSlice.actions;
 
 export default plannerDetailsSlice.reducer;

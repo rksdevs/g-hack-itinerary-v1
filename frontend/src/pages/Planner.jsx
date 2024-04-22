@@ -88,6 +88,7 @@ import {
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api";
+import { addPlaceToStay } from "../slices/plannerSlice";
 
 function Planner() {
   const dispatch = useDispatch();
@@ -103,12 +104,14 @@ function Planner() {
     placeTwoDetails,
     destinationDetails,
   } = useSelector((state) => state.plannerDetails);
-  const [placeOne, setPlaceOne] = useState("Religious");
-  const [topTenList, setTopTenList] = useState([]);
-  const [currentPlace, setCurrentPlace] = useState("Bangalore, India");
+  const [placeOne, setPlaceOne] = useState("");
+  const [placeTwo, setPlaceTwo] = useState("");
+  // const [topTenList, setTopTenList] = useState([]);
+  const [currentPlaceOfStay, setCurrentPlaceOfStay] = useState(null);
   const [openPlaceTwoSelect, setOpenPlaceTwoSelect] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [map, setMap] = useState(/**@type google.maps.Map */ (null));
+  const [photosUrl, setPhotosUrl] = useState([]);
   const placeOfStay = useRef();
 
   const genAi = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_KEY);
@@ -136,7 +139,7 @@ function Planner() {
       const regex = /(\[.*?\])/s;
       const expectedJSON = response.match(regex);
       console.log(JSON.parse(expectedJSON[0]));
-      setTopTenList(JSON.parse(expectedJSON[0]));
+      // setTopTenList(JSON.parse(expectedJSON[0]));
       if (placeType === "placeOne") {
         dispatch(addPlaceOneOptions(JSON.parse(expectedJSON[0])));
       } else {
@@ -163,6 +166,69 @@ function Planner() {
       console.error("Geolocation is not supported by this browser.");
     }
   }, []);
+
+  const handleSetupStay = async (e) => {
+    e.preventDefault();
+    console.log("triggered setup stay");
+    try {
+      if (placeOfStay.current.value !== "") {
+        //eslint-disable-next-line no-undef
+        const latlng = new google.maps.Geocoder();
+        const resultsLatLang = await latlng.geocode({
+          address: placeOfStay.current.value,
+        });
+        const placeId = resultsLatLang.results[0].place_id;
+
+        const request = {
+          placeId,
+          fields: [
+            "name",
+            "formatted_address",
+            "place_id",
+            "geometry",
+            "photos",
+          ],
+        };
+        //eslint-disable-next-line no-undef
+        const placesService = new google.maps.places.PlacesService(map);
+        placesService.getDetails(request, function callback(results, status) {
+          //eslint-disable-next-line no-undef
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            console.log(results, "from 210");
+            for (let i = 0; i < 5; i++) {
+              let photoUrl = results.photos[i].getUrl();
+              console.log(photoUrl);
+              photosUrl.push(photoUrl);
+            }
+
+            console.log(results.geometry.location.lat());
+            setCurrentPlaceOfStay({
+              lat: results.geometry.location.lat(),
+              lng: results.geometry.location.lng(),
+            });
+            map.panTo({
+              lat: results.geometry.location.lat(),
+              lng: results.geometry.location.lng(),
+            });
+          }
+          dispatch(
+            addPlaceToStay({
+              ...results,
+              geometry: {
+                lat: results.geometry.location.lat(),
+                lng: results.geometry.location.lng(),
+              },
+              photos: photosUrl,
+            })
+          );
+        });
+      } else {
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="grid w-full">
@@ -309,14 +375,16 @@ function Planner() {
                 </legend>
                 <div className="grid gap-3">
                   {isLoaded && (
-                    <Autocomplete>
-                      <Input
-                        id="placeOfStay"
-                        placeholder="You're staying at ..."
-                        ref={placeOfStay}
-                        onChange={(e) => console.log(placeOfStay)}
-                      />
-                    </Autocomplete>
+                    <>
+                      <Autocomplete>
+                        <Input
+                          id="placeOfStay"
+                          placeholder={`Where do you plan to stay in ${destinationDetails.destination}`}
+                          ref={placeOfStay}
+                        />
+                      </Autocomplete>
+                      <Button onClick={handleSetupStay}>Set</Button>
+                    </>
                   )}
                 </div>
                 <div className="grid gap-3">
@@ -668,8 +736,8 @@ function Planner() {
                   </div>
                 </div>
               </fieldset>
-              <fieldset className="grid gap-6 rounded-lg border p-4">
-                <legend className="-ml-1 px-1 text-sm font-medium">
+              <fieldset className="grid gap-6 rounded-lg border p-4 h-full w-full">
+                {/* <legend className="-ml-1 px-1 text-sm font-medium">
                   Messages
                 </legend>
                 <div className="grid gap-3">
@@ -692,22 +760,42 @@ function Planner() {
                     placeholder="You are a..."
                     className="min-h-[9.5rem]"
                   />
-                </div>
+                </div> */}
+                {isLoaded && destinationDetails.destination && (
+                  <>
+                    <GoogleMap
+                      center={currentLocation}
+                      zoom={15}
+                      mapContainerStyle={{ width: "375px", height: "400px" }}
+                      options={{
+                        zoomControl: false,
+                        streetViewControl: false,
+                        mapTypeControl: false,
+                        fullscreenControl: false,
+                      }}
+                      onLoad={(map) => setMap(map)}
+                    >
+                      {currentPlaceOfStay && (
+                        <MarkerF position={currentPlaceOfStay} />
+                      )}
+                    </GoogleMap>
+                  </>
+                )}
               </fieldset>
             </form>
           </div>
           <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
-            <Badge
+            {/* <Badge
               variant="outline"
               className="absolute right-20 top-1 h-[30px]"
             >
               Gemini's Suggestions
-              {/* <RefreshCw
+              <RefreshCw
                 className="w-[14px] ml-[10px] cursor-pointer"
                 onClick={() => {
                   dispatch(clearPlanner());
                 }}
-              /> */}
+              />
             </Badge>
             <Badge
               variant="outline"
@@ -719,12 +807,7 @@ function Planner() {
                   dispatch(clearPlanner());
                 }}
               />
-            </Badge>
-
-            <div className="flex-1 pt-2">
-              {placeOneOptions.length > 1 && <PlaceOneAccordions />}
-              {placeTwoOptions.length > 1 && <PlaceTwoAccordions />}
-            </div>
+            </Badge> */}
             <div className="flex-1 pt-2">
               <div className="w-full lg:grid lg:min-h-full lg:grid-cols-2 xl:min-h-full">
                 <div className="flex items-center justify-center py-12">
@@ -757,43 +840,52 @@ function Planner() {
                       <Button variant="outline" className="w-full">
                         Login with Google
                       </Button> */}
+                      <Carousel className="w-full max-w-xs">
+                        <CarouselContent>
+                          {photosUrl?.map((url, index) => (
+                            <CarouselItem key={index}>
+                              <div className="p-1">
+                                <Card>
+                                  <CardContent className="flex aspect-square items-center justify-center p-6">
+                                    <img src={url} alt="" />
+                                  </CardContent>
+                                </Card>
+                                {/* <img src={url} alt="" /> */}
+                              </div>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                        <CarouselPrevious />
+                        <CarouselNext />
+                      </Carousel>
                     </div>
                   </div>
                 </div>
                 <div className="hidden bg-muted lg:block">
-                  {isLoaded && destinationDetails.destination && (
-                    <GoogleMap
-                      center={currentLocation}
-                      zoom={15}
-                      mapContainerStyle={{ width: "100%", height: "100%" }}
-                      options={{
-                        zoomControl: false,
-                        streetViewControl: false,
-                        mapTypeControl: false,
-                        fullscreenControl: false,
-                      }}
-                      onLoad={(map) => setMap(map)}
-                    >
-                      {/* {placeOfStay && <MarkerF position={placeOfStay} />} */}
-                    </GoogleMap>
-                  )}
+                  {/* {isLoaded && destinationDetails.destination && (
+                    <>
+                      <GoogleMap
+                        center={currentLocation}
+                        zoom={15}
+                        mapContainerStyle={{ width: "100%", height: "100%" }}
+                        options={{
+                          zoomControl: false,
+                          streetViewControl: false,
+                          mapTypeControl: false,
+                          fullscreenControl: false,
+                        }}
+                        onLoad={(map) => setMap(map)}
+                      >
+                        {currentPlace && <MarkerF position={currentPlace} />}
+                      </GoogleMap>
+                    </>
+                  )} */}
                 </div>
               </div>
-              {/* {isLoaded && destinationDetails.destination && (
-                <GoogleMap
-                  center={currentLocation}
-                  zoom={15}
-                  mapContainerStyle={{ width: "100%", height: "100%" }}
-                  options={{
-                    zoomControl: false,
-                    streetViewControl: false,
-                    mapTypeControl: false,
-                    fullscreenControl: false,
-                  }}
-                  onLoad={(map) => setMap(map)}
-                >
-                </GoogleMap>
-              )} */}
+            </div>
+            <div className="flex-1 pt-2">
+              {placeOneOptions.length > 1 && <PlaceOneAccordions />}
+              {placeTwoOptions.length > 1 && <PlaceTwoAccordions />}
             </div>
           </div>
         </main>

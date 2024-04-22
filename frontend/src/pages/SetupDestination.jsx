@@ -147,8 +147,6 @@ function SetupDestination() {
         return;
       }
 
-      // new google.maps.LatLng();
-
       //eslint-disable-next-line no-undef
       const directionService = new google.maps.DirectionsService();
       const results = await directionService.route({
