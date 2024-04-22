@@ -89,6 +89,7 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import { addPlaceToStay } from "../slices/plannerSlice";
+import PlaceOfStayAccordion from "../components/assets/PlaceOfStayAccordion";
 
 function Planner() {
   const dispatch = useDispatch();
@@ -103,6 +104,7 @@ function Planner() {
     placeTwoOptions,
     placeTwoDetails,
     destinationDetails,
+    placeToStayDetails,
   } = useSelector((state) => state.plannerDetails);
   const [placeOne, setPlaceOne] = useState("");
   const [placeTwo, setPlaceTwo] = useState("");
@@ -150,6 +152,19 @@ function Planner() {
     }
   };
 
+  const generatePlaceToStayDetails = async (placeData) => {
+    try {
+      const palceToStayPrompt = `Please share some good things about this place ${placeData.name} in a single paragraph, with not more than 50 words`;
+      const result = await model.generateContent(palceToStayPrompt);
+      const response = result.response.text();
+      console.log(response, "seg");
+
+      dispatch(addPlaceToStay({ ...placeData, placeInfo: response }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     // Fetch user's current location
     if (navigator.geolocation) {
@@ -187,19 +202,20 @@ function Planner() {
             "place_id",
             "geometry",
             "photos",
+            "rating",
+            "user_ratings_total",
           ],
         };
         //eslint-disable-next-line no-undef
         const placesService = new google.maps.places.PlacesService(map);
         placesService.getDetails(request, function callback(results, status) {
+          let photoArray = [];
           //eslint-disable-next-line no-undef
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             console.log(results, "from 210");
-            for (let i = 0; i < 5; i++) {
-              let photoUrl = results.photos[i].getUrl();
-              console.log(photoUrl);
-              photosUrl.push(photoUrl);
-            }
+
+            results.photos.map((item) => photoArray.push(item.getUrl()));
+            // setPhotosUrl(...photoArray);
 
             console.log(results.geometry.location.lat());
             setCurrentPlaceOfStay({
@@ -211,16 +227,30 @@ function Planner() {
               lng: results.geometry.location.lng(),
             });
           }
-          dispatch(
-            addPlaceToStay({
-              ...results,
-              geometry: {
-                lat: results.geometry.location.lat(),
-                lng: results.geometry.location.lng(),
-              },
-              photos: photosUrl,
-            })
-          );
+
+          let placeData = {
+            ...results,
+            geometry: {
+              lat: results.geometry.location.lat(),
+              lng: results.geometry.location.lng(),
+            },
+            photos: photoArray,
+          };
+
+          generatePlaceToStayDetails(placeData);
+          console.log(placeData);
+
+          // dispatch(
+          //   addPlaceToStay({
+          //     ...results,
+          //     geometry: {
+          //       lat: results.geometry.location.lat(),
+          //       lng: results.geometry.location.lng(),
+          //     },
+          //     photos: photoArray,
+          //     placeData,
+          //   })
+          // );
         });
       } else {
         return;
@@ -737,30 +767,6 @@ function Planner() {
                 </div>
               </fieldset>
               <fieldset className="grid gap-6 rounded-lg border p-4 h-full w-full">
-                {/* <legend className="-ml-1 px-1 text-sm font-medium">
-                  Messages
-                </legend>
-                <div className="grid gap-3">
-                  <Label htmlFor="role">Role</Label>
-                  <Select defaultValue="system">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="system">System</SelectItem>
-                      <SelectItem value="user">User</SelectItem>
-                      <SelectItem value="assistant">Assistant</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-3">
-                  <Label htmlFor="content">Content</Label>
-                  <Textarea
-                    id="content"
-                    placeholder="You are a..."
-                    className="min-h-[9.5rem]"
-                  />
-                </div> */}
                 {isLoaded && destinationDetails.destination && (
                   <>
                     <GoogleMap
@@ -785,33 +791,11 @@ function Planner() {
             </form>
           </div>
           <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
-            {/* <Badge
-              variant="outline"
-              className="absolute right-20 top-1 h-[30px]"
-            >
-              Gemini's Suggestions
-              <RefreshCw
-                className="w-[14px] ml-[10px] cursor-pointer"
-                onClick={() => {
-                  dispatch(clearPlanner());
-                }}
-              />
-            </Badge>
-            <Badge
-              variant="outline"
-              className="absolute right-3 top-1 cursor-pointer"
-            >
-              <RefreshCw
-                className="w-[14px]"
-                onClick={() => {
-                  dispatch(clearPlanner());
-                }}
-              />
-            </Badge> */}
-            <div className="flex-1 pt-2">
+            {placeToStayDetails && <PlaceOfStayAccordion />}
+            <div className="flex-1 pt-2 hidden">
               <div className="w-full lg:grid lg:min-h-full lg:grid-cols-2 xl:min-h-full">
                 <div className="flex items-center justify-center py-12">
-                  <div className="mx-auto grid w-[350px] gap-6">
+                  {/* <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
                       <h1 className="text-3xl font-bold">Places</h1>
                       <p className="text-balance text-muted-foreground">
@@ -819,27 +803,6 @@ function Planner() {
                       </p>
                     </div>
                     <div className="grid gap-4 h-[250px]">
-                      {/* <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="m@example.com"
-                          required
-                        />
-                      </div>
-                      <div className="grid gap-2">
-                        <div className="flex items-center">
-                          <Label htmlFor="password">Password</Label>
-                        </div>
-                        <Input id="password" type="password" required />
-                      </div>
-                      <Button type="submit" className="w-full">
-                        Login
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        Login with Google
-                      </Button> */}
                       <Carousel className="w-full max-w-xs">
                         <CarouselContent>
                           {photosUrl?.map((url, index) => (
@@ -850,7 +813,6 @@ function Planner() {
                                     <img src={url} alt="" />
                                   </CardContent>
                                 </Card>
-                                {/* <img src={url} alt="" /> */}
                               </div>
                             </CarouselItem>
                           ))}
@@ -859,10 +821,10 @@ function Planner() {
                         <CarouselNext />
                       </Carousel>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
-                <div className="hidden bg-muted lg:block">
-                  {/* {isLoaded && destinationDetails.destination && (
+                {/* <div className="hidden bg-muted lg:block">
+                  {isLoaded && destinationDetails.destination && (
                     <>
                       <GoogleMap
                         center={currentLocation}
@@ -879,8 +841,8 @@ function Planner() {
                         {currentPlace && <MarkerF position={currentPlace} />}
                       </GoogleMap>
                     </>
-                  )} */}
-                </div>
+                  )}
+                </div> */}
               </div>
             </div>
             <div className="flex-1 pt-2">
