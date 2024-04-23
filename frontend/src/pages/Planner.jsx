@@ -108,13 +108,14 @@ function Planner() {
   } = useSelector((state) => state.plannerDetails);
   const [placeOne, setPlaceOne] = useState("");
   const [placeTwo, setPlaceTwo] = useState("");
-  // const [topTenList, setTopTenList] = useState([]);
+  const [topTenList, setTopTenList] = useState([]);
   const [currentPlaceOfStay, setCurrentPlaceOfStay] = useState(null);
   const [openPlaceTwoSelect, setOpenPlaceTwoSelect] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [map, setMap] = useState(/**@type google.maps.Map */ (null));
   const [photosUrl, setPhotosUrl] = useState([]);
   const placeOfStay = useRef();
+  const [visitPlaceTestArr, setVisitPlaceTestArr] = useState([]);
 
   const genAi = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_KEY);
   const model = genAi.getGenerativeModel({ model: "gemini-pro" });
@@ -141,12 +142,17 @@ function Planner() {
       const regex = /(\[.*?\])/s;
       const expectedJSON = response.match(regex);
       console.log(JSON.parse(expectedJSON[0]));
-      // setTopTenList(JSON.parse(expectedJSON[0]));
-      if (placeType === "placeOne") {
-        dispatch(addPlaceOneOptions(JSON.parse(expectedJSON[0])));
-      } else {
-        dispatch(addPlaceTwoOptions(JSON.parse(expectedJSON[0])));
-      }
+      setTopTenList(JSON.parse(expectedJSON[0]));
+      // JSON.parse(expectedJSON[0]).forEach((item) => {
+      //   generateVisitPlaceDetails(item);
+      // });
+      // if (placeType === "placeOne") {
+      //   dispatch(addPlaceOneOptions(JSON.parse(expectedJSON[0])));
+      //   dispatch(addPlaceOneOptions(visitPlaceTestArr));
+      // } else {
+      //   dispatch(addPlaceTwoOptions(JSON.parse(expectedJSON[0])));
+      // }
+      return JSON.parse(expectedJSON[0]);
     } catch (error) {
       console.log(error);
     }
@@ -181,6 +187,127 @@ function Planner() {
       console.error("Geolocation is not supported by this browser.");
     }
   }, []);
+
+  // const generateVisitPlaceDetails = async (place) => {
+  //   try {
+  //     //eslint-disable-next-line no-undef
+  //     const latlng = new google.maps.Geocoder();
+  //     const resultsLatLang = await latlng.geocode({
+  //       address: place.location.address,
+  //     });
+  //     const placeId = resultsLatLang.results[0].place_id;
+  //     const request = {
+  //       placeId,
+  //       fields: [
+  //         "name",
+  //         "formatted_address",
+  //         "place_id",
+  //         "geometry",
+  //         "photos",
+  //         "rating",
+  //         "user_ratings_total",
+  //       ],
+  //     };
+  //     //eslint-disable-next-line no-undef
+  //     const placesService = new google.maps.places.PlacesService(map);
+  //     let returningPlaceDetails;
+  //     placesService.getDetails(request, function callback(results, status) {
+  //       let placeDetailsPhotoArray = [];
+  //       //eslint-disable-next-line no-undef
+  //       if (status === google.maps.places.PlacesServiceStatus.OK) {
+  //         results.photos.map((item) =>
+  //           placeDetailsPhotoArray.push(item.getUrl())
+  //         );
+  //       }
+
+  //       returningPlaceDetails = {
+  //         ...results,
+  //         geometry: {
+  //           lat: results.geometry.location.lat(),
+  //           lng: results.geometry.location.lng(),
+  //         },
+  //         photos: placeDetailsPhotoArray,
+  //         placeInfo: place.details,
+  //       };
+  //       console.log(returningPlaceDetails, "236");
+  //     });
+  //     return returningPlaceDetails;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const generateVisitPlaceDetails = async (place) => {
+    try {
+      //eslint-disable-next-line no-undef
+      const latlng = new google.maps.Geocoder();
+      const resultsLatLang = await latlng.geocode({
+        address: place.location.address,
+      });
+      const placeId = resultsLatLang.results[0].place_id;
+      const request = {
+        placeId,
+        fields: [
+          "name",
+          "formatted_address",
+          "place_id",
+          "geometry",
+          "photos",
+          "rating",
+          "user_ratings_total",
+        ],
+      };
+      //eslint-disable-next-line no-undef
+      const placesService = new google.maps.places.PlacesService(map);
+
+      // Wrapping the callback-based API in a promise
+      const getDetailsPromise = () => {
+        return new Promise((resolve, reject) => {
+          placesService.getDetails(request, (results, status) => {
+            //eslint-disable-next-line no-undef
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+              let placeDetailsPhotoArray = results?.photos?.map((item) =>
+                item.getUrl()
+              );
+              let returningPlaceDetails = {
+                ...results,
+                geometry: {
+                  lat: results.geometry.location.lat(),
+                  lng: results.geometry.location.lng(),
+                },
+                photos: placeDetailsPhotoArray,
+                placeInfo: place.details,
+              };
+              console.log(returningPlaceDetails, "281");
+              resolve(returningPlaceDetails);
+            } else {
+              reject(new Error("Place details not found"));
+            }
+          });
+        });
+      };
+
+      // Await the promise
+      const returningPlaceDetails = await getDetailsPromise();
+      return returningPlaceDetails;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const processPlaceResultArray = async (e, placeType) => {
+    try {
+      const myArr = await generatePlaceOptions(e);
+      const promisesArr = myArr.map((item) => generateVisitPlaceDetails(item));
+      const result = await Promise.all(promisesArr);
+      if (placeType === "placeOne") {
+        dispatch(addPlaceOneOptions(result));
+      } else {
+        dispatch(addPlaceTwoOptions(result));
+      }
+      console.log(result, "247");
+    } catch (error) {}
+  };
 
   const handleSetupStay = async (e) => {
     e.preventDefault();
@@ -421,7 +548,10 @@ function Planner() {
                   <div>
                     <Label htmlFor="place-one">Select Place One</Label>
                     <Select
-                      onValueChange={(e) => generatePlaceOptions(e, "placeOne")}
+                      onValueChange={(e) =>
+                        processPlaceResultArray(e, "placeOne")
+                      }
+                      // onValueChange={processPlaceOneResultArray}
                     >
                       <SelectTrigger
                         id="place-one"
@@ -595,7 +725,9 @@ function Planner() {
                   <div>
                     <Label htmlFor="place-one">Select Place Two</Label>
                     <Select
-                      onValueChange={(e) => generatePlaceOptions(e, "placeTwo")}
+                      onValueChange={(e) =>
+                        processPlaceResultArray(e, "placeTwo")
+                      }
                     >
                       <SelectTrigger
                         id="place-two"
