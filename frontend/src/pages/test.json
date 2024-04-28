@@ -1,0 +1,877 @@
+[
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "7RXF+4F2, Nandankanan Rd, Doordarshan Colony, Gajapati Nagar, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2977747,
+                "lng": 85.8235907
+            },
+            "viewport": {
+                "south": 20.29637457010728,
+                "west": 85.82224407010727,
+                "north": 20.29907422989272,
+                "east": 85.82494372989272
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Arham's kitchen",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 3000,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/112064244532078008469\">sk dilnawaz ali</a>"
+                ],
+                "width": 4000
+            }
+        ],
+        "place_id": "ChIJE5LVywcJGToR68dHUltPpFo",
+        "rating": 4.6,
+        "reference": "ChIJE5LVywcJGToR68dHUltPpFo",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 9,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "Hig-3, Gangadhar Meher Marg, BDA Colony, Doordarshan Colony, Jayadev Vihar, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.3000447,
+                "lng": 85.8238566
+            },
+            "viewport": {
+                "south": 20.29866792010728,
+                "west": 85.82240612010727,
+                "north": 20.30136757989272,
+                "east": 85.82510577989272
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Treat Restaurant",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 4024,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/110396934811704901268\">A Google User</a>"
+                ],
+                "width": 6048
+            }
+        ],
+        "place_id": "ChIJIaomzugJGToRBSfJ1kkh2q0",
+        "plus_code": {
+            "compound_code": "8R2F+2G Bhubaneswar, Odisha, India",
+            "global_code": "7MG78R2F+2G"
+        },
+        "rating": 4.3,
+        "reference": "ChIJIaomzugJGToRBSfJ1kkh2q0",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 16,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "7RWF+GM4, Nayapalli, Bhubaneswar, Odisha 751015, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2962559,
+                "lng": 85.8242093
+            },
+            "viewport": {
+                "south": 20.29496677010728,
+                "west": 85.82278042010728,
+                "north": 20.29766642989272,
+                "east": 85.82548007989273
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "The Classy",
+        "opening_hours": {
+            "open_now": true
+        },
+        "place_id": "ChIJ4yWVbY0JGToREOwMNOAWc4k",
+        "rating": 4.3,
+        "reference": "ChIJ4yWVbY0JGToREOwMNOAWc4k",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 26,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "738 p, Rath Arcade, Jayadev Vihar Rd, Block N3, IRC Village, Nayapalli, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2961332,
+                "lng": 85.8227927
+            },
+            "viewport": {
+                "south": 20.29472932010728,
+                "west": 85.82142907010727,
+                "north": 20.29742897989272,
+                "east": 85.8241287298927
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Hotel Priya, Jaydev Vihar Branch",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 662,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/101755982126154825266\">Jajati Jyotirmay</a>"
+                ],
+                "width": 999
+            }
+        ],
+        "place_id": "ChIJmQkbgMQJGToRGdaCvwS_J30",
+        "plus_code": {
+            "compound_code": "7RWF+F4 Bhubaneswar, Odisha, India",
+            "global_code": "7MG77RWF+F4"
+        },
+        "price_level": 2,
+        "rating": 4,
+        "reference": "ChIJmQkbgMQJGToRGdaCvwS_J30",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 5270,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "7RWF+CRF, back side of jagannath temple, phulbani phulbani, Odisha 762001, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2960587,
+                "lng": 85.8245398
+            },
+            "viewport": {
+                "south": 20.29471237010727,
+                "west": 85.82320547010728,
+                "north": 20.29741202989272,
+                "east": 85.82590512989273
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "The Fern Restaurants",
+        "place_id": "ChIJvaU2aFoJGToRzUvcX8Mnb5Q",
+        "rating": 5,
+        "reference": "ChIJvaU2aFoJGToRzUvcX8Mnb5Q",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 1,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "First floor, Trident, Bhubaneswar, CB-1, Nayapalli, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.3024853,
+                "lng": 85.8213583
+            },
+            "viewport": {
+                "south": 20.30101567010728,
+                "west": 85.82020242010726,
+                "north": 20.30371532989273,
+                "east": 85.82290207989271
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "The Restaurant - Trident Bhubaneswar",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 1200,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/112136752412720777782\">Kumar Vikash</a>"
+                ],
+                "width": 1600
+            }
+        ],
+        "place_id": "ChIJ24nxAscJGToRGoGYQhLW5PU",
+        "plus_code": {
+            "compound_code": "8R2C+XG Bhubaneswar, Odisha, India",
+            "global_code": "7MG78R2C+XG"
+        },
+        "rating": 4.4,
+        "reference": "ChIJ24nxAscJGToRGoGYQhLW5PU",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 434,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "8R4J+7JF, Doordarshan Colony, Gajapati Nagar, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.3056877,
+                "lng": 85.83156199999999
+            },
+            "viewport": {
+                "south": 20.30447027010728,
+                "west": 85.83021717010729,
+                "north": 20.30716992989272,
+                "east": 85.83291682989272
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Apollo Hospital Restaurant",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 3000,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/104813961970048708829\">Amlan Mohapatra</a>"
+                ],
+                "width": 4000
+            }
+        ],
+        "place_id": "ChIJ43iPzpQJGToRXVabFmIYtr8",
+        "rating": 3.6,
+        "reference": "ChIJ43iPzpQJGToRXVabFmIYtr8",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 43,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "737 P Rath Bhawan, Biju Pattnaik College Rd, Jayadev Vihar, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2966286,
+                "lng": 85.8213227
+            },
+            "viewport": {
+                "south": 20.29518057010728,
+                "west": 85.81993477010727,
+                "north": 20.29788022989272,
+                "east": 85.82263442989272
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",
+        "icon_background_color": "#4B96F3",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/shopping_pinlet",
+        "name": "Shree Kunj Restaurant",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 4016,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/102061275433941105530\">A Google User</a>"
+                ],
+                "width": 6016
+            }
+        ],
+        "place_id": "ChIJcdRnqcgJGToRQDNGl-L-uH4",
+        "plus_code": {
+            "compound_code": "7RWC+MG Bhubaneswar, Odisha, India",
+            "global_code": "7MG77RWC+MG"
+        },
+        "price_level": 2,
+        "rating": 3.7,
+        "reference": "ChIJcdRnqcgJGToRQDNGl-L-uH4",
+        "types": [
+            "meal_takeaway",
+            "store",
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 860,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "7RWJ+9Q8, Acharya Vihar, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2958743,
+                "lng": 85.83189999999999
+            },
+            "viewport": {
+                "south": 20.29449287010728,
+                "west": 85.83054752010729,
+                "north": 20.29719252989272,
+                "east": 85.83324717989272
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "TOS (Taste of Street)",
+        "photos": [
+            {
+                "height": 12000,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/116286487863833039406\">simply babul</a>"
+                ],
+                "width": 9000
+            }
+        ],
+        "place_id": "ChIJty0pAC8JGToRCXn08IvZTPY",
+        "rating": 4.5,
+        "reference": "ChIJty0pAC8JGToRCXn08IvZTPY",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 15,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "Biju Patnaik College Road, Bhubaneswar, Odisha 751015, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2960587,
+                "lng": 85.8245398
+            },
+            "viewport": {
+                "south": 20.29471237010727,
+                "west": 85.82320547010728,
+                "north": 20.29741202989272,
+                "east": 85.82590512989273
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Country Kitchen",
+        "opening_hours": {
+            "open_now": false
+        },
+        "photos": [
+            {
+                "height": 480,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/106142802761497252199\">amit kumar dash</a>"
+                ],
+                "width": 640
+            }
+        ],
+        "place_id": "ChIJeQ1HCsMJGToRQwJh3_TjJs0",
+        "rating": 3.9,
+        "reference": "ChIJeQ1HCsMJGToRQwJh3_TjJs0",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 87,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "UNIT-9 FLAT,Anand Bazar, near Water Tank, Bhubaneswar, Odisha 751022, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2920127,
+                "lng": 85.83431279999999
+            },
+            "viewport": {
+                "south": 20.29069972010728,
+                "west": 85.83295812010728,
+                "north": 20.29339937989272,
+                "east": 85.83565777989273
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Hotel Darbar & Restaurant",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 3096,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/108881041888546759877\">A Google User</a>"
+                ],
+                "width": 4128
+            }
+        ],
+        "place_id": "ChIJNSh26uUJGToRRb6C-GRisNU",
+        "plus_code": {
+            "compound_code": "7RRM+RP Bhubaneswar, Odisha, India",
+            "global_code": "7MG77RRM+RP"
+        },
+        "price_level": 1,
+        "rating": 3.6,
+        "reference": "ChIJNSh26uUJGToRRb6C-GRisNU",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 190,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "Opposite Nalco Headquarters, Jayadev Vihar, Nandankanan Rd, Nayapalli, Bhubaneswar, Odisha 751012, India",
+        "geometry": {
+            "location": {
+                "lat": 20.3033544,
+                "lng": 85.8230665
+            },
+            "viewport": {
+                "south": 20.30198962010728,
+                "west": 85.82165977010727,
+                "north": 20.30468927989272,
+                "east": 85.82435942989272
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Qmin Bhubaneshwar",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 1440,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/107172457385986598087\">A Google User</a>"
+                ],
+                "width": 2160
+            }
+        ],
+        "place_id": "ChIJUZGDKBUJGToRSTwHMPaQ0jc",
+        "plus_code": {
+            "compound_code": "8R3F+86 Bhubaneswar, Odisha, India",
+            "global_code": "7MG78R3F+86"
+        },
+        "rating": 4.2,
+        "reference": "ChIJUZGDKBUJGToRSTwHMPaQ0jc",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 5,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "Ximb Chhak, near Sandy Towers, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.3070833,
+                "lng": 85.8209876
+            },
+            "viewport": {
+                "south": 20.30591862010727,
+                "west": 85.81941807010728,
+                "north": 20.30861827989272,
+                "east": 85.82211772989272
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Spicy South",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 3472,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/114992876563838131657\">subhransu</a>"
+                ],
+                "width": 4640
+            }
+        ],
+        "place_id": "ChIJ08UkyX0JGToRuel9WdrKUBs",
+        "plus_code": {
+            "compound_code": "8R4C+R9 Bhubaneswar, Odisha, India",
+            "global_code": "7MG78R4C+R9"
+        },
+        "rating": 3.7,
+        "reference": "ChIJ08UkyX0JGToRuel9WdrKUBs",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 608,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "Gajapati Nagar, Bhubaneswar, Odisha 751003, India",
+        "geometry": {
+            "location": {
+                "lat": 20.3095333,
+                "lng": 85.8336808
+            },
+            "viewport": {
+                "south": 20.30817877010728,
+                "west": 85.83238792010727,
+                "north": 20.31087842989272,
+                "east": 85.83508757989271
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "SOUMYA RESTAURANT",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 1280,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/104769819289944413418\">A Google User</a>"
+                ],
+                "width": 720
+            }
+        ],
+        "place_id": "ChIJ159GiUkJGToRar761ypLat8",
+        "plus_code": {
+            "compound_code": "8R5M+RF Bhubaneswar, Odisha, India",
+            "global_code": "7MG78R5M+RF"
+        },
+        "rating": 3,
+        "reference": "ChIJ159GiUkJGToRar761ypLat8",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 2,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "N6, near Health Village Hospital, Block N6, IRC Village, Nayapalli, Bhubaneswar, Odisha 751015, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2951521,
+                "lng": 85.82086489999999
+            },
+            "viewport": {
+                "south": 20.29375087010728,
+                "west": 85.81949232010726,
+                "north": 20.29645052989272,
+                "east": 85.82219197989271
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Bhoj - The Veg Kitchen",
+        "opening_hours": {
+            "open_now": true
+        },
+        "photos": [
+            {
+                "height": 1443,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/109366245922792454822\">A Google User</a>"
+                ],
+                "width": 1080
+            }
+        ],
+        "place_id": "ChIJr0Uu5icJGToRT6By2zWZYtc",
+        "plus_code": {
+            "compound_code": "7RWC+38 Bhubaneswar, Odisha, India",
+            "global_code": "7MG77RWC+38"
+        },
+        "rating": 3.7,
+        "reference": "ChIJr0Uu5icJGToRT6By2zWZYtc",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 16,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "7RWF+CRF, Doordarshan Colony, Gajapati Nagar, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2960587,
+                "lng": 85.8245398
+            },
+            "viewport": {
+                "south": 20.29471237010727,
+                "west": 85.82320547010728,
+                "north": 20.29741202989272,
+                "east": 85.82590512989273
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Odia dalma",
+        "photos": [
+            {
+                "height": 4096,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/111803932949560244837\">A Google User</a>"
+                ],
+                "width": 3072
+            }
+        ],
+        "place_id": "ChIJh2PU3QMJGToRz23Bx04AaZI",
+        "rating": 2.3,
+        "reference": "ChIJh2PU3QMJGToRz23Bx04AaZI",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 3,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "near pal height. Bhubaneswar, Jayadev Vihar, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2974168,
+                "lng": 85.8239748
+            },
+            "viewport": {
+                "south": 20.29609832010728,
+                "west": 85.82269852010727,
+                "north": 20.29879797989272,
+                "east": 85.8253981798927
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "GOLDDEN TASTY",
+        "opening_hours": {
+            "open_now": false
+        },
+        "photos": [
+            {
+                "height": 720,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/104086505995928152645\">A Google User</a>"
+                ],
+                "width": 1280
+            }
+        ],
+        "place_id": "ChIJNSy3x8MJGToRTNyFavfjpgk",
+        "plus_code": {
+            "compound_code": "7RWF+XH Bhubaneswar, Odisha, India",
+            "global_code": "7MG77RWF+XH"
+        },
+        "rating": 5,
+        "reference": "ChIJNSy3x8MJGToRTNyFavfjpgk",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 24,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "M4/38 GROUND FLOOR, near WATER TANK, Acharya Vihar, Bhubaneswar, Odisha 751013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.294832,
+                "lng": 85.829488
+            },
+            "viewport": {
+                "south": 20.29347117010728,
+                "west": 85.82813902010727,
+                "north": 20.29617082989272,
+                "east": 85.83083867989272
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "CAPITAL GRILLE",
+        "place_id": "ChIJKZVxbekJGToRPL42UP37xPI",
+        "plus_code": {
+            "compound_code": "7RVH+WQ Bhubaneswar, Odisha, India",
+            "global_code": "7MG77RVH+WQ"
+        },
+        "rating": 4.8,
+        "reference": "ChIJKZVxbekJGToRPL42UP37xPI",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 13,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "Acharya vihar, Acharya Vihar, Bhubaneswar, Odisha 751022, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2966253,
+                "lng": 85.8327264
+            },
+            "viewport": {
+                "south": 20.29530692010728,
+                "west": 85.83137857010729,
+                "north": 20.29800657989272,
+                "east": 85.83407822989273
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Num Num-The ultimate taste(Acharya vihar)",
+        "opening_hours": {
+            "open_now": false
+        },
+        "photos": [
+            {
+                "height": 3000,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/113893822022102195266\">Agniva Sarkar</a>"
+                ],
+                "width": 4000
+            }
+        ],
+        "place_id": "ChIJQ30nd68JGToRiNQaJ4Mc_Io",
+        "plus_code": {
+            "compound_code": "7RWM+M3 Bhubaneswar, Odisha, India",
+            "global_code": "7MG77RWM+M3"
+        },
+        "rating": 4.1,
+        "reference": "ChIJQ30nd68JGToRiNQaJ4Mc_Io",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 240,
+        "html_attributions": []
+    },
+    {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "7RWF+PW3, Doordarshan Colony, Jayadev Vihar, Bhubaneswar, Odisha 752013, India",
+        "geometry": {
+            "location": {
+                "lat": 20.2967836,
+                "lng": 85.8247968
+            },
+            "viewport": {
+                "south": 20.29548487010728,
+                "west": 85.82342952010728,
+                "north": 20.29818452989272,
+                "east": 85.82612917989272
+            }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+        "icon_background_color": "#FF9E67",
+        "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet",
+        "name": "Annapurna Hotel",
+        "opening_hours": {
+            "open_now": false
+        },
+        "photos": [
+            {
+                "height": 4160,
+                "html_attributions": [
+                    "<a href=\"https://maps.google.com/maps/contrib/103025698809520401571\">malaya nayak</a>"
+                ],
+                "width": 3120
+            }
+        ],
+        "place_id": "ChIJSxtypsMJGToRjw9Sgz0-340",
+        "price_level": 2,
+        "rating": 3.8,
+        "reference": "ChIJSxtypsMJGToRjw9Sgz0-340",
+        "types": [
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment"
+        ],
+        "user_ratings_total": 256,
+        "html_attributions": []
+    }
+]
