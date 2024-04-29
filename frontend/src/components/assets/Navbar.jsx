@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Activity,
   ArrowUpRight,
@@ -23,13 +23,28 @@ import {
 } from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../slices/authSlice";
 
 const Navbar = () => {
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const loginPage = location.pathname === "/login";
+  const registerPage = location.pathname === "/register";
   const { destinationDetails, placeOneDetails, placeTwoDetails, foodPlan } =
     useSelector((state) => state.plannerDetails);
+  const { userInfo } = useSelector((state) => state.auth);
+  const logoutHandler = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-[5rem]">
+    <header
+      className={`sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-[5rem] ${
+        loginPage || registerPage ? "hidden" : ""
+      }`}
+    >
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <div className="flex flex-col gap-[4px]">
           <div className="relative flex items-center gap-[0.5rem]">
@@ -205,12 +220,15 @@ const Navbar = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              {userInfo ? userInfo.name : "Your Account"}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/profile")}>
+              My Profile
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem onClick={logoutHandler}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

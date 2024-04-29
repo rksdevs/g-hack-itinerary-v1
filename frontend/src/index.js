@@ -12,17 +12,23 @@ import { Register } from './pages/Register';
 import SetupDestination from './pages/SetupDestination';
 import Eateries from './pages/Eateries';
 import Itinerary from './pages/Itinerary';
+import PrivateRoutes from './components/assets/PrivateRoutes';
+import ItineraryDetails from './pages/ItineraryDetails';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
-      <Route index={true} path='/' element={<SetupDestination />} />
       <Route path="/login" element={<LoginForm/>} />
-      <Route path='/planner' element={<Planner />} />
       <Route path='/register' element={<Register />} />
-      <Route path='/places' element={<Places />} />
-      <Route path='/eateries' element={<Eateries />} />
-      <Route path='/itinerary' element={<Itinerary />} />
+      <Route path='/itineraryDetails/:id' element={<ItineraryDetails />} />
+
+      <Route path='' element={<PrivateRoutes />}>
+        <Route index={true} path='/' element={<SetupDestination />} />
+        <Route path='/planner' element={<Planner />} />
+        <Route path='/places' element={<Places />} />
+        <Route path='/eateries' element={<Eateries />} />
+        <Route path='/itinerary' element={<Itinerary />} />
+      </Route>
 
     </Route>
   )

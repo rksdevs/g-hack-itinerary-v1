@@ -6,24 +6,31 @@ import { connect } from "./config/db.js";
 import { basicErrorHandler, notFound } from "./middlewares/errorHandlerMiddleware.js";
 import loginRoute from "./routes/authRoute.js"
 import keyRoute from "./routes/keyRoute.js";
+import itineraryRoute from "./routes/itineraryRoute.js"
 import cors from 'cors'
 
 const app = express();
 const PORT = process.env.PORT || 8800
 connect();
 
+const corsOptions = {
+  origin: true, // Change this to the origin(s) you want to allow.
+  credentials: true, // Indicates that cookies and credentials should be included.
+};
+
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
-app.use(cors())
+app.use(cors(corsOptions))
 
 
 app.get("/", (req, res)=> {
     res.send("Server is up and running")
 })
 
-app.use("/api/auth", loginRoute);
-app.use("/api/key", keyRoute)
+app.use("/api/users", loginRoute);
+app.use("/api/key", keyRoute);
+app.use("/api/itinerary", itineraryRoute)
 
 
 app.use(notFound);

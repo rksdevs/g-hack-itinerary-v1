@@ -24,11 +24,9 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
 
   const [login, { isLoading, error }] = useLoginMutation();
-  const { userInfo } = useSelector((state) => state.auth);
   const { toast } = useToast();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password);
     try {
       //api call from rtx query
       const res = await login({ email, password }).unwrap();
@@ -36,7 +34,6 @@ export function LoginForm() {
       navigate("/");
       toast({
         title: "Login Success",
-        description: `Welcome ${userInfo.name}`,
       });
     } catch (error) {
       // toast.error(error?.data?.message || error?.message);
@@ -94,7 +91,7 @@ export function LoginForm() {
         </div>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}
-          <Link href="#" className="underline">
+          <Link to="/register" className="underline">
             Sign up
           </Link>
         </div>

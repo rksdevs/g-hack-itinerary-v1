@@ -43,7 +43,6 @@ export function Register() {
         navigate("/");
         toast({
           title: "Registration Successful",
-          description: `Welcome ${userInfo.name}`,
         });
       } catch (error) {
         toast({
@@ -133,7 +132,7 @@ export function Register() {
         </div>
         <div className="mt-4 text-center text-sm">
           Already have an account?{" "}
-          <Link href="#" className="underline">
+          <Link to="/login" className="underline">
             Sign in
           </Link>
         </div>

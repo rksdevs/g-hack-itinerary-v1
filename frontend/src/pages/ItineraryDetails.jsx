@@ -51,7 +51,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "../components/ui/tooltip";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -73,7 +73,7 @@ import {
   PaginationItem,
 } from "../components/ui/pagination";
 import { Separator } from "../components/ui/separator";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Carousel,
   CarouselContent,
@@ -82,22 +82,20 @@ import {
   CarouselPrevious,
 } from "../components/ui/carousel";
 import restaurant from "../components/images/restaurant.jpg";
+import { useToast } from "../components/ui/use-toast";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { useAddItineraryMutation } from "../slices/itineraryApiSlice";
-import { setItinerary } from "../slices/itinerarySlice";
-import { useNavigate } from "react-router-dom";
+import {
+  useGetOneItineraryQuery,
+  useShortenItineraryLinkMutation,
+} from "../slices/itineraryApiSlice";
+import { useLocation, useParams } from "react-router-dom";
 
-function Itinerary() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [message, setMessage] = useState("Your message");
-  const [reply, setReply] = useState("Awaiting Response...");
-  const [topTenList, setTopTenList] = useState([]);
-  const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-  // const [itinerary, setItinerary] = useState("123456");
-  const [itineraryDetails, setItineraryDetails] = useState("");
+function ItineraryDetails() {
+  const { id: itineraryId } = useParams();
+  const [itineraryLink, setItineraryLink] = useState(window.location.href);
+  const { toast } = useToast();
+  const itineraryLinkRef = useRef(window.location.href);
   const {
     placeOneDetails,
     placeOneOptions,
@@ -105,115 +103,34 @@ function Itinerary() {
     placeTwoDetails,
     foodPlanOptions,
     destinationDetails,
-    placeToStayDetails,
     foodPlan,
     itineraryReadyToBuild,
   } = useSelector((state) => state.plannerDetails);
 
-  const { userInfo } = useSelector((state) => state.auth);
+  const {
+    data: itinerary,
+    isLoading,
+    isError,
+  } = useGetOneItineraryQuery(itineraryId);
 
-  const [createItinerary, { isLoading, error }] = useAddItineraryMutation();
+  const formatDate = (updateDate) => {
+    const dateString = updateDate;
+    const date = new Date(dateString);
 
-  const handleCreateItinerary = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await createItinerary({
-        name: `${destinationDetails.origin}-${destinationDetails.destination}`,
-        itineraryDetails: {
-          placeOneDetails,
-          placeTwoDetails,
-          placeToStayDetails,
-          itineraryReadyToBuild,
-          foodPlan,
-          destinationDetails,
-          itineraryResponse: itineraryDetails?.responseOne,
-        },
-      }).unwrap();
-      console.log({ ...res }, "132");
-      dispatch(setItinerary({ ...res }));
-      navigate(`/itineraryDetails/${res._id}`);
-    } catch (error) {}
+    const options = { day: "2-digit", month: "short", year: "numeric" };
+    const formattedDate = date.toLocaleDateString("en-US", options);
+    return formattedDate;
   };
 
-  const handleMessage = async (e) => {
+  const handleCopyLinkToClipboard = async (e) => {
     e.preventDefault();
-    try {
-      const itineraryPrompt = `You are a tool that crafts itinerary for the day. You can utilize information like Breakfast, Lunch, Brunch, Dinner and their respective place/location/hotel to have the food, you can also utilize two places like place-one and place-two along with their location details and timing provided to you. You will then build an itinerary from the above information. 
-      
-      Below is how the sample of information provided to you looks like, it is structured like an object in Javascript: 
-      {
-        foodPlan: {
-            breakfast: {
-                "title": ${foodPlan?.breakfast?.title},
-                "details": ${foodPlan?.breakfast?.details},
-                "location": ${foodPlan?.breakfast?.location?.address}
-              },
-              lunch: {
-                "title": ${foodPlan?.lunch?.title},
-                "details": ${foodPlan?.lunch?.details},
-                "location": ${foodPlan?.lunch?.location?.address}
-              }
-              brunch: {
-                "title": ${foodPlan?.brunch?.title},
-                "details": ${foodPlan?.brunch?.details},
-                "location": ${foodPlan?.brunch?.location?.address}
-              }
-              dinner: {
-                "title": ${foodPlan?.dinner?.title},
-                "details": ${foodPlan?.dinner?.details},
-                "location": ${foodPlan?.dinner?.location?.address}
-              },
-        },
-        placeOneDetails: {
-            "title": ${placeOneDetails?.name},
-            "details": ${placeOneDetails?.placeInfo},
-            "location": {
-              "address": ${placeOneDetails?.formatted_address},
-              "lng": ${placeOneDetails?.geometry?.lng},
-              "lat": ${placeOneDetails?.geometry?.lat}
-            },
-            "timings": ${placeOneDetails?.timings}
-          },
-          placeTwoDetails: {
-            "title": ${placeTwoDetails?.name},
-            "details": ${placeTwoDetails?.placeInfo},
-            "location": {
-              "address": ${placeTwoDetails?.formatted_address},
-              "lng": ${placeTwoDetails?.geometry?.lng},
-              "lat": ${placeTwoDetails?.geometry?.lat}
-            },
-            "timings": ${placeTwoDetails?.timings}
-          }
-      }
-      
-      Your response should have nothing else but only one javascript JSON object, this should have a key named as "responseOne" a paragraph, and utilize these info, and make the itinerary, also note that you need to consider the timings provided, a general rule will be start the day from breakfast and proceed, this should be around 300 words but not more than 300 words.
-
-      Use the following information to build the itinerary: ${JSON.parse(
-        localStorage.getItem("plannerDetails")
-      )}
-      `;
-      const result = await model.generateContent(itineraryPrompt);
-      const response = await result.response.text();
-      const regex = /\{.*\}/s;
-      console.log(response);
-      const expectedJSON = response.match(regex);
-      console.log(expectedJSON);
-      console.log(JSON.parse(expectedJSON[0]));
-      //   const segments = response.text().split(/\b(?:1|2|3|4|5|6|7|8|9|10)\./);
-      //   const listItems = segments
-      //     .filter((segment) => segment.trim() !== "")
-      //     .map((segment) => `${segment.trim()}`);
-      //   setReply("Your Top 10 List Is: ");
-      //   setTopTenList(listItems);
-      setItineraryDetails(JSON.parse(expectedJSON[0]));
-    } catch (error) {
-      console.log(error);
-    }
+    itineraryLinkRef.current.select();
+    document.execCommand("copy");
+    toast({
+      title: "Link copied to clipboard!",
+      variant: "primary",
+    });
   };
-
-  useEffect(() => {
-    console.log("reply - ", reply);
-  }, [reply]);
 
   return (
     <div className="grid pl-[56px]">
@@ -349,12 +266,16 @@ function Itinerary() {
         </header>
         <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
           <div className="relative hidden flex-col items-start gap-8 md:flex">
-            {itineraryReadyToBuild && (
+            {isLoading ? (
+              <>Loading...</>
+            ) : (
               <Card className="overflow-hidden w-full">
                 <CardHeader className="flex flex-row items-start bg-muted/50 pt-3 pb-3">
                   <div className="grid gap-0.5">
                     <CardTitle className="group flex items-center gap-2 text-lg">
-                      Itinerary
+                      {itinerary?.name?.length > 20
+                        ? itinerary?.name?.substring(0, 20) + "..."
+                        : itinerary?.name}
                       <Button
                         size="icon"
                         variant="outline"
@@ -366,8 +287,8 @@ function Itinerary() {
                     </CardTitle>
                     <CardDescription className="flex">
                       Date:{" "}
-                      {destinationDetails?.travelDate
-                        ? destinationDetails?.travelDate
+                      {itinerary.destinationDetails?.travelDate
+                        ? itinerary.destinationDetails?.travelDate
                         : "To be decided"}
                     </CardDescription>
                   </div>
@@ -390,8 +311,7 @@ function Itinerary() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Export</DropdownMenuItem>
+                        <DropdownMenuItem>Share</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>Trash</DropdownMenuItem>
                       </DropdownMenuContent>
@@ -404,13 +324,13 @@ function Itinerary() {
                     <ul className="grid gap-1">
                       <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">Origin</span>
-                        <span>{destinationDetails?.origin}</span>
+                        <span>{itinerary.destinationDetails?.origin}</span>
                       </li>
                       <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">
                           Destination
                         </span>
-                        <span>{destinationDetails?.destination}</span>
+                        <span>{itinerary.destinationDetails?.destination}</span>
                       </li>
                     </ul>
                     <Separator className="my-4" />
@@ -420,28 +340,32 @@ function Itinerary() {
                           Mode of Travel
                         </span>
                         <span>
-                          {destinationDetails?.modeOfTravel &&
-                            destinationDetails?.modeOfTravel
+                          {itinerary?.destinationDetails?.modeOfTravel &&
+                            itinerary?.destinationDetails?.modeOfTravel
                               .charAt(0)
                               .toUpperCase() +
-                              destinationDetails?.modeOfTravel.slice(1)}
+                              itinerary?.destinationDetails?.modeOfTravel.slice(
+                                1
+                              )}
                         </span>
                       </li>
                       <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">
                           Date of Travel
                         </span>
-                        <span>{destinationDetails?.travelDate}</span>
+                        <span>{itinerary.destinationDetails?.travelDate}</span>
                       </li>
                       <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">Distance</span>
-                        <span>{destinationDetails?.travelDistance}</span>
+                        <span>
+                          {itinerary.destinationDetails?.travelDistance}
+                        </span>
                       </li>
                       <li className="flex items-center justify-between font-semibold">
                         <span className="text-muted-foreground">
                           Arriving On
                         </span>
-                        <span>{destinationDetails?.travelDate}</span>
+                        <span>{itinerary.destinationDetails?.travelDate}</span>
                       </li>
                     </ul>
                   </div>
@@ -451,12 +375,15 @@ function Itinerary() {
                     <div className="flex gap-2 justify-between">
                       <div className="grid gap-1 text-left">
                         <div className="font-semibold">
-                          {placeOneDetails?.name?.length > 20
-                            ? placeOneDetails?.name?.substring(0, 20) + "..."
-                            : placeOneDetails?.name}
+                          {itinerary.placeOneDetails?.name?.length > 20
+                            ? itinerary.placeOneDetails?.name?.substring(
+                                0,
+                                20
+                              ) + "..."
+                            : itinerary.placeOneDetails?.name}
                         </div>
                         <div className="grid gap-0.5 not-italic text-muted-foreground">
-                          {placeOneDetails?.formatted_address
+                          {itinerary.placeOneDetails?.formatted_address
                             .split(",")
                             .slice(0, 3)
                             .map((item, index) => (
@@ -466,12 +393,15 @@ function Itinerary() {
                       </div>
                       <div className="grid auto-rows-max gap-1 text-right">
                         <div className="font-semibold">
-                          {placeTwoDetails?.name?.length > 20
-                            ? placeTwoDetails?.name?.substring(0, 20) + "..."
-                            : placeTwoDetails?.name}
+                          {itinerary.placeTwoDetails?.name?.length > 20
+                            ? itinerary.placeTwoDetails?.name?.substring(
+                                0,
+                                20
+                              ) + "..."
+                            : itinerary.placeTwoDetails?.name}
                         </div>
                         <div className="grid gap-0.5 not-italic text-muted-foreground">
-                          {placeTwoDetails?.formatted_address
+                          {itinerary.placeTwoDetails?.formatted_address
                             .split(",")
                             .slice(0, 3)
                             .map((item, index) => (
@@ -488,24 +418,24 @@ function Itinerary() {
                       <div className="flex items-center justify-between">
                         <dt className="text-muted-foreground">Breakfast</dt>
                         <dd>
-                          {foodPlan?.breakfast?.title
-                            ? foodPlan?.breakfast?.title
+                          {itinerary?.foodPlan?.breakfast?.title
+                            ? itinerary?.foodPlan?.breakfast?.title
                             : "Skipped"}
                         </dd>
                       </div>
                       <div className="flex items-center justify-between">
                         <dt className="text-muted-foreground">Lunch</dt>
                         <dd>
-                          {foodPlan?.lunch?.title
-                            ? foodPlan?.lunch?.title
+                          {itinerary?.foodPlan?.lunch?.title
+                            ? itinerary?.foodPlan?.lunch?.title
                             : "Skipped"}
                         </dd>
                       </div>
                       <div className="flex items-center justify-between">
                         <dt className="text-muted-foreground">Dinner</dt>
                         <dd>
-                          {foodPlan?.dinner?.title
-                            ? foodPlan?.dinner?.title
+                          {itinerary?.foodPlan?.dinner?.title
+                            ? itinerary?.foodPlan?.dinner?.title
                             : "Skipped"}
                         </dd>
                       </div>
@@ -513,47 +443,39 @@ function Itinerary() {
                   </div>
                   <Separator className="my-4" />
                   <div className="grid gap-1">
-                    <div className="font-semibold">Confirm Itinerary</div>
-                    <dl className="grid gap-1">
+                    <div className="font-semibold">Share Itinerary</div>
+                    {/* <dl className="grid gap-1">
                       <div className="flex items-center justify-between">
                         <dt className="flex items-center gap-1 text-muted-foreground">
                           <CreditCard className="h-4 w-4" />
                           Build Status
                         </dt>
-                        <dd>Ready to Build</dd>
+                        <dd>
+                          {itinerary?.itineraryReadyToBuild
+                            ? "Confirmed Itinerary"
+                            : "Not Confirmed"}
+                        </dd>
                       </div>
-                    </dl>
-                    <Button onClick={handleMessage}>Build</Button>
+                    </dl> */}
+                    <div>
+                      <Input
+                        value={window.location.href}
+                        ref={itineraryLinkRef}
+                        className="pointer-events-none bg-primary text-primary-foreground"
+                      />
+                    </div>
+                    <Button
+                      onClick={(e) => handleCopyLinkToClipboard(e)}
+                      variant="outline"
+                    >
+                      Share
+                    </Button>
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-2">
                   <div className="text-xs text-muted-foreground">
-                    Updated <time dateTime="2023-11-23">November 23, 2023</time>
+                    Updated {formatDate(itinerary?.updatedAt)}
                   </div>
-                  <Pagination className="ml-auto mr-0 w-auto">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-6 w-6"
-                        >
-                          <ChevronLeft className="h-3.5 w-3.5" />
-                          <span className="sr-only">Previous Order</span>
-                        </Button>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-6 w-6"
-                        >
-                          <ChevronRight className="h-3.5 w-3.5" />
-                          <span className="sr-only">Next Order</span>
-                        </Button>
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
                 </CardFooter>
               </Card>
             )}
@@ -579,17 +501,20 @@ function Itinerary() {
                         <CardContent className="flex  flex-col p-2">
                           <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                             <MapPin className="w-[10px]" />
-                            {foodPlan?.breakfast?.location?.address
+                            {itinerary?.foodPlan?.breakfast?.location?.address
                               .split(",")
                               .slice(0, 3)
                               .join(", ")}
                           </div>
                           <div className="flex font-bold mb-3 justify-between items-center">
                             <div>
-                              {foodPlan?.breakfast?.title?.length > 15
-                                ? foodPlan?.breakfast?.title.substring(0, 15) +
-                                  "..."
-                                : foodPlan?.breakfast?.title}
+                              {itinerary?.foodPlan?.breakfast?.title?.length >
+                              15
+                                ? itinerary?.foodPlan?.breakfast?.title.substring(
+                                    0,
+                                    15
+                                  ) + "..."
+                                : itinerary?.foodPlan?.breakfast?.title}
                             </div>
                             <div className="flex gap-5 font-bold h-[14px]">
                               <Badge className="">
@@ -600,7 +525,7 @@ function Itinerary() {
                           </div>
                           <div className="w-[250px]">
                             <p className="text-[10px] text-left">
-                              {foodPlan?.breakfast?.details}
+                              {itinerary?.foodPlan?.breakfast?.details}
                             </p>
                           </div>
                         </CardContent>
@@ -614,7 +539,7 @@ function Itinerary() {
                           <img
                             alt=""
                             className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                            src={placeOneDetails?.photos[0]}
+                            src={itinerary?.placeOneDetails?.photos[0]}
                             style={{ height: "150px", width: "100%" }}
                           />
                         </CardHeader>
@@ -624,28 +549,30 @@ function Itinerary() {
                         <CardContent className="flex  flex-col p-2">
                           <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                             <MapPin className="w-[10px]" />
-                            {placeOneDetails?.formatted_address
+                            {itinerary?.placeOneDetails?.formatted_address
                               .split(",")
                               .slice(0, 3)
                               .join(", ")}
                           </div>
                           <div className="flex font-bold mb-3 justify-between items-center">
                             <div>
-                              {placeOneDetails?.name?.length > 15
-                                ? placeOneDetails?.name?.substring(0, 15) +
-                                  "..."
-                                : placeOneDetails?.name}
+                              {itinerary?.placeOneDetails?.name?.length > 15
+                                ? itinerary?.placeOneDetails?.name?.substring(
+                                    0,
+                                    15
+                                  ) + "..."
+                                : itinerary?.placeOneDetails?.name}
                             </div>
                             <div className="flex gap-5 font-bold h-[14px]">
                               <Badge className="">
                                 <Star className="w-[10px] mr-[5px]" />
-                                {placeOneDetails?.rating}/5
+                                {itinerary?.placeOneDetails?.rating}/5
                               </Badge>
                             </div>
                           </div>
                           <div className="w-[250px]">
                             <p className="text-[10px] text-left">
-                              {placeOneDetails?.placeInfo}
+                              {itinerary?.placeOneDetails?.placeInfo}
                             </p>
                           </div>
                         </CardContent>
@@ -669,17 +596,19 @@ function Itinerary() {
                         <CardContent className="flex  flex-col p-2">
                           <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                             <MapPin className="w-[10px]" />
-                            {foodPlan?.lunch?.location?.address
+                            {itinerary?.foodPlan?.lunch?.location?.address
                               .split(",")
                               .slice(0, 3)
                               .join(", ")}
                           </div>
                           <div className="flex font-bold mb-3 justify-between items-center">
                             <div>
-                              {foodPlan?.lunch?.title?.length > 15
-                                ? foodPlan?.lunch?.title.substring(0, 15) +
-                                  "..."
-                                : foodPlan?.lunch?.title}
+                              {itinerary?.foodPlan?.lunch?.title?.length > 15
+                                ? itinerary?.foodPlan?.lunch?.title.substring(
+                                    0,
+                                    15
+                                  ) + "..."
+                                : itinerary?.foodPlan?.lunch?.title}
                             </div>
                             <div className="flex gap-5 font-bold h-[14px]">
                               <Badge className="">
@@ -690,7 +619,7 @@ function Itinerary() {
                           </div>
                           <div className="w-[250px]">
                             <p className="text-[10px] text-left">
-                              {foodPlan?.lunch?.details}
+                              {itinerary?.foodPlan?.lunch?.details}
                             </p>
                           </div>
                         </CardContent>
@@ -704,7 +633,7 @@ function Itinerary() {
                           <img
                             alt=""
                             className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                            src={placeTwoDetails?.photos[0]}
+                            src={itinerary?.placeTwoDetails?.photos[0]}
                             style={{ height: "150px", width: "100%" }}
                           />
                         </CardHeader>
@@ -714,28 +643,30 @@ function Itinerary() {
                         <CardContent className="flex  flex-col p-2">
                           <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                             <MapPin className="w-[10px]" />
-                            {placeTwoDetails?.formatted_address
+                            {itinerary?.placeTwoDetails?.formatted_address
                               .split(",")
                               .slice(0, 3)
                               .join(", ")}
                           </div>
                           <div className="flex font-bold mb-3 justify-between items-center">
                             <div>
-                              {placeTwoDetails?.name?.length > 15
-                                ? placeTwoDetails?.name?.substring(0, 15) +
-                                  "..."
-                                : placeTwoDetails?.name}
+                              {itinerary?.placeTwoDetails?.name?.length > 15
+                                ? itinerary?.placeTwoDetails?.name?.substring(
+                                    0,
+                                    15
+                                  ) + "..."
+                                : itinerary?.placeTwoDetails?.name}
                             </div>
                             <div className="flex gap-5 font-bold h-[14px]">
                               <Badge className="">
                                 <Star className="w-[10px] mr-[5px]" />
-                                {placeTwoDetails?.rating}/5
+                                {itinerary?.placeTwoDetails?.rating}/5
                               </Badge>
                             </div>
                           </div>
                           <div className="w-[250px]">
                             <p className="text-[10px] text-left">
-                              {placeTwoDetails?.placeInfo}
+                              {itinerary?.placeTwoDetails?.placeInfo}
                             </p>
                           </div>
                         </CardContent>
@@ -759,17 +690,19 @@ function Itinerary() {
                         <CardContent className="flex  flex-col p-2">
                           <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                             <MapPin className="w-[10px]" />
-                            {foodPlan?.dinner?.location?.address
+                            {itinerary?.foodPlan?.dinner?.location?.address
                               .split(",")
                               .slice(0, 3)
                               .join(", ")}
                           </div>
                           <div className="flex font-bold mb-3 justify-between items-center">
                             <div>
-                              {foodPlan?.dinner?.title?.length > 15
-                                ? foodPlan?.dinner?.title.substring(0, 15) +
-                                  "..."
-                                : foodPlan?.dinner?.title}
+                              {itinerary?.foodPlan?.dinner?.title?.length > 15
+                                ? itinerary?.foodPlan?.dinner?.title.substring(
+                                    0,
+                                    15
+                                  ) + "..."
+                                : itinerary?.foodPlan?.dinner?.title}
                             </div>
                             <div className="flex gap-5 font-bold h-[14px]">
                               <Badge className="">
@@ -780,7 +713,7 @@ function Itinerary() {
                           </div>
                           <div className="w-[250px]">
                             <p className="text-[10px] text-left">
-                              {foodPlan?.dinner?.details}
+                              {itinerary?.foodPlan?.dinner?.details}
                             </p>
                           </div>
                         </CardContent>
@@ -795,13 +728,10 @@ function Itinerary() {
             <div className="flex-1 pl-[3rem] pr-[3rem]">
               <Card>
                 <CardHeader className="p-2 hidden">
-                  <CardTitle>Your Itinerary</CardTitle>
-                  <CardDescription className="hidden">
-                    Here is your itinerary made with love by Gemini
-                  </CardDescription>
+                  <CardTitle>Your Itinerary By Gemini</CardTitle>
                 </CardHeader>
                 <CardContent className="p-2">
-                  {itineraryDetails && (
+                  {itinerary && (
                     <div className="flex gap-2">
                       <Carousel
                         className="w-[32%] min-h-[316px] flex justify-between flex-col"
@@ -832,19 +762,20 @@ function Itinerary() {
                                 <CardContent className="flex  flex-col p-2">
                                   <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                                     <MapPin className="w-[10px]" />
-                                    {foodPlan?.breakfast?.location?.address
+                                    {itinerary?.foodPlan?.breakfast?.location?.address
                                       .split(",")
                                       .slice(0, 3)
                                       .join(", ")}
                                   </div>
                                   <div className="flex font-bold mb-3 justify-between items-center">
                                     <div>
-                                      {foodPlan?.breakfast?.title?.length > 15
-                                        ? foodPlan?.breakfast?.title.substring(
+                                      {itinerary?.foodPlan?.breakfast?.title
+                                        ?.length > 15
+                                        ? itinerary?.foodPlan?.breakfast?.title.substring(
                                             0,
                                             15
                                           ) + "..."
-                                        : foodPlan?.breakfast?.title}
+                                        : itinerary?.foodPlan?.breakfast?.title}
                                     </div>
                                     <div className="flex gap-5 font-bold h-[14px]">
                                       <Badge className="">
@@ -855,7 +786,7 @@ function Itinerary() {
                                   </div>
                                   <div className="w-[250px]">
                                     <p className="text-[10px] text-left">
-                                      {foodPlan?.breakfast?.details}
+                                      {itinerary?.foodPlan?.breakfast?.details}
                                     </p>
                                   </div>
                                 </CardContent>
@@ -869,7 +800,7 @@ function Itinerary() {
                                   <img
                                     alt=""
                                     className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                                    src={placeOneDetails?.photos[0]}
+                                    src={itinerary?.placeOneDetails?.photos[0]}
                                     style={{
                                       height: "150px",
                                       width: "100%",
@@ -882,30 +813,31 @@ function Itinerary() {
                                 <CardContent className="flex  flex-col p-2">
                                   <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                                     <MapPin className="w-[10px]" />
-                                    {placeOneDetails?.formatted_address
+                                    {itinerary?.placeOneDetails?.formatted_address
                                       .split(",")
                                       .slice(0, 3)
                                       .join(", ")}
                                   </div>
                                   <div className="flex font-bold mb-3 justify-between items-center">
                                     <div>
-                                      {placeOneDetails?.name?.length > 15
-                                        ? placeOneDetails?.name?.substring(
+                                      {itinerary?.placeOneDetails?.name
+                                        ?.length > 15
+                                        ? itinerary?.placeOneDetails?.name?.substring(
                                             0,
                                             15
                                           ) + "..."
-                                        : placeOneDetails?.name}
+                                        : itinerary?.placeOneDetails?.name}
                                     </div>
                                     <div className="flex gap-5 font-bold h-[14px]">
                                       <Badge className="">
                                         <Star className="w-[10px] mr-[5px]" />
-                                        {placeOneDetails?.rating}/5
+                                        {itinerary?.placeOneDetails?.rating}/5
                                       </Badge>
                                     </div>
                                   </div>
                                   <div className="w-[250px]">
                                     <p className="text-[10px] text-left">
-                                      {placeOneDetails?.placeInfo}
+                                      {itinerary?.placeOneDetails?.placeInfo}
                                     </p>
                                   </div>
                                 </CardContent>
@@ -932,19 +864,20 @@ function Itinerary() {
                                 <CardContent className="flex  flex-col p-2">
                                   <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                                     <MapPin className="w-[10px]" />
-                                    {foodPlan?.lunch?.location?.address
+                                    {itinerary?.foodPlan?.lunch?.location?.address
                                       .split(",")
                                       .slice(0, 3)
                                       .join(", ")}
                                   </div>
                                   <div className="flex font-bold mb-3 justify-between items-center">
                                     <div>
-                                      {foodPlan?.lunch?.title?.length > 15
-                                        ? foodPlan?.lunch?.title.substring(
+                                      {itinerary?.foodPlan?.lunch?.title
+                                        ?.length > 15
+                                        ? itinerary?.foodPlan?.lunch?.title.substring(
                                             0,
                                             15
                                           ) + "..."
-                                        : foodPlan?.lunch?.title}
+                                        : itinerary?.foodPlan?.lunch?.title}
                                     </div>
                                     <div className="flex gap-5 font-bold h-[14px]">
                                       <Badge className="">
@@ -955,7 +888,7 @@ function Itinerary() {
                                   </div>
                                   <div className="w-[250px]">
                                     <p className="text-[10px] text-left">
-                                      {foodPlan?.lunch?.details}
+                                      {itinerary?.foodPlan?.lunch?.details}
                                     </p>
                                   </div>
                                 </CardContent>
@@ -969,7 +902,7 @@ function Itinerary() {
                                   <img
                                     alt=""
                                     className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                                    src={placeTwoDetails?.photos[0]}
+                                    src={itinerary?.placeTwoDetails?.photos[0]}
                                     style={{
                                       height: "150px",
                                       width: "100%",
@@ -982,30 +915,31 @@ function Itinerary() {
                                 <CardContent className="flex  flex-col p-2">
                                   <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                                     <MapPin className="w-[10px]" />
-                                    {placeTwoDetails?.formatted_address
+                                    {itinerary?.placeTwoDetails?.formatted_address
                                       .split(",")
                                       .slice(0, 3)
                                       .join(", ")}
                                   </div>
                                   <div className="flex font-bold mb-3 justify-between items-center">
                                     <div>
-                                      {placeTwoDetails?.name?.length > 15
-                                        ? placeTwoDetails?.name?.substring(
+                                      {itinerary?.placeTwoDetails?.name
+                                        ?.length > 15
+                                        ? itinerary?.placeTwoDetails?.name?.substring(
                                             0,
                                             15
                                           ) + "..."
-                                        : placeTwoDetails?.name}
+                                        : itinerary?.placeTwoDetails?.name}
                                     </div>
                                     <div className="flex gap-5 font-bold h-[14px]">
                                       <Badge className="">
                                         <Star className="w-[10px] mr-[5px]" />
-                                        {placeTwoDetails?.rating}/5
+                                        {itinerary?.placeTwoDetails?.rating}/5
                                       </Badge>
                                     </div>
                                   </div>
                                   <div className="w-[250px]">
                                     <p className="text-[10px] text-left">
-                                      {placeTwoDetails?.placeInfo}
+                                      {itinerary?.placeTwoDetails?.placeInfo}
                                     </p>
                                   </div>
                                 </CardContent>
@@ -1032,19 +966,20 @@ function Itinerary() {
                                 <CardContent className="flex  flex-col p-2">
                                   <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
                                     <MapPin className="w-[10px]" />
-                                    {foodPlan?.dinner?.location?.address
+                                    {itinerary?.foodPlan?.dinner?.location?.address
                                       .split(",")
                                       .slice(0, 3)
                                       .join(", ")}
                                   </div>
                                   <div className="flex font-bold mb-3 justify-between items-center">
                                     <div>
-                                      {foodPlan?.dinner?.title?.length > 15
-                                        ? foodPlan?.dinner?.title.substring(
+                                      {itinerary?.foodPlan?.dinner?.title
+                                        ?.length > 15
+                                        ? itinerary?.foodPlan?.dinner?.title.substring(
                                             0,
                                             15
                                           ) + "..."
-                                        : foodPlan?.dinner?.title}
+                                        : itinerary?.foodPlan?.dinner?.title}
                                     </div>
                                     <div className="flex gap-5 font-bold h-[14px]">
                                       <Badge className="">
@@ -1055,7 +990,7 @@ function Itinerary() {
                                   </div>
                                   <div className="w-[250px]">
                                     <p className="text-[10px] text-left">
-                                      {foodPlan?.dinner?.details}
+                                      {itinerary?.foodPlan?.dinner?.details}
                                     </p>
                                   </div>
                                 </CardContent>
@@ -1064,16 +999,14 @@ function Itinerary() {
                           </CarouselItem>
                         </CarouselContent>
                       </Carousel>
-                      <div className="flex flex-col justify-between items-start gap-4">
-                        <div className="text-left">
-                          {itineraryDetails.responseOne}
+                      <div className="flex flex-col justify-start items-start gap-2 bg-[#f9f9fa] rounded rounded-[10px] p-2">
+                        <div className="text-center self-center font-bold w-full">
+                          Your Itinerary By Gemini with love
                         </div>
-                        <Button
-                          className="mb-[5px]"
-                          onClick={handleCreateItinerary}
-                        >
-                          Save Itinerary
-                        </Button>
+                        <Separator className="my-4" />
+                        <div className="text-justify">
+                          {itinerary?.itineraryResponse}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1087,4 +1020,4 @@ function Itinerary() {
   );
 }
 
-export default Itinerary;
+export default ItineraryDetails;

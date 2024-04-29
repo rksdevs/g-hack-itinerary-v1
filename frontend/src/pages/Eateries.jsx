@@ -468,39 +468,45 @@ function Eateries() {
                   </Button>
                 </div> */}
                 {/* <Button>Skip</Button> */}
-                <Select
-                  className="h-[32px] text-[10px] flex items-center"
-                  onValueChange={(e) =>
-                    processPlaceResultArray(e, breakfastCuisine, "breakfast")
-                  }
-                >
-                  <SelectTrigger
-                    id="breakfast"
-                    className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                {foodPlan?.breakfast?.title ? (
+                  <Button className="text-[10px] text-primary-foreground bg-primary pointer-events-none h-[32px]">
+                    {foodPlan?.breakfast?.title}
+                  </Button>
+                ) : (
+                  <Select
+                    className="h-[32px] text-[10px] flex items-center"
+                    onValueChange={(e) =>
+                      processPlaceResultArray(e, breakfastCuisine, "breakfast")
+                    }
                   >
-                    <SelectValue
-                      placeholder="Choose cuisine"
-                      className="text-[10px]"
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="text-[10px]">
-                    {allCuisines.map((item, index) => (
-                      <SelectItem value={item} key={index}>
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Utensils className="w-[10px]" />
-                          <div className="grid gap-0.5 mt-[2px]">
-                            <p>
-                              {item}{" "}
-                              <span className="font-medium text-foreground">
-                                Cuisine
-                              </span>
-                            </p>
+                    <SelectTrigger
+                      id="breakfast"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                    >
+                      <SelectValue
+                        placeholder="Choose cuisine"
+                        className="text-[10px]"
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="text-[10px]">
+                      {allCuisines.map((item, index) => (
+                        <SelectItem value={item} key={index}>
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <Utensils className="w-[10px]" />
+                            <div className="grid gap-0.5 mt-[2px]">
+                              <p>
+                                {item}{" "}
+                                <span className="font-medium text-foreground">
+                                  Cuisine
+                                </span>
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
           </div>
@@ -510,39 +516,45 @@ function Eateries() {
                 Lunch
               </Label>
               <div className="flex my-2 gap-3">
-                <Select
-                  className="h-[32px] text-[10px] flex items-center"
-                  onValueChange={(e) =>
-                    processPlaceResultArray(e, lunchCuisine, "lunch")
-                  }
-                >
-                  <SelectTrigger
-                    id="breakfast"
-                    className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                {foodPlan?.lunch?.title ? (
+                  <Button className="text-[10px] text-primary-foreground bg-primary pointer-events-none h-[32px]">
+                    {foodPlan?.lunch?.title}
+                  </Button>
+                ) : (
+                  <Select
+                    className="h-[32px] text-[10px] flex items-center"
+                    onValueChange={(e) =>
+                      processPlaceResultArray(e, lunchCuisine, "lunch")
+                    }
                   >
-                    <SelectValue
-                      placeholder="Choose cuisine"
-                      className="text-[10px]"
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="text-[10px]">
-                    {allCuisines.map((item, index) => (
-                      <SelectItem value={item} key={index}>
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Utensils className="w-[10px]" />
-                          <div className="grid gap-0.5 mt-[2px]">
-                            <p>
-                              {item}{" "}
-                              <span className="font-medium text-foreground">
-                                Cuisine
-                              </span>
-                            </p>
+                    <SelectTrigger
+                      id="breakfast"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                    >
+                      <SelectValue
+                        placeholder="Choose cuisine"
+                        className="text-[10px]"
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="text-[10px]">
+                      {allCuisines.map((item, index) => (
+                        <SelectItem value={item} key={index}>
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <Utensils className="w-[10px]" />
+                            <div className="grid gap-0.5 mt-[2px]">
+                              <p>
+                                {item}{" "}
+                                <span className="font-medium text-foreground">
+                                  Cuisine
+                                </span>
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
           </div>
@@ -552,41 +564,63 @@ function Eateries() {
                 Dinner
               </Label>
               <div className="flex my-2 gap-3">
-                <Select
-                  className="h-[32px] text-[10px] flex items-center"
-                  onValueChange={(e) =>
-                    processPlaceResultArray(e, dinnerCuisine, "dinner")
-                  }
-                >
-                  <SelectTrigger
-                    id="dinner"
-                    className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                {foodPlan?.dinner?.title ? (
+                  <Button className="text-[10px] text-primary-foreground bg-primary pointer-events-none h-[32px]">
+                    {foodPlan?.dinner?.title}
+                  </Button>
+                ) : (
+                  <Select
+                    className="h-[32px] text-[10px] flex items-center"
+                    onValueChange={(e) =>
+                      processPlaceResultArray(e, dinnerCuisine, "dinner")
+                    }
                   >
-                    <SelectValue
-                      placeholder="Choose cuisine"
-                      className="text-[10px]"
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="text-[10px]">
-                    {allCuisines.map((item, index) => (
-                      <SelectItem value={item} key={index}>
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Utensils className="w-[10px]" />
-                          <div className="grid gap-0.5 mt-[2px]">
-                            <p>
-                              {item}{" "}
-                              <span className="font-medium text-foreground">
-                                Cuisine
-                              </span>
-                            </p>
+                    <SelectTrigger
+                      id="dinner"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                    >
+                      <SelectValue
+                        placeholder="Choose cuisine"
+                        className="text-[10px]"
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="text-[10px]">
+                      {allCuisines.map((item, index) => (
+                        <SelectItem value={item} key={index}>
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <Utensils className="w-[10px]" />
+                            <div className="grid gap-0.5 mt-[2px]">
+                              <p>
+                                {item}{" "}
+                                <span className="font-medium text-foreground">
+                                  Cuisine
+                                </span>
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
+          </div>
+          <div
+            className={`${
+              foodPlan?.breakfast?.title &&
+              foodPlan?.lunch?.title &&
+              foodPlan?.dinner?.title
+                ? "flex"
+                : "hidden"
+            }`}
+          >
+            <Button
+              className="h-[32px] text-[10px]"
+              onClick={handleContinueToItinerary}
+            >
+              Proceed
+            </Button>
           </div>
 
           <Drawer>

@@ -92,9 +92,11 @@ import {
 } from "@react-google-maps/api";
 import { addPlaceToStay } from "../slices/plannerSlice";
 import PlaceOfStayAccordion from "../components/assets/PlaceOfStayAccordion";
+import { useNavigate } from "react-router-dom";
 
 function Planner() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [libraries] = useState(["places"]);
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_KEY,
@@ -124,7 +126,7 @@ function Planner() {
   const model = genAi.getGenerativeModel({ model: "gemini-pro" });
 
   useEffect(() => {
-    if (placeOneDetails && placeOneDetails.timings) {
+    if (placeOneDetails && placeOneDetails?.timings) {
       setOpenPlaceTwoSelect(true);
     }
 
@@ -156,7 +158,7 @@ function Planner() {
   //to generate place of stay location details - as  place details are not available in getDetails method within Google places API
   const generatePlaceToStayDetails = async (placeData) => {
     try {
-      const palceToStayPrompt = `Please share some good things about this place ${placeData.name} in a single paragraph, with not more than 20 words`;
+      const palceToStayPrompt = `Please share some good things about this place ${placeData?.name} in a single paragraph, with not more than 20 words`;
       const result = await model.generateContent(palceToStayPrompt);
       const response = result.response.text();
       console.log(response, "seg");
@@ -333,9 +335,39 @@ function Planner() {
   return (
     <div className="grid pl-[56px]">
       <div className="flex flex-col">
-        <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background justify-between px-2">
-          <div className="flex gap-1 w-[25%]">
-            {isLoaded && (
+        <header
+          className={`sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-2 ${
+            placeTwoDetails?.name ? "justify-between" : "justify-center"
+          }`}
+        >
+          <div className="flex gap-1">
+            {placeToStayDetails?.name ? (
+              <Input
+                className="h-[32px] text-[10px] w-[200px] bg-primary text-primary-foreground pointer-events-none"
+                id="placeOfStay"
+                value={`Staying at: ${placeToStayDetails?.name}`}
+              />
+            ) : (
+              isLoaded && (
+                <div className="w-full flex justify-start gap-1">
+                  <Autocomplete className="w-[80%]">
+                    <Input
+                      className="h-[32px] text-[10px]"
+                      id="placeOfStay"
+                      placeholder={`Where do you plan to stay in ${destinationDetails.destination}`}
+                      ref={placeOfStay}
+                    />
+                  </Autocomplete>
+                  <Button
+                    className="h-[32px] text-[10px]"
+                    onClick={handleSetupStay}
+                  >
+                    Set
+                  </Button>
+                </div>
+              )
+            )}
+            {/* {isLoaded && (
               <div className="w-full flex justify-start gap-1">
                 <Autocomplete className="w-[80%]">
                   <Input
@@ -352,10 +384,203 @@ function Planner() {
                   Set
                 </Button>
               </div>
-            )}
+            )} */}
           </div>
-          <div className={`flex gap-2 ${showPlaceOneInput ? "" : "hidden"}`}>
-            <div className="flex items-center">
+          <div
+            className={`flex gap-2 ${
+              showPlaceOneInput ? "" : placeToStayDetails?.name ? "" : "hidden"
+            }`}
+          >
+            {placeOneDetails?.name ? (
+              <>
+                <div className="flex items-center">
+                  <p className="text-[10px] font-bold">First Place</p>
+                </div>
+                <div>
+                  <Select
+                    className="h-[32px] text-[10px] flex items-center text-primary-foreground bg-primary pointer-events-none"
+                    onValueChange={(e) =>
+                      processPlaceResultArray(e, "placeOne")
+                    }
+                  >
+                    <SelectTrigger
+                      id="place-one"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center text-primary-foreground bg-primary pointer-events-none hide-svg"
+                    >
+                      <SelectValue
+                        className="text-[10px] text-primary"
+                        placeholder={placeOneDetails?.name}
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="text-[10px]">
+                      <SelectItem value="Religious">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Heritages{" "}
+                              <span className="font-medium text-primary-foreground">
+                                Religious & Cultural Gatherings
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Places that best describes the culture & heritage
+                              of the city.
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Nature">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Nature{" "}
+                              <span className="font-medium text-foreground">
+                                Get close to Nature
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Get closer to nature in places like mountains,
+                              beaches, forests, zoo etc.
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Shopping">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Lifestyle{" "}
+                              <span className="font-medium text-foreground">
+                                Shopping, Malls & Lifestyle
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Explore the city's biggest and best places for
+                              shopaholic
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="popular">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Something Else{" "}
+                              <span className="font-medium text-foreground">
+                                Nothing particular, let the app decide
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Populates the best places in the city for you to
+                              choose
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center">
+                  <p className="text-[10px] font-bold">First Place</p>
+                </div>
+                <div>
+                  <Select
+                    className="h-[32px] text-[10px] flex items-center"
+                    onValueChange={(e) =>
+                      processPlaceResultArray(e, "placeOne")
+                    }
+                  >
+                    <SelectTrigger
+                      id="place-one"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                    >
+                      <SelectValue
+                        className="text-[10px]"
+                        placeholder="Select a type of place you wish to visit"
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="text-[10px]">
+                      <SelectItem value="Religious">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Heritages{" "}
+                              <span className="font-medium text-foreground">
+                                Religious & Cultural Gatherings
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Places that best describes the culture & heritage
+                              of the city.
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Nature">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Nature{" "}
+                              <span className="font-medium text-foreground">
+                                Get close to Nature
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Get closer to nature in places like mountains,
+                              beaches, forests, zoo etc.
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Shopping">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Lifestyle{" "}
+                              <span className="font-medium text-foreground">
+                                Shopping, Malls & Lifestyle
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Explore the city's biggest and best places for
+                              shopaholic
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="popular">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Something Else{" "}
+                              <span className="font-medium text-foreground">
+                                Nothing particular, let the app decide
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Populates the best places in the city for you to
+                              choose
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            )}
+            {/* <div className="flex items-center">
               <p className="text-[10px] font-bold">First Place</p>
             </div>
             <div>
@@ -443,11 +668,183 @@ function Planner() {
                   </SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div className={!placeOneDetails ? "hidden" : ""}>
-              {/* <div className="grid gap-3 mb-[5px]">
+            </div> */}
+            {placeOneDetails?.timings ? (
+              <div className={!placeOneDetails?.name ? "hidden" : ""}>
+                <div className="grid gap-3">
+                  <Select
+                    className="h-[32px] text-[10px] flex items-center text-primary-foreground bg-primary pointer-events-none"
+                    onValueChange={(e) => dispatch(addPlaceOneTiming(e))}
+                    value={placeOneDetails?.timings}
+                  >
+                    <SelectTrigger
+                      id="place-one-time"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center text-primary-foreground bg-primary pointer-events-none hide-svg"
+                    >
+                      <SelectValue
+                        placeholder="Choose time"
+                        className="text-[10px]"
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="text-[10px]">
+                      <SelectItem value="6 AM to 8 AM">
+                        <div className="flex items-center gap-1 text-primary-foreground">
+                          <Clock className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Early Morning{" "}
+                              <span className="font-medium text-primary-foreground">
+                                6 AM to 8 AM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to start your day early with
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="9 AM to 12 PM">
+                        <div className="flex items-center gap-1 text-primary-foreground">
+                          <Clock className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              First half{" "}
+                              <span className="font-medium text-primary-foreground">
+                                9 AM to 12 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to schedule it for first half of the day
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="3 PM to 5 PM">
+                        <div className="flex items-center gap-1 text-primary-foreground">
+                          <Clock className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Second half{" "}
+                              <span className="font-medium text-primary-foreground">
+                                3 PM to 5 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to schedule it for first half of the day
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="7 PM to 9 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Evening hours{" "}
+                              <span className="font-medium text-foreground">
+                                7 PM to 9 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Schedule your evening
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            ) : (
+              <div className={!placeOneDetails ? "hidden" : ""}>
+                {/* <div className="grid gap-3 mb-[5px]">
                 <Label htmlFor="top-p">Select time to vist place one</Label>
               </div> */}
+                <div className="grid gap-3">
+                  <Select
+                    className="h-[32px] text-[10px] flex items-center"
+                    onValueChange={(e) => dispatch(addPlaceOneTiming(e))}
+                  >
+                    <SelectTrigger
+                      id="place-one-time"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                    >
+                      <SelectValue
+                        placeholder="Choose time"
+                        className="text-[10px]"
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="text-[10px]">
+                      <SelectItem value="6 AM to 8 AM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Early Morning{" "}
+                              <span className="font-medium text-foreground">
+                                6 AM to 8 AM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to start your day early with
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="9 AM to 12 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              First half{" "}
+                              <span className="font-medium text-foreground">
+                                9 AM to 12 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to schedule it for first half of the day
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="3 PM to 5 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Second half{" "}
+                              <span className="font-medium text-foreground">
+                                3 PM to 5 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to schedule it for first half of the day
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="7 PM to 9 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Evening hours{" "}
+                              <span className="font-medium text-foreground">
+                                7 PM to 9 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Schedule your evening
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+            {/* <div className={!placeOneDetails ? "hidden" : ""}>
               <div className="grid gap-3">
                 <Select
                   className="h-[32px] text-[10px] flex items-center"
@@ -530,14 +927,197 @@ function Planner() {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
+            </div> */}
           </div>
           <div
-            className={
-              !openPlaceTwoSelect ? "hidden" : "flex gap-2 items-center"
-            }
+            className={`flex gap-2 items-center ${
+              openPlaceTwoSelect ? "" : placeOneDetails?.timings ? "" : "hidden"
+            }`}
           >
-            <div className="flex items-center">
+            {placeTwoDetails?.name ? (
+              <>
+                <div className="flex items-center">
+                  <p className="text-[10px] font-bold">Second Place</p>
+                </div>
+                <div>
+                  <Select
+                    onValueChange={(e) =>
+                      processPlaceResultArray(e, "placeTwo")
+                    }
+                    className="h-[32px] text-[10px] flex items-center text-primary-foreground bg-primary pointer-events-none"
+                  >
+                    <SelectTrigger
+                      id="place-two"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center hide-svg bg-primary text-primary-foreground travel-mode-trigger pointer-events-none"
+                    >
+                      <SelectValue placeholder={placeTwoDetails?.name} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Religious">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Heritages{" "}
+                              <span className="font-medium text-foreground text-primary-foreground">
+                                Religious & Cultural Gatherings
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Places that best describes the culture & heritage
+                              of the city.
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Nature">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Nature{" "}
+                              <span className="font-medium text-foreground text-primary-foreground">
+                                Get close to Nature
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Get closer to nature in places like mountains,
+                              beaches, forests, zoo etc.
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Shopping">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Lifestyle{" "}
+                              <span className="font-medium text-foreground text-primary-foreground">
+                                Shopping, Malls & Lifestyle
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Explore the city's biggest and best places for
+                              shopaholic
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="popular">
+                        <div className="flex items-center gap-1 text-muted-foreground text-primary-foreground">
+                          <MapPin className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Something Else{" "}
+                              <span className="font-medium text-foreground text-primary-foreground">
+                                Nothing particular, let the app decide
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Populates the best places in the city for you to
+                              choose
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center">
+                  <p className="text-[10px] font-bold">Second Place</p>
+                </div>
+                <div>
+                  <Select
+                    onValueChange={(e) =>
+                      processPlaceResultArray(e, "placeTwo")
+                    }
+                    className="h-[32px] text-[10px] flex items-center"
+                  >
+                    <SelectTrigger
+                      id="place-two"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                    >
+                      <SelectValue placeholder="Select a type of place you wish to visit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Religious">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Heritages{" "}
+                              <span className="font-medium text-foreground">
+                                Religious & Cultural Gatherings
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Places that best describes the culture & heritage
+                              of the city.
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Nature">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Nature{" "}
+                              <span className="font-medium text-foreground">
+                                Get close to Nature
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Get closer to nature in places like mountains,
+                              beaches, forests, zoo etc.
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Shopping">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Lifestyle{" "}
+                              <span className="font-medium text-foreground">
+                                Shopping, Malls & Lifestyle
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Explore the city's biggest and best places for
+                              shopaholic
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="popular">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Something Else{" "}
+                              <span className="font-medium text-foreground">
+                                Nothing particular, let the app decide
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Populates the best places in the city for you to
+                              choose
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            )}
+            {/* <div className="flex items-center">
               <p className="text-[10px] font-bold">Second Place</p>
             </div>
             <div>
@@ -622,9 +1202,171 @@ function Planner() {
                   </SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div className={!placeTwoDetails ? "hidden" : ""}>
-              <div className="grid gap-3">
+            </div> */}
+            <div className={!placeTwoDetails?.name ? "hidden" : ""}>
+              {placeTwoDetails?.timings ? (
+                <div className="grid gap-3">
+                  <Select
+                    onValueChange={(e) => dispatch(addPlaceTwoTiming(e))}
+                    className="h-[32px] text-[10px] flex items-center bg-primary text-primary-foreground"
+                    value={placeTwoDetails?.timings}
+                  >
+                    <SelectTrigger
+                      id="place-one-time"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center text-primary-foreground travel-mode-trigger pointer-events-none hide-svg bg-primary"
+                    >
+                      <SelectValue placeholder="Choose Time" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="6 AM to 8 AM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Early Morning{" "}
+                              <span className="font-medium text-primary-foreground">
+                                6 AM to 8 AM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to start your day early with
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="9 AM to 12 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              First half{" "}
+                              <span className="font-medium text-primary-foreground">
+                                9 AM to 12 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to schedule it for first half of the day
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="3 PM to 5 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Second half{" "}
+                              <span className="font-medium text-primary-foreground">
+                                3 PM to 5 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to schedule it for first half of the day
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="7 PM to 9 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px] text-primary-foreground" />
+                          <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
+                            <p>
+                              Evening hours{" "}
+                              <span className="font-medium text-primary-foreground">
+                                7 PM to 9 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Schedule your evening
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : (
+                <div className="grid gap-3">
+                  <Select
+                    onValueChange={(e) => dispatch(addPlaceTwoTiming(e))}
+                    className="h-[32px] text-[10px] flex items-center"
+                  >
+                    <SelectTrigger
+                      id="place-one-time"
+                      className="items-start [&_[data-description]]:hidden h-[32px] text-[10px] flex items-center"
+                    >
+                      <SelectValue placeholder="Choose Time" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="6 AM to 8 AM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Early Morning{" "}
+                              <span className="font-medium text-foreground">
+                                6 AM to 8 AM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to start your day early with
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="9 AM to 12 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              First half{" "}
+                              <span className="font-medium text-foreground">
+                                9 AM to 12 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to schedule it for first half of the day
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="3 PM to 5 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Second half{" "}
+                              <span className="font-medium text-foreground">
+                                3 PM to 5 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Want to schedule it for first half of the day
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="7 PM to 9 PM">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-[10px]" />
+                          <div className="grid gap-0.5 mt-[2px]">
+                            <p>
+                              Evening hours{" "}
+                              <span className="font-medium text-foreground">
+                                7 PM to 9 PM
+                              </span>
+                            </p>
+                            <p className="text-xs" data-description>
+                              Schedule your evening
+                            </p>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              {/* <div className="grid gap-3">
                 <Select
                   onValueChange={(e) => dispatch(addPlaceTwoTiming(e))}
                   className="h-[32px] text-[10px] flex items-center"
@@ -702,8 +1444,25 @@ function Planner() {
                     </SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
             </div>
+          </div>
+          <div
+            className={`${
+              placeTwoDetails?.name &&
+              placeOneDetails?.name &&
+              placeOneDetails?.timings &&
+              placeTwoDetails?.timings
+                ? "flex"
+                : "hidden"
+            }`}
+          >
+            <Button
+              className="h-[32px] text-[10px]"
+              onClick={() => navigate("/eateries")}
+            >
+              Proceed
+            </Button>
           </div>
           <Drawer>
             <DrawerTrigger asChild>

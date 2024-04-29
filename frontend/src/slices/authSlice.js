@@ -4,7 +4,7 @@ const initialState = {
     userInfo : localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null
 }
 
-export const authSlice = createSlice({
+const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {

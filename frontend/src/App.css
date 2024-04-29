@@ -9,3 +9,7 @@ button {
   }
 }
 
+.hide-svg > svg {
+    display: none;
+  }
+

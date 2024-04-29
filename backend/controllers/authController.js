@@ -46,7 +46,7 @@ const register = asyncHandler(async (req, res) => {
   if (user) {
     generateToken(res, user._id);
 
-    res.status(201).json({
+    res.status(200).json({
       _id: user._id,
       name: user.username,
       email: user.email,

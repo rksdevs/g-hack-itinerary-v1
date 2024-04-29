@@ -1,13 +1,15 @@
 import { apiSlice } from "./apiSlice";
-import { USERS_URL } from "../constants.js";
+import { USERS_URL } from "../constants";
 
 export const usersApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         login: builder.mutation({
             query: (details) => ({
-                url: `${USERS_URL}`,
+                url: `${USERS_URL}/auth`, 
                 method: 'POST',
-                body: details
+                body: details,
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
             }),
         }),
         register: builder.mutation({
@@ -15,6 +17,8 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 url: `${USERS_URL}/register`,
                 method: 'POST',
                 body: data,
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
             })
         })
     })
