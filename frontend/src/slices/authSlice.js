@@ -14,7 +14,9 @@ const authSlice = createSlice({
         },
         logout: (state) => {
             state.userInfo = null;
-            localStorage.removeItem("userInfo")
+            localStorage.getItem('userInfo') && localStorage.removeItem("userInfo");
+            localStorage.getItem('itinerary') && localStorage.removeItem('itinerary');
+            localStorage.getItem('plannerDetails') && localStorage.removeItem('plannerDetails');
         }
     }
 })

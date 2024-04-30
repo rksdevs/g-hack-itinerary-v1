@@ -444,19 +444,6 @@ function ItineraryDetails() {
                   <Separator className="my-4" />
                   <div className="grid gap-1">
                     <div className="font-semibold">Share Itinerary</div>
-                    {/* <dl className="grid gap-1">
-                      <div className="flex items-center justify-between">
-                        <dt className="flex items-center gap-1 text-muted-foreground">
-                          <CreditCard className="h-4 w-4" />
-                          Build Status
-                        </dt>
-                        <dd>
-                          {itinerary?.itineraryReadyToBuild
-                            ? "Confirmed Itinerary"
-                            : "Not Confirmed"}
-                        </dd>
-                      </div>
-                    </dl> */}
                     <div>
                       <Input
                         value={window.location.href}

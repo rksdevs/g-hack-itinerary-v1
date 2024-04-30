@@ -414,60 +414,6 @@ function Eateries() {
                 Breakfast
               </Label>
               <div className="flex my-2 gap-3">
-                {/* <Button
-                  onClick={openBreakfastInput}
-                  className={!openBreakfast ? "w-[80px]" : "hidden"}
-                >
-                  Choose
-                </Button>
-                <Button
-                  onClick={(event) => skipBreakfastHandler(event)}
-                  className={openBreakfast ? "w-[80px]" : "hidden"}
-                >
-                  Skip
-                </Button> */}
-                {/* <div className="relative">
-                  <Search
-                    className={
-                      !openBreakfast
-                        ? "hidden"
-                        : "absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
-                    }
-                  />
-                  <Input
-                    type="search"
-                    placeholder={
-                      !openBreakfast
-                        ? "Skipped breakfast, carry snacks with you!"
-                        : "Enter preferred cuisines"
-                    }
-                    className={
-                      !openBreakfast
-                        ? "sm:w-[300px] md:w-[200px] lg:w-[300px]"
-                        : "pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-                    }
-                    disabled={!openBreakfast}
-                    value={breakfastCuisine}
-                    onChange={(e) => setBreakfastCuisine(e.target.value)}
-                  />
-                  <Button
-                    className={
-                      !openBreakfast
-                        ? "hidden"
-                        : "absolute right-[5px] top-[3px] h-[29px] w-10"
-                    }
-                    onClick={(event) =>
-                      processPlaceResultArray(
-                        event,
-                        breakfastCuisine,
-                        "breakfast"
-                      )
-                    }
-                  >
-                    Go
-                  </Button>
-                </div> */}
-                {/* <Button>Skip</Button> */}
                 {foodPlan?.breakfast?.title ? (
                   <Button className="text-[10px] text-primary-foreground bg-primary pointer-events-none h-[32px]">
                     {foodPlan?.breakfast?.title}

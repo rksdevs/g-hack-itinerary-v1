@@ -45,6 +45,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../components/ui/drawer";
+import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import {
@@ -95,6 +96,7 @@ import {
 } from "@react-google-maps/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setupDestination, clearPlanner } from "../slices/plannerSlice";
+import { Separator } from "../components/ui/separator";
 
 function SetupDestination() {
   const [libraries] = useState(["places"]);
@@ -255,6 +257,283 @@ function SetupDestination() {
   return (
     <div className="grid pl-[56px]">
       <div className="flex flex-col">
+        <div>
+          {/* <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="flex">
+                <Menu className="h-5 w-5" />
+                <span className="">Start your journey</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <div className="flex gap-4">
+                <div className="flex gap-3">
+                  {destinationDetails.origin ? (
+                    <Input
+                      id="origin"
+                      placeholder="Origin"
+                      className="text-primary-foreground bg-primary pointer-events-none"
+                      value={destinationDetails.origin}
+                    />
+                  ) : (
+                    isLoaded && (
+                      <Autocomplete>
+                        <Input
+                          id="origin"
+                          placeholder="Origin"
+                          ref={originRef}
+                        />
+                      </Autocomplete>
+                    )
+                  )}
+                </div>
+                <div className="flex gap-3">
+                  {destinationDetails.destination ? (
+                    <Input
+                      id="origin"
+                      placeholder="Origin"
+                      className="text-primary-foreground bg-primary pointer-events-none"
+                      value={destinationDetails.destination}
+                    />
+                  ) : (
+                    isLoaded && (
+                      <Autocomplete>
+                        <Input
+                          id="destination"
+                          placeholder="Destination"
+                          ref={destinationRef}
+                        />
+                      </Autocomplete>
+                    )
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex gap-3">
+                  {destinationDetails.modeOfTravel ? (
+                    <Select
+                      onValueChange={(e) => {
+                        setMode(e);
+                      }}
+                      value={destinationDetails.modeOfTravel}
+                      className="text-primary-foreground bg-primary pointer-events-none"
+                    >
+                      <SelectTrigger
+                        id="travelMode"
+                        className="items-start [&_[data-description]]:hidden bg-primary text-primary travel-mode-trigger pointer-events-none"
+                      >
+                        <SelectValue placeholder="Travel Mode" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="car">
+                          <div className="flex items-start gap-3 text-muted-foreground">
+                            <Car className="size-5 text-primary-foreground" />
+                            <div className="grid gap-0.5 text-primary-foreground">
+                              <p>
+                                By{" "}
+                                <span className="font-medium text-primary-foreground">
+                                  Car
+                                </span>
+                              </p>
+                              <p className="text-xs" data-description>
+                                On road by car or bike
+                              </p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="train">
+                          <div className="flex items-start gap-3 text-muted-foreground">
+                            <TramFront className="size-5 text-primary-foreground" />
+                            <div className="grid gap-0.5 text-primary-foreground">
+                              <p>
+                                By{" "}
+                                <span className="font-medium text-primary-foreground">
+                                  Train
+                                </span>
+                              </p>
+                              <p className="text-xs" data-description>
+                                Comfy journey by train.
+                              </p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="plane">
+                          <div className="flex items-start gap-3 text-muted-foreground">
+                            <Plane className="size-5 text-primary-foreground" />
+                            <div className="grid gap-0.5 text-primary-foreground">
+                              <p>
+                                By{" "}
+                                <span className="font-medium text-primary-foreground">
+                                  Flight
+                                </span>
+                              </p>
+                              <p className="text-xs" data-description>
+                                By flight, super fast & super comfy!
+                              </p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Select
+                      onValueChange={(e) => {
+                        setMode(e);
+                      }}
+                    >
+                      <SelectTrigger
+                        id="travelMode"
+                        className="items-start [&_[data-description]]:hidden travel-mode-trigger"
+                      >
+                        <SelectValue placeholder="Travel Mode" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="car">
+                          <div className="flex items-start gap-3 text-muted-foreground">
+                            <Car className="size-5" />
+                            <div className="grid gap-0.5">
+                              <p>
+                                By{" "}
+                                <span className="font-medium text-foreground">
+                                  Car
+                                </span>
+                              </p>
+                              <p className="text-xs" data-description>
+                                On road by car or bike
+                              </p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="train">
+                          <div className="flex items-start gap-3 text-muted-foreground">
+                            <TramFront className="size-5" />
+                            <div className="grid gap-0.5">
+                              <p>
+                                By{" "}
+                                <span className="font-medium text-foreground">
+                                  Train
+                                </span>
+                              </p>
+                              <p className="text-xs" data-description>
+                                Comfy journey by train.
+                              </p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="plane">
+                          <div className="flex items-start gap-3 text-muted-foreground">
+                            <Plane className="size-5" />
+                            <div className="grid gap-0.5">
+                              <p>
+                                By{" "}
+                                <span className="font-medium text-foreground">
+                                  Flight
+                                </span>
+                              </p>
+                              <p className="text-xs" data-description>
+                                By flight, super fast & super comfy!
+                              </p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+                <div className="flex gap-3">
+                  {destinationDetails.travelDate ? (
+                    <Popover open={openCalendar}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "justify-start text-left font-normal text-primary-foreground bg-primary pointer-events-none",
+                            !date &&
+                              "text-primary-foreground bg-primary pointer-events-none"
+                          )}
+                          onClick={() => setOpenCalendar(!openCalendar)}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {destinationDetails.travelDate}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={(date) => {
+                            handleDateSelection(date);
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  ) : (
+                    <Popover open={openCalendar}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
+                          onClick={() => setOpenCalendar(!openCalendar)}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {date ? (
+                            format(date, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={(date) => {
+                            handleDateSelection(date);
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex gap-3">
+                  {destinationDetails.destination &&
+                  destinationDetails.origin &&
+                  destinationDetails.modeOfTravel &&
+                  destinationDetails.travelDate &&
+                  destinationDetails.travelDistance &&
+                  destinationDetails.travelDuration ? (
+                    <Button
+                      className="w-full"
+                      onClick={() => dispatch(clearPlanner())}
+                    >
+                      Clear Selection
+                    </Button>
+                  ) : (
+                    <Button className="w-full" onClick={calculateRoute}>
+                      Confirm
+                    </Button>
+                  )}
+                </div>
+                <div className="flex gap-3">
+                  <Button
+                    className="w-full"
+                    onClick={(e) => handleProceed(e)}
+                    disabled={!enableConfirm}
+                  >
+                    Proceed
+                  </Button>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet> */}
+        </div>
         <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4 gap-6 justify-between">
           <div className="flex gap-4">
             <div className="flex gap-3">
@@ -481,31 +760,6 @@ function SetupDestination() {
                   </PopoverContent>
                 </Popover>
               )}
-              {/* <Popover open={openCalendar}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "justify-start text-left font-normal",
-                      !date && "text-muted-foreground"
-                    )}
-                    onClick={() => setOpenCalendar(!openCalendar)}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={(date) => {
-                      handleDateSelection(date);
-                    }}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover> */}
             </div>
           </div>
           <div className="flex gap-4">
@@ -538,7 +792,7 @@ function SetupDestination() {
               </Button>
             </div>
           </div>
-          <Drawer>
+          {/* <Drawer>
             <DrawerTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Settings className="size-4" />
@@ -634,212 +888,12 @@ function SetupDestination() {
                 </fieldset>
               </form>
             </DrawerContent>
-          </Drawer>
-          {/* <Button
-            variant="outline"
-            size="sm"
-            className="ml-auto gap-1.5 text-sm"
-            disabled
-          >
-            <Share className="size-3.5" />
-            Share
-          </Button> */}
+          </Drawer> */}
         </header>
         <main className="flex flex-col gap-4 overflow-auto p-4">
-          {/* <div className="relative flex-col items-start gap-8  hidden">
-            <form className="grid w-full items-start gap-6">
-              <fieldset className="grid gap-6 rounded-lg border p-4">
-                <legend className="-ml-1 px-1 text-sm font-medium">
-                  Setup
-                </legend>
-                <div className="grid gap-3">
-                  <Label htmlFor="origin" className="float-left my-2 pl-[2px]">
-                    Origin{" "}
-                    <Navigation
-                      style={{ float: "right", width: "1em" }}
-                      onClick={() => map.panTo(currentLocation)}
-                    />
-                  </Label>
-
-                  {isLoaded && (
-                    <Autocomplete>
-                      <Input
-                        id="origin"
-                        placeholder="Choose a location"
-                        ref={originRef}
-                      />
-                    </Autocomplete>
-                  )}
-                </div>
-                <div className="grid gap-3">
-                  <Label htmlFor="origin" className="float-left my-2 pl-[2px]">
-                    Destination{" "}
-                    <Navigation
-                      style={{ float: "right", width: "1em" }}
-                      onClick={() => map.panTo(currentLocation)}
-                    />
-                  </Label>
-
-                  {isLoaded && (
-                    <Autocomplete>
-                      <Input
-                        id="destination"
-                        placeholder="Choose a location"
-                        ref={destinationRef}
-                      />
-                    </Autocomplete>
-                  )}
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-3">
-                    <Label htmlFor="travelMode">Travel Mode</Label>
-                    <Select
-                      onValueChange={(e) => {
-                        setMode(e);
-                      }}
-                    >
-                      <SelectTrigger
-                        id="travelMode"
-                        className="items-start [&_[data-description]]:hidden"
-                      >
-                        <SelectValue placeholder="How are you travelling" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="car">
-                          <div className="flex items-start gap-3 text-muted-foreground">
-                            <Car className="size-5" />
-                            <div className="grid gap-0.5">
-                              <p>
-                                By{" "}
-                                <span className="font-medium text-foreground">
-                                  Car
-                                </span>
-                              </p>
-                              <p className="text-xs" data-description>
-                                On road by car or bike
-                              </p>
-                            </div>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="train">
-                          <div className="flex items-start gap-3 text-muted-foreground">
-                            <TramFront className="size-5" />
-                            <div className="grid gap-0.5">
-                              <p>
-                                By{" "}
-                                <span className="font-medium text-foreground">
-                                  Train
-                                </span>
-                              </p>
-                              <p className="text-xs" data-description>
-                                Comfy journey by train.
-                              </p>
-                            </div>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="plane">
-                          <div className="flex items-start gap-3 text-muted-foreground">
-                            <Plane className="size-5" />
-                            <div className="grid gap-0.5">
-                              <p>
-                                By{" "}
-                                <span className="font-medium text-foreground">
-                                  Flight
-                                </span>
-                              </p>
-                              <p className="text-xs" data-description>
-                                By flight, super fast & super comfy!
-                              </p>
-                            </div>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="date">Date</Label>
-                    <Popover open={openCalendar}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "justify-start text-left font-normal",
-                            !date && "text-muted-foreground"
-                          )}
-                          onClick={() => setOpenCalendar(!openCalendar)}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {date ? (
-                            format(date, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={date}
-                          onSelect={(date) => {
-                            handleDateSelection(date);
-                          }}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset className="grid gap-6 rounded-lg border p-4">
-                <legend className="-ml-1 px-1 text-sm font-medium">
-                  Confirm Journey
-                </legend>
-                <div className="grid gap-3">
-                  <Button
-                    className="w-full"
-                    variant="secondary"
-                    onClick={clearSelection}
-                  >
-                    Clear Selection
-                  </Button>
-                  <Button className="w-full" onClick={calculateRoute}>
-                    Confirm
-                  </Button>
-                  <Button className="w-full" onClick={(e) => handleProceed(e)}>
-                    Proceed
-                  </Button>
-                </div>
-                <div className="grid gap-3">
-                  <Label htmlFor="content">Journey Details</Label>
-                  <Card>
-                    <CardHeader>Your Journey</CardHeader>
-                    <CardContent className="flex flex-col">
-                      <p>
-                        You are travelling from{" "}
-                        {`${
-                          originRef?.current?.value
-                            ? `${originRef.current.value.split(",")[0]}`
-                            : "Origin"
-                        } `}{" "}
-                        to{" "}
-                        {destinationRef?.current?.value
-                          ? `${destinationRef.current.value.split(",")[0]}`
-                          : "Destination"}
-                      </p>
-                      <p>Your travel date is {date}</p>
-                      <p>
-                        You're about to cover {distance} by {mode} in
-                        approximately {duration}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </fieldset>
-            </form>
-          </div> */}
           <div
             className={`relative flex h-full ${
-              enableConfirm ? "min-h-[50vh]" : "min-h-[80vh]"
+              enableConfirm ? "min-h-[65vh]" : "min-h-[80vh]"
             } rounded-xl bg-muted/50 p-4`}
           >
             {isLoaded && (
@@ -867,95 +921,101 @@ function SetupDestination() {
               !showJourneyCards && "hidden"
             }`}
           >
-            <Card className="overflow-hidden">
-              <CardHeader>
-                <CardTitle className="font-bold">Origin</CardTitle>
-              </CardHeader>
-              <CardContent className="flex gap-2">
-                {originRef?.current?.value === "" ? (
-                  "Yet to choose"
-                ) : (
-                  <div className="flex">
-                    {/* <div className="font-bold">About: </div> */}
-                    <div className="flex justify-start text-justify">
-                      {originRef?.current?.value === ""
-                        ? "Yet to choose"
-                        : originRef?.current?.value}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-            <Card className="overflow-hidden">
-              <CardHeader>
-                <CardTitle className="font-bold">Destination</CardTitle>
-              </CardHeader>
-              <CardContent className="flex gap-2">
-                {destinationRef?.current?.value === "" ? (
-                  "Yet to choose"
-                ) : (
-                  <div className="flex">
-                    {/* <div className="font-bold">About: </div> */}
-                    <div className="flex justify-start text-justify">
-                      {destinationRef?.current?.value === ""
-                        ? "Yet to choose"
-                        : destinationRef?.current?.value}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-            <Card className="overflow-hidden">
-              <CardHeader>
-                <CardTitle className="font-bold">Travel Details</CardTitle>
-              </CardHeader>
-              <CardContent className="flex gap-2">
-                {!mode && !date ? (
-                  "Yet to choose"
-                ) : (
-                  <div className="flex flex-col">
-                    <div className="flex gap-2">
-                      <div>Mode: </div>
+            <Card className="flex w-full justify-evenly h-[10vh]">
+              <div className="flex items-center">
+                <div className="font-bold p-[5px]">Origin</div>
+                <div className="p-[5px] pl-[10px] pr-[10px] text-primary-foreground bg-primary rounded rounded-[10px]">
+                  {originRef?.current?.value === "" &&
+                  destinationDetails.origin ? (
+                    "Yet to choose"
+                  ) : (
+                    <div className="flex">
                       <div className="flex justify-start text-justify">
-                        {!mode
-                          ? "Yet to choose"
-                          : mode.charAt(0).toUpperCase() + mode.slice(1)}
+                        {originRef?.current?.value || destinationDetails.origin}
                       </div>
                     </div>
-                    <div className="flex gap-4">
-                      <div>Date: </div>
+                  )}
+                </div>
+              </div>
+              <Separator orientation="vertical" className="mx-4" />
+              <div className="flex items-center">
+                <div className="font-bold p-[5px]">Destination</div>
+                <div className="p-[5px] pl-[10px] pr-[10px] text-primary-foreground bg-primary rounded rounded-[10px]">
+                  {destinationRef?.current?.value === "" &&
+                  destinationDetails.destination ? (
+                    "Yet to choose"
+                  ) : (
+                    <div className="flex">
                       <div className="flex justify-start text-justify">
-                        {!date ? "Yet to choose" : date}
+                        {destinationRef?.current?.value ||
+                          destinationDetails.destination}
                       </div>
                     </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-            <Card className="overflow-hidden">
-              <CardHeader>
-                <CardTitle className="font-bold">Journey Details</CardTitle>
-              </CardHeader>
-              <CardContent className="flex gap-2">
-                {!distance && !duration ? (
-                  "Yet to choose"
-                ) : (
-                  <div className="flex flex-col">
-                    <div className="flex gap-2">
-                      <div>Distance: </div>
-                      <div className="flex justify-start text-justify">
-                        {!distance ? "Yet to choose" : distance}
+                  )}
+                </div>
+              </div>
+              <Separator orientation="vertical" className="mx-4" />
+              <div className="flex items-center">
+                <div className="font-bold p-[5px]">Travel Details</div>
+                <div className="p-[5px] pl-[10px] pr-[10px] text-primary-foreground bg-primary rounded rounded-[10px]">
+                  {!mode &&
+                  !date &&
+                  !destinationDetails.modeOfTravel &&
+                  !destinationDetails.travelDate ? (
+                    "Yet to choose"
+                  ) : (
+                    <div className="flex flex-col">
+                      <div className="flex gap-2">
+                        <div>Mode: </div>
+                        <div className="flex justify-start text-justify">
+                          {!mode
+                            ? "Yet to choose"
+                            : mode.charAt(0).toUpperCase() + mode.slice(1) ||
+                              destinationDetails.modeOfTravel
+                                .charAt(0)
+                                .toUpperCase() +
+                                destinationDetails.modeOfTravel.slice(1)}
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                        <div>Date: </div>
+                        <div className="flex justify-start text-justify">
+                          {!date
+                            ? "Yet to choose"
+                            : date || destinationDetails.travelDate}
+                        </div>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <div>Duration: </div>
-                      <div className="flex justify-start text-justify">
-                        {!duration ? "Yet to choose" : duration}
+                  )}
+                </div>
+              </div>
+              <Separator orientation="vertical" className="mx-4" />
+              <div className="flex items-center">
+                <div className="font-bold p-[5px]">Journey Details</div>
+                <div className="p-[5px] pl-[10px] pr-[10px] text-primary-foreground bg-primary rounded rounded-[10px]">
+                  {!distance &&
+                  !duration &&
+                  !destinationDetails.travelDistance &&
+                  !destinationDetails.travelDuration ? (
+                    "Yet to choose"
+                  ) : (
+                    <div className="flex flex-col">
+                      <div className="flex gap-2">
+                        <div>Distance: </div>
+                        <div className="flex justify-start text-justify">
+                          {distance || destinationDetails.travelDistance}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <div>Duration: </div>
+                        <div className="flex justify-start text-justify">
+                          {duration || destinationDetails.travelDuration}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </CardContent>
+                  )}
+                </div>
+              </div>
             </Card>
           </div>
         </main>

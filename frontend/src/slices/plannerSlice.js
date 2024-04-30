@@ -4,7 +4,14 @@ const initialState = localStorage.getItem("plannerDetails")
   ? JSON.parse(localStorage.getItem("plannerDetails"))
   : {
       placeOneDetails: null,
+      mapIsLoaded: false,
+      googleMapInstance: null,
       placeToStayDetails: null,
+      currentItineraryTab:"journey",
+      disablePlaceTab: true,
+      disableFoodTab: true,
+      disableItineraryTab: true,
+      directionResponse: null,
       itineraryReadyToBuild: false,
       placeTwoDetails: null,
       foodPlan: {
@@ -42,6 +49,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -78,6 +92,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -114,6 +135,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -150,6 +178,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -186,6 +221,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -222,6 +264,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -258,6 +307,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -294,6 +350,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -330,6 +393,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -366,6 +436,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -402,6 +479,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -438,6 +522,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -474,6 +565,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -510,6 +608,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -546,6 +651,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -583,6 +695,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -621,6 +740,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -659,6 +785,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -697,6 +830,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -735,6 +875,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -773,6 +920,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -811,6 +965,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -849,6 +1010,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -890,6 +1058,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -926,6 +1101,13 @@ const plannerDetailsSlice = createSlice({
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
             placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
             placeToStayDetails: null,
             itineraryReadyToBuild: false,
             placeTwoDetails: null,
@@ -954,6 +1136,307 @@ const plannerDetailsSlice = createSlice({
             },
           };
       plannerDetails.placeToStayDetails = action.payload;
+      localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
+    },
+    setMapIsLoaded: (state, action) => {
+      state.mapIsLoaded = action.payload;
+      const plannerDetails = localStorage.getItem("plannerDetails")
+        ? JSON.parse(localStorage.getItem("plannerDetails"))
+        : {
+            placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
+            placeToStayDetails: null,
+            itineraryReadyToBuild: false,
+            placeTwoDetails: null,
+            foodPlan: {
+              breakfast: null,
+              lunch: null,
+              brunch: null,
+              dinner: null,
+            },
+            placeOneOptions: [],
+            placeTwoOptions: [],
+            foodPlanOptions: {
+              breakfastOptions: [],
+              lunchOptions: [],
+              brunchOptions: [],
+              dinnerOptions: [],
+            },
+            destinationDetails: {
+              origin: null,
+              destination: null,
+              travelDate: null,
+              modeOfTravel: null,
+              travelDuration: null,
+              travelDistance: null,
+              arrivalDate: null,
+            },
+          };
+      plannerDetails.mapIsLoaded = action.payload;
+      localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
+    },
+    setGoogleMapInstance: (state, action) => {
+      state.googleMapInstance = action.payload;
+      const plannerDetails = localStorage.getItem("plannerDetails")
+        ? JSON.parse(localStorage.getItem("plannerDetails"))
+        : {
+            placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
+            placeToStayDetails: null,
+            itineraryReadyToBuild: false,
+            placeTwoDetails: null,
+            foodPlan: {
+              breakfast: null,
+              lunch: null,
+              brunch: null,
+              dinner: null,
+            },
+            placeOneOptions: [],
+            placeTwoOptions: [],
+            foodPlanOptions: {
+              breakfastOptions: [],
+              lunchOptions: [],
+              brunchOptions: [],
+              dinnerOptions: [],
+            },
+            destinationDetails: {
+              origin: null,
+              destination: null,
+              travelDate: null,
+              modeOfTravel: null,
+              travelDuration: null,
+              travelDistance: null,
+              arrivalDate: null,
+            },
+          };
+      plannerDetails.googleMapInstance = action.payload;
+      localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
+    },
+    setCurrentItineraryTab: (state, action) => {
+      state.currentItineraryTab = action.payload;
+      const plannerDetails = localStorage.getItem("plannerDetails")
+        ? JSON.parse(localStorage.getItem("plannerDetails"))
+        : {
+            placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
+            placeToStayDetails: null,
+            itineraryReadyToBuild: false,
+            placeTwoDetails: null,
+            foodPlan: {
+              breakfast: null,
+              lunch: null,
+              brunch: null,
+              dinner: null,
+            },
+            placeOneOptions: [],
+            placeTwoOptions: [],
+            foodPlanOptions: {
+              breakfastOptions: [],
+              lunchOptions: [],
+              brunchOptions: [],
+              dinnerOptions: [],
+            },
+            destinationDetails: {
+              origin: null,
+              destination: null,
+              travelDate: null,
+              modeOfTravel: null,
+              travelDuration: null,
+              travelDistance: null,
+              arrivalDate: null,
+            },
+          };
+      plannerDetails.currentItineraryTab = action.payload;
+      localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
+    },
+    setDisablePlaceTab: (state, action) => {
+      state.disablePlaceTab = action.payload;
+      const plannerDetails = localStorage.getItem("plannerDetails")
+        ? JSON.parse(localStorage.getItem("plannerDetails"))
+        : {
+            placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
+            placeToStayDetails: null,
+            itineraryReadyToBuild: false,
+            placeTwoDetails: null,
+            foodPlan: {
+              breakfast: null,
+              lunch: null,
+              brunch: null,
+              dinner: null,
+            },
+            placeOneOptions: [],
+            placeTwoOptions: [],
+            foodPlanOptions: {
+              breakfastOptions: [],
+              lunchOptions: [],
+              brunchOptions: [],
+              dinnerOptions: [],
+            },
+            destinationDetails: {
+              origin: null,
+              destination: null,
+              travelDate: null,
+              modeOfTravel: null,
+              travelDuration: null,
+              travelDistance: null,
+              arrivalDate: null,
+            },
+          };
+      plannerDetails.disablePlaceTab = action.payload;
+      localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
+    },
+    setDisableFoodTab: (state, action) => {
+      state.disableFoodTab = action.payload;
+      const plannerDetails = localStorage.getItem("plannerDetails")
+        ? JSON.parse(localStorage.getItem("plannerDetails"))
+        : {
+            placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
+            placeToStayDetails: null,
+            itineraryReadyToBuild: false,
+            placeTwoDetails: null,
+            foodPlan: {
+              breakfast: null,
+              lunch: null,
+              brunch: null,
+              dinner: null,
+            },
+            placeOneOptions: [],
+            placeTwoOptions: [],
+            foodPlanOptions: {
+              breakfastOptions: [],
+              lunchOptions: [],
+              brunchOptions: [],
+              dinnerOptions: [],
+            },
+            destinationDetails: {
+              origin: null,
+              destination: null,
+              travelDate: null,
+              modeOfTravel: null,
+              travelDuration: null,
+              travelDistance: null,
+              arrivalDate: null,
+            },
+          };
+      plannerDetails.disableFoodTab = action.payload;
+      localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
+    },
+    setDisableItineraryTab: (state, action) => {
+      state.disableItineraryTab = action.payload;
+      const plannerDetails = localStorage.getItem("plannerDetails")
+        ? JSON.parse(localStorage.getItem("plannerDetails"))
+        : {
+            placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
+            placeToStayDetails: null,
+            itineraryReadyToBuild: false,
+            placeTwoDetails: null,
+            foodPlan: {
+              breakfast: null,
+              lunch: null,
+              brunch: null,
+              dinner: null,
+            },
+            placeOneOptions: [],
+            placeTwoOptions: [],
+            foodPlanOptions: {
+              breakfastOptions: [],
+              lunchOptions: [],
+              brunchOptions: [],
+              dinnerOptions: [],
+            },
+            destinationDetails: {
+              origin: null,
+              destination: null,
+              travelDate: null,
+              modeOfTravel: null,
+              travelDuration: null,
+              travelDistance: null,
+              arrivalDate: null,
+            },
+          };
+      plannerDetails.disableItineraryTab = action.payload;
+      localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
+    },
+    setDirectionResponse: (state, action) => {
+      state.directionResponse = action.payload;
+      const plannerDetails = localStorage.getItem("plannerDetails")
+        ? JSON.parse(localStorage.getItem("plannerDetails"))
+        : {
+            placeOneDetails: null,
+mapIsLoaded:false,
+googleMapInstance: null,
+currentItineraryTab: "journey",
+disablePlaceTab: true,
+disableFoodTab: true,
+disableItineraryTab: true,
+directionResponse: null,
+            placeToStayDetails: null,
+            itineraryReadyToBuild: false,
+            placeTwoDetails: null,
+            foodPlan: {
+              breakfast: null,
+              lunch: null,
+              brunch: null,
+              dinner: null,
+            },
+            placeOneOptions: [],
+            placeTwoOptions: [],
+            foodPlanOptions: {
+              breakfastOptions: [],
+              lunchOptions: [],
+              brunchOptions: [],
+              dinnerOptions: [],
+            },
+            destinationDetails: {
+              origin: null,
+              destination: null,
+              travelDate: null,
+              modeOfTravel: null,
+              travelDuration: null,
+              travelDistance: null,
+              arrivalDate: null,
+            },
+          };
+      plannerDetails.directionResponse = action.payload;
       localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
     },
   },
@@ -985,7 +1468,14 @@ export const {
   chooseDinner,
   chooseLunch,
   readyToBuildItinerary,
-  addPlaceToStay
+  addPlaceToStay,
+  setMapIsLoaded,
+  setGoogleMapInstance,
+  setCurrentItineraryTab,
+  setDisablePlaceTab,
+  setDisableFoodTab,
+  setDisableItineraryTab,
+  setDirectionResponse
 } = plannerDetailsSlice.actions;
 
 export default plannerDetailsSlice.reducer;

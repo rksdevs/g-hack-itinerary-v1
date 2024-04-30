@@ -2,14 +2,23 @@
   text-align: center;
 }
 
-button {
+/* button {
   svg {
     margin-top: 3px;
     margin-left: 4px;
   }
-}
+} */
 
 .hide-svg > svg {
     display: none;
   }
 
+.hide-sheet-svg  {
+  button > svg {
+    display: none;
+  }
+}
+
+.test-class-sheet {
+  pointer-events: none !important;
+}

@@ -51,15 +51,31 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../slices/authSlice";
+import { useLogoutMutation } from "../../slices/userApiSlice";
+import { useToast } from "../ui/use-toast";
+import { clearPlanner } from "../../slices/plannerSlice";
 
 const Aside = () => {
   const location = useLocation();
   const loginPage = location.pathname === "/login";
   const registerPage = location.pathname === "/register";
+  const homePage = location.pathname === "/";
+  const plannerPage = location.pathname === "/planner";
+  const eateriesPage = location.pathname === "/eateries";
+  const itineraryPage = location.pathname === "/itinerary";
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const logoutHandler = () => {
+  const { toast } = useToast();
+
+  const [logoutApiCall, { isLoading, error }] = useLogoutMutation();
+  const logoutHandler = async (e) => {
+    e.preventDefault();
+    await logoutApiCall().unwrap();
+    dispatch(clearPlanner());
     dispatch(logout());
+    toast({
+      title: "Logout successful!",
+    });
     navigate("/login");
   };
   return (
@@ -68,9 +84,15 @@ const Aside = () => {
         loginPage || registerPage ? "hidden" : ""
       }`}
     >
-      <div className="flex border-b p-2 h-[4rem] items-center">
-        <Button variant="outline" size="icon" aria-label="Home">
-          <Triangle className="size-5 fill-foreground" />
+      <div className={`flex border-b p-2 h-[4rem] items-center`}>
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label="Home"
+          className={`${homePage && "bg-primary"}`}
+          onClick={() => navigate("/")}
+        >
+          <Triangle className="size-5 fill-foreground m-0" />
         </Button>
       </div>
       <nav className="grid gap-1 p-2">
@@ -80,11 +102,11 @@ const Aside = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-lg"
+                className={`${plannerPage && "bg-primary"} rounded-lg`}
                 aria-label="Models"
                 onClick={() => navigate("/planner")}
               >
-                <MapPinned className="size-5" />
+                <MapPinned className="size-5 m-0" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={5}>
@@ -98,11 +120,11 @@ const Aside = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-lg"
+                className={`${eateriesPage && "bg-primary"} rounded-lg`}
                 aria-label="API"
                 onClick={() => navigate("/eateries")}
               >
-                <CookingPot className="size-5" />
+                <CookingPot className="size-5 m-0" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={5}>
@@ -116,11 +138,11 @@ const Aside = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-lg"
+                className={`${itineraryPage && "bg-primary"} rounded-lg`}
                 aria-label="Documentation"
                 onClick={() => navigate("/itinerary")}
               >
-                <CalendarCheck className="size-5" />
+                <CalendarCheck className="size-5 m-0" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={5}>
@@ -128,42 +150,8 @@ const Aside = () => {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        {/* <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-lg"
-                aria-label="Settings"
-              >
-                <Settings2 className="size-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" sideOffset={5}>
-              Settings
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider> */}
       </nav>
       <nav className="mt-auto grid gap-1 p-2">
-        {/* <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="mt-auto rounded-lg"
-                aria-label="Help"
-              >
-                <LifeBuoy className="size-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" sideOffset={5}>
-              Help
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider> */}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -174,7 +162,7 @@ const Aside = () => {
                 aria-label="Account"
                 onClick={() => navigate("/profile")}
               >
-                <SquareUser className="size-5" />
+                <SquareUser className="size-5 m-0" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={5}>
@@ -190,9 +178,9 @@ const Aside = () => {
                 size="icon"
                 className="mt-auto rounded-lg"
                 aria-label="Account"
-                onClick={logoutHandler}
+                onClick={(e) => logoutHandler(e)}
               >
-                <LogOut className="size-5" />
+                <LogOut className="size-5 m-0" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={5}>

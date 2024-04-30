@@ -297,17 +297,17 @@ function Planner() {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             console.log(results, "from 210");
 
-            results.photos.map((item) => photoArray.push(item.getUrl()));
+            results?.photos?.map((item) => photoArray.push(item.getUrl()));
             // setPhotosUrl(...photoArray);
 
-            console.log(results.geometry.location.lat());
+            console.log(results?.geometry?.location?.lat());
             setCurrentPlaceOfStay({
-              lat: results.geometry.location.lat(),
-              lng: results.geometry.location.lng(),
+              lat: results?.geometry?.location?.lat(),
+              lng: results?.geometry?.location?.lng(),
             });
             map.panTo({
-              lat: results.geometry.location.lat(),
-              lng: results.geometry.location.lng(),
+              lat: results?.geometry?.location?.lat(),
+              lng: results?.geometry?.location?.lng(),
             });
           }
           console.log(results);
@@ -315,8 +315,8 @@ function Planner() {
           let placeData = {
             ...results,
             geometry: {
-              lat: results.geometry.location.lat(),
-              lng: results.geometry.location.lng(),
+              lat: results?.geometry?.location?.lat(),
+              lng: results?.geometry?.location?.lng(),
             },
             photos: photoArray,
           };
@@ -367,24 +367,6 @@ function Planner() {
                 </div>
               )
             )}
-            {/* {isLoaded && (
-              <div className="w-full flex justify-start gap-1">
-                <Autocomplete className="w-[80%]">
-                  <Input
-                    className="h-[32px] text-[10px]"
-                    id="placeOfStay"
-                    placeholder={`Where do you plan to stay in ${destinationDetails.destination}`}
-                    ref={placeOfStay}
-                  />
-                </Autocomplete>
-                <Button
-                  className="h-[32px] text-[10px]"
-                  onClick={handleSetupStay}
-                >
-                  Set
-                </Button>
-              </div>
-            )} */}
           </div>
           <div
             className={`flex gap-2 ${
