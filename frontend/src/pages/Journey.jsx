@@ -87,6 +87,7 @@ import {
   TableHeader,
   TableRow,
 } from "../components/ui/table";
+import { Skeleton } from "../components/ui/skeleton";
 import {
   Tabs,
   TabsContent,
@@ -129,11 +130,15 @@ import {
 import { logout } from "../slices/authSlice";
 import { useToast } from "../components/ui/use-toast";
 import { setupDestination } from "../slices/plannerSlice";
-import { useGetOneItineraryQuery } from "../slices/itineraryApiSlice";
+import {
+  useAddItineraryMutation,
+  useGetOneItineraryQuery,
+} from "../slices/itineraryApiSlice";
 import PlacesCard from "../components/assets/PlacesCard";
 import FoodsCard from "../components/assets/FoodsCard";
 import ItineraryCard from "../components/assets/ItineraryCard";
 import JourneyCard from "../components/assets/JourneyCard";
+import { setItinerary } from "../slices/itinerarySlice";
 
 function Journey() {
   const { userInfo } = useSelector((state) => state.auth);
@@ -157,6 +162,8 @@ function Journey() {
     disableFoodTab,
     disableItineraryTab,
     foodPlan,
+    itineraryReadyToBuild,
+    itineraryResponseGemini,
   } = useSelector((state) => state.plannerDetails);
   const [map, setMap] = useState(/**@type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
@@ -360,12 +367,40 @@ function Journey() {
         travelDistance: distance,
       })
     );
-    // navigate("/planner");
   };
 
   const onTabChange = (tabName) => {
-    // setTab(tabName);
-    dispatch();
+    dispatch(setCurrentItineraryTab(tabName));
+  };
+
+  const [createItinerary, { isLoading: loadingCreateItinerary, error }] =
+    useAddItineraryMutation();
+
+  const handleCreateItinerary = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await createItinerary({
+        name: `${destinationDetails.origin}-${destinationDetails.destination}`,
+        itineraryDetails: {
+          placeOneDetails,
+          placeTwoDetails,
+          placeToStayDetails,
+          itineraryReadyToBuild,
+          foodPlan,
+          destinationDetails,
+          itineraryResponse: itineraryResponseGemini?.responseOne,
+        },
+      }).unwrap();
+      console.log({ ...res }, "132");
+      dispatch(setItinerary({ ...res }));
+      // navigate(`/itineraryDetails/${res._id}`);
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: error,
+        variant: "destructive",
+      });
+    }
   };
 
   const logoutHandler = async (e) => {
@@ -423,7 +458,7 @@ function Journey() {
                 </GoogleMap>
               )}
             </Card>
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-4 md:grid-col-span-4 lg:grid-col-span-4 xl:grid-col-span-4">
               <Card x-chunk="dashboard-05-chunk-0" className="hidden">
                 <CardHeader className="pb-3 text-left">
                   <CardTitle className="mb-3">Setup Journey</CardTitle>
@@ -465,7 +500,7 @@ function Journey() {
                 </CardHeader>
                 <CardFooter></CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-1">
+              <Card x-chunk="dashboard-05-chunk-1" className="hidden">
                 <CardHeader className="pb-3 text-left">
                   <CardTitle>Place of Stay</CardTitle>
                 </CardHeader>
@@ -517,7 +552,7 @@ function Journey() {
                   <>Skeleton</>
                 )}
               </Card>
-              <Card x-chunk="dashboard-05-chunk-1">
+              <Card x-chunk="dashboard-05-chunk-1" className="hidden">
                 <CardHeader className="pb-3 text-left">
                   <CardTitle>First Place To Visit</CardTitle>
                 </CardHeader>
@@ -569,7 +604,7 @@ function Journey() {
                   <>Skeleton</>
                 )}
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2">
+              <Card x-chunk="dashboard-05-chunk-2" className="hidden">
                 <CardHeader className="pb-3 text-left">
                   <CardTitle>Second Place To Visit</CardTitle>
                 </CardHeader>
@@ -624,7 +659,7 @@ function Journey() {
                   <Button>Create New Order</Button>
                 </CardFooter> */}
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2">
+              <Card x-chunk="dashboard-05-chunk-2" className="hidden">
                 <CardHeader className="pb-3 text-left">
                   <CardTitle>Eating Plans</CardTitle>
                 </CardHeader>
@@ -674,11 +709,11 @@ function Journey() {
                   //     </Card>
                   <Carousel
                     className="min-h-[316px] flex justify-between flex-col"
-                    plugins={[
-                      Autoplay({
-                        delay: 2000,
-                      }),
-                    ]}
+                    // plugins={[
+                    //   Autoplay({
+                    //     delay: 200000,
+                    //   }),
+                    // ]}
                   >
                     <CarouselContent>
                       <CarouselItem>
@@ -833,9 +868,301 @@ function Journey() {
                   <>Skeleton</>
                 )}
               </Card>
+              <Card
+                x-chunk="dashboard-05-chunk-2"
+                className="lg:grid-cols-4 xl:grid-cols-4 flex justify-center"
+              >
+                {itineraryReadyToBuild ? (
+                  <Carousel
+                    className="flex justify-center items-center flex-col w-[40%]"
+                    plugins={[
+                      Autoplay({
+                        delay: 2000,
+                      }),
+                    ]}
+                  >
+                    <CarouselContent>
+                      <CarouselItem className="flex justify-center">
+                        <div className="p-1 w-[70%]">
+                          <Card className="overflow-hidden flex justify-start gap-2">
+                            <CardHeader className="p-0 block">
+                              <img
+                                alt=""
+                                className="aspect-square w-full rounded rounded-[10px] object-cover"
+                                src={restaurant}
+                                style={{
+                                  height: "200px",
+                                  width: "100%",
+                                }}
+                              />
+                            </CardHeader>
+                            <CardContent className="flex  flex-col p-2 w-[60%]">
+                              <div className="font-bold text-primary flex items-start p-2 pl-0">
+                                Breakfast At
+                              </div>
+                              <div className="flex gap-1 font-bold text-muted-foreground text-[10px] items-center">
+                                <MapPin className="w-[10px]" />
+                                {foodPlan?.breakfast?.location?.address
+                                  .split(",")
+                                  .slice(0, 3)
+                                  .join(", ")}
+                              </div>
+                              <div className="flex font-bold mb-3 justify-between items-center">
+                                <div>
+                                  {foodPlan?.breakfast?.title?.length > 15
+                                    ? foodPlan?.breakfast?.title.substring(
+                                        0,
+                                        15
+                                      ) + "..."
+                                    : foodPlan?.breakfast?.title}
+                                </div>
+                                <div className="flex gap-5 font-bold h-[14px]">
+                                  <Badge className="">
+                                    <Star className="w-[10px] mr-[5px]" />
+                                    4/5
+                                  </Badge>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-left">
+                                  {foodPlan?.breakfast?.details}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </CarouselItem>
+                      <CarouselItem className="flex justify-center">
+                        <div className="p-1 w-[70%]">
+                          <Card className="overflow-hidden flex justify-start gap-2">
+                            <CardHeader className="p-0 block">
+                              <img
+                                alt=""
+                                className="aspect-square w-full rounded rounded-[10px] object-cover"
+                                src={placeOneDetails?.photos[0]}
+                                style={{
+                                  height: "200px",
+                                  width: "100%",
+                                }}
+                              />
+                            </CardHeader>
+                            <CardContent className="flex  flex-col p-2 w-[60%]">
+                              <div className="font-bold text-primary flex items-start p-2 pl-0">
+                                Visiting Next
+                              </div>
+                              <div className="flex gap-1 font-bold text-muted-foreground text-[10px] items-center">
+                                <MapPin className="w-[10px]" />
+                                {placeOneDetails?.formatted_address
+                                  .split(",")
+                                  .slice(0, 3)
+                                  .join(", ")}
+                              </div>
+                              <div className="flex font-bold mb-3 justify-between items-center">
+                                <div>
+                                  {placeOneDetails?.name?.length > 15
+                                    ? placeOneDetails?.name.substring(0, 15) +
+                                      "..."
+                                    : placeOneDetails?.name}
+                                </div>
+                                <div className="flex gap-5 font-bold h-[14px]">
+                                  <Badge className="">
+                                    <Star className="w-[10px] mr-[5px]" />
+                                    {placeOneDetails?.rating}/5
+                                  </Badge>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-left">
+                                  {placeOneDetails?.placeInfo}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </CarouselItem>
+                      <CarouselItem className="flex justify-center">
+                        <div className="p-1 w-[70%]">
+                          <Card className="overflow-hidden flex justify-start gap-2">
+                            <CardHeader className="p-0 block">
+                              <img
+                                alt=""
+                                className="aspect-square w-full rounded rounded-[10px] object-cover"
+                                src={restaurant}
+                                style={{
+                                  height: "200px",
+                                  width: "100%",
+                                }}
+                              />
+                            </CardHeader>
+                            <CardContent className="flex  flex-col p-2 w-[60%]">
+                              <div className="font-bold text-primary flex items-start p-2 pl-0">
+                                Lunch At
+                              </div>
+                              <div className="flex gap-1 font-bold text-muted-foreground text-[10px] items-center">
+                                <MapPin className="w-[10px]" />
+                                {foodPlan?.lunch?.location?.address
+                                  .split(",")
+                                  .slice(0, 3)
+                                  .join(", ")}
+                              </div>
+                              <div className="flex font-bold mb-3 justify-between items-center">
+                                <div>
+                                  {foodPlan?.lunch?.title?.length > 15
+                                    ? foodPlan?.lunch?.title.substring(0, 15) +
+                                      "..."
+                                    : foodPlan?.lunch?.title}
+                                </div>
+                                <div className="flex gap-5 font-bold h-[14px]">
+                                  <Badge className="">
+                                    <Star className="w-[10px] mr-[5px]" />
+                                    4/5
+                                  </Badge>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-left">
+                                  {foodPlan?.lunch?.details}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </CarouselItem>
+                      <CarouselItem className="flex justify-center">
+                        <div className="p-1 w-[70%]">
+                          <Card className="overflow-hidden flex justify-start gap-2">
+                            <CardHeader className="p-0 block">
+                              <img
+                                alt=""
+                                className="aspect-square w-full rounded rounded-[10px] object-cover"
+                                src={placeTwoDetails?.photos[0]}
+                                style={{
+                                  height: "200px",
+                                  width: "100%",
+                                }}
+                              />
+                            </CardHeader>
+                            <CardContent className="flex  flex-col p-2 w-[60%]">
+                              <div className="font-bold text-primary flex items-start p-2 pl-0">
+                                Visiting Next
+                              </div>
+                              <div className="flex gap-1 font-bold text-muted-foreground text-[10px] items-center">
+                                <MapPin className="w-[10px]" />
+                                {placeTwoDetails?.formatted_address
+                                  .split(",")
+                                  .slice(0, 3)
+                                  .join(", ")}
+                              </div>
+                              <div className="flex font-bold mb-3 justify-between items-center">
+                                <div>
+                                  {placeTwoDetails?.name?.length > 15
+                                    ? placeTwoDetails?.name.substring(0, 15) +
+                                      "..."
+                                    : placeTwoDetails?.name}
+                                </div>
+                                <div className="flex gap-5 font-bold h-[14px]">
+                                  <Badge className="">
+                                    <Star className="w-[10px] mr-[5px]" />
+                                    {placeTwoDetails?.rating}/5
+                                  </Badge>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-left">
+                                  {placeTwoDetails?.placeInfo}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </CarouselItem>
+                      <CarouselItem className="flex justify-center">
+                        <div className="p-1 w-[70%]">
+                          <Card className="overflow-hidden flex justify-start gap-2">
+                            <CardHeader className="p-0 block">
+                              <img
+                                alt=""
+                                className="aspect-square w-full rounded rounded-[10px] object-cover"
+                                src={restaurant}
+                                style={{
+                                  height: "200px",
+                                  width: "100%",
+                                }}
+                              />
+                            </CardHeader>
+                            <CardContent className="flex  flex-col p-2 w-[60%]">
+                              <div className="font-bold text-primary flex items-start p-2 pl-0">
+                                Dinner At
+                              </div>
+                              <div className="flex gap-1 font-bold text-muted-foreground text-[10px] items-center">
+                                <MapPin className="w-[10px]" />
+                                {foodPlan?.dinner?.location?.address
+                                  .split(",")
+                                  .slice(0, 3)
+                                  .join(", ")}
+                              </div>
+                              <div className="flex font-bold mb-3 justify-between items-center">
+                                <div>
+                                  {foodPlan?.dinner?.title?.length > 15
+                                    ? foodPlan?.dinner?.title.substring(0, 15) +
+                                      "..."
+                                    : foodPlan?.dinner?.title}
+                                </div>
+                                <div className="flex gap-5 font-bold h-[14px]">
+                                  <Badge className="">
+                                    <Star className="w-[10px] mr-[5px]" />
+                                    4/5
+                                  </Badge>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-left">
+                                  {foodPlan?.dinner?.details}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </CarouselItem>
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                  </Carousel>
+                ) : (
+                  <div className="flex gap-8">
+                    <div className="flex items-center space-x-4 h-[18vh]">
+                      <Skeleton className="h-12 w-12 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[250px]" />
+                        <Skeleton className="h-4 w-[250px]" />
+                        <Skeleton className="h-4 w-[250px]" />
+                        <Skeleton className="h-4 w-[200px]" />
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-4 h-[18vh]">
+                      <Skeleton className="h-12 w-12 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[250px]" />
+                        <Skeleton className="h-4 w-[250px]" />
+                        <Skeleton className="h-4 w-[250px]" />
+                        <Skeleton className="h-4 w-[200px]" />
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-4 h-[18vh]">
+                      <Skeleton className="h-12 w-12 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[250px]" />
+                        <Skeleton className="h-4 w-[250px]" />
+                        <Skeleton className="h-4 w-[250px]" />
+                        <Skeleton className="h-4 w-[200px]" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </Card>
             </div>
           </div>
-          <div>
+          <div className="flex flex-col gap-[1.5rem]">
             <Tabs
               defaultValue="journey"
               className="w-full"
@@ -856,7 +1183,11 @@ function Journey() {
               </TabsList>
               <TabsContent value="journey">
                 {/* <JourneyCard /> */}
-                <Card>
+                <Card
+                  className={`${
+                    itineraryResponseGemini ? "h-[41vh] overflow-y-auto" : ""
+                  }`}
+                >
                   <CardHeader className="flex flex-col items-start bg-muted/50 pt-3 pb-3 gap-[1rem] space-y-2">
                     <CardTitle className="group flex items-center gap-2 text-lg">
                       Journey
@@ -1149,6 +1480,43 @@ function Journey() {
                 )}
               </TabsContent>
             </Tabs>
+            <div>
+              {itineraryResponseGemini ? (
+                <Card className="h-[44.5vh] relative">
+                  <CardHeader className="flex flex-col items-start bg-muted/50 pt-3 pb-3 gap-[0.5rem] space-y-2">
+                    <CardTitle className="group flex items-center gap-2 text-lg">
+                      Your Itinerary
+                    </CardTitle>
+                    <CardDescription>
+                      Made with love powered by Gemini AI ❤️
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="flex flex-col justify-between items-start gap-8">
+                      <div className="text-left">
+                        {itineraryResponseGemini.responseOne}
+                      </div>
+                      <Button
+                        className="mb-[5px] w-full absolute bottom-[10px] w-[90%]"
+                        onClick={handleCreateItinerary}
+                      >
+                        Save Itinerary
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="flex items-center space-x-4 h-[18vh]">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[280px]" />
+                    <Skeleton className="h-4 w-[280px]" />
+                    <Skeleton className="h-4 w-[280px]" />
+                    <Skeleton className="h-4 w-[250px]" />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </main>
       </div>

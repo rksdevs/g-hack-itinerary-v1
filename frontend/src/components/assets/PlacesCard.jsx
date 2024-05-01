@@ -35,6 +35,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { Skeleton } from "../ui/skeleton";
+
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -125,6 +127,7 @@ const PlacesCard = ({ map }) => {
     destinationDetails,
     placeToStayDetails,
     mapIsLoaded,
+    itineraryResponseGemini,
     // googleMapInstance,
   } = useSelector((state) => state.plannerDetails);
   const genAi = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_KEY);
@@ -215,20 +218,33 @@ const PlacesCard = ({ map }) => {
 
   //to unwrapp the array of the promises returned by generateVisitPlaceDetails func above
   const processPlaceResultArray = async (e, placeType) => {
-    try {
-      const myArr = await generatePlaceOptions(e);
-      const promisesArr = myArr.map((item) => generateVisitPlaceDetails(item));
-      const result = await Promise.all(promisesArr);
-
-      if (placeType === "placeOne") {
-        setOpenPlaceDialog(true);
+    if (placeType === "placeOne") {
+      setOpenPlaceDialog(true);
+      try {
+        const myArr = await generatePlaceOptions(e);
+        const promisesArr = myArr.map((item) =>
+          generateVisitPlaceDetails(item)
+        );
+        const result = await Promise.all(promisesArr);
         dispatch(addPlaceOneOptions(result));
-      } else {
-        setOpenSecondPlaceDialog(true);
-        dispatch(addPlaceTwoOptions(result));
+        console.log(result, "247");
+      } catch (error) {
+        console.log(error);
       }
-      console.log(result, "247");
-    } catch (error) {}
+    } else {
+      setOpenSecondPlaceDialog(true);
+      try {
+        const myArr = await generatePlaceOptions(e);
+        const promisesArr = myArr.map((item) =>
+          generateVisitPlaceDetails(item)
+        );
+        const result = await Promise.all(promisesArr);
+        dispatch(addPlaceTwoOptions(result));
+        console.log(result, "247");
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   //to generate top  3 places to visit options
@@ -343,7 +359,11 @@ const PlacesCard = ({ map }) => {
   }, [placeOneDetails, placeTwoDetails]);
 
   return (
-    <Card>
+    <Card
+      className={`overflow-hidden w-full ${
+        itineraryResponseGemini ? "h-[41vh] overflow-y-auto" : ""
+      }`}
+    >
       <CardHeader className="flex flex-col items-start bg-muted/50 pt-3 pb-3 gap-[1rem] space-y-2">
         <CardTitle className="group flex items-center gap-2 text-lg">
           Places
@@ -359,11 +379,10 @@ const PlacesCard = ({ map }) => {
             Place of Stay
           </Label>
           {placeToStayDetails?.name ? (
-            <Input
-              className="h-[32px] w-full bg-primary text-primary-foreground pointer-events-none"
-              id="placeOfStay"
-              value={`Staying at: ${placeToStayDetails?.name}`}
-            />
+            <Button className="h-[32px] justify-start w-full bg-primary text-primary-foreground pointer-events-none">
+              <MapPin className="w-[16px] mr-4" />
+              {placeToStayDetails?.name}
+            </Button>
           ) : (
             mapIsLoaded && (
               <div className="w-full flex flex-col justify-start gap-4">
@@ -388,94 +407,10 @@ const PlacesCard = ({ map }) => {
             First Place To Visit
           </Label>
           {placeOneDetails?.name ? (
-            <>
-              <div>
-                <Select
-                  className="h-[32px] flex items-center text-primary-foreground bg-primary pointer-events-none"
-                  onValueChange={(e) => processPlaceResultArray(e, "placeOne")}
-                >
-                  <SelectTrigger
-                    id="place-one"
-                    className="items-start [&_[data-description]]:hidden h-[32px] flex items-center text-primary-foreground bg-primary pointer-events-none hide-svg"
-                  >
-                    <SelectValue
-                      className="text-primary"
-                      placeholder={placeOneDetails?.name}
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="">
-                    <SelectItem value="Religious">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-[10px] text-primary-foreground" />
-                        <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                          <p>
-                            Heritages{" "}
-                            <span className="font-medium text-primary-foreground">
-                              Religious & Cultural Gatherings
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Places that best describes the culture & heritage of
-                            the city.
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="Nature">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-[10px]" />
-                        <div className="grid gap-0.5 mt-[2px]">
-                          <p>
-                            Nature{" "}
-                            <span className="font-medium text-foreground">
-                              Get close to Nature
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Get closer to nature in places like mountains,
-                            beaches, forests, zoo etc.
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="Shopping">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-[10px]" />
-                        <div className="grid gap-0.5 mt-[2px]">
-                          <p>
-                            Lifestyle{" "}
-                            <span className="font-medium text-foreground">
-                              Shopping, Malls & Lifestyle
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Explore the city's biggest and best places for
-                            shopaholic
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="popular">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-[10px]" />
-                        <div className="grid gap-0.5 mt-[2px]">
-                          <p>
-                            Something Else{" "}
-                            <span className="font-medium text-foreground">
-                              Nothing particular, let the app decide
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Populates the best places in the city for you to
-                            choose
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </>
+            <Button className="h-[32px] justify-start w-full bg-primary text-primary-foreground pointer-events-none">
+              <MapPin className="w-[16px] mr-4" />
+              {placeOneDetails?.name}
+            </Button>
           ) : (
             <>
               <div>
@@ -569,79 +504,92 @@ const PlacesCard = ({ map }) => {
                 <Button variant="outline">Edit Profile</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[450px] justify-center">
-                {/* <DialogHeader>
-                  <DialogTitle>Top Recommendation</DialogTitle>
-                  <DialogDescription>
-                    Top places recommended by
-                  </DialogDescription>
-                </DialogHeader> */}
-                <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
-                  <CarouselContent>
-                    {placeOneOptions?.map((placeItem, index) => (
-                      <CarouselItem key={index}>
-                        <div className="p-1">
-                          <Card className="overflow-hidden">
-                            <CardHeader className="p-0">
-                              {placeItem?.photos?.length > 1 && (
-                                <img
-                                  alt=""
-                                  className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                                  src={placeItem?.photos[0]}
-                                  style={{ height: "200px", width: "100%" }}
-                                />
-                              )}
-                            </CardHeader>
-                            <CardContent className="flex  flex-col p-2">
-                              <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
-                                <MapPin className="w-[10px]" />
-                                {placeItem?.formatted_address
-                                  .split(",")
-                                  .slice(0, 3)
-                                  .join(", ")}
-                              </div>
-                              <div className="flex font-bold mb-3 justify-between items-center">
-                                <div>
-                                  {placeItem?.name?.length > 15
-                                    ? placeItem?.name.substring(0, 15) + "..."
-                                    : placeItem?.name}
+                {placeOneOptions.length > 1 ? (
+                  <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
+                    <CarouselContent>
+                      {placeOneOptions?.map((placeItem, index) => (
+                        <CarouselItem key={index}>
+                          <div className="p-1">
+                            <Card className="overflow-hidden">
+                              <CardHeader className="p-0">
+                                {placeItem?.photos?.length > 1 && (
+                                  <img
+                                    alt=""
+                                    className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
+                                    src={placeItem?.photos[0]}
+                                    style={{ height: "200px", width: "100%" }}
+                                  />
+                                )}
+                              </CardHeader>
+                              <CardContent className="flex  flex-col p-2">
+                                <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
+                                  <MapPin className="w-[10px]" />
+                                  {placeItem?.formatted_address
+                                    .split(",")
+                                    .slice(0, 3)
+                                    .join(", ")}
                                 </div>
-                                <div className="flex gap-5 font-bold h-[14px]">
-                                  <Badge className="">
-                                    <Star className="w-[10px] mr-[5px]" />
-                                    {placeItem?.rating}/5
-                                  </Badge>
+                                <div className="flex font-bold mb-3 justify-between items-center">
+                                  <div>
+                                    {placeItem?.name?.length > 15
+                                      ? placeItem?.name.substring(0, 15) + "..."
+                                      : placeItem?.name}
+                                  </div>
+                                  <div className="flex gap-5 font-bold h-[14px]">
+                                    <Badge className="">
+                                      <Star className="w-[10px] mr-[5px]" />
+                                      {placeItem?.rating}/5
+                                    </Badge>
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="w-[250px]">
-                                <p className="text-[10px] text-justify">
-                                  {placeItem?.placeInfo}
-                                </p>
-                              </div>
-                              {/* <div className="flex gap-5 font-bold">
+                                <div className="w-[250px]">
+                                  <p className="text-[10px] text-justify">
+                                    {placeItem?.placeInfo}
+                                  </p>
+                                </div>
+                                {/* <div className="flex gap-5 font-bold">
               <Badge>
                 <Star className="w-[10px]" />
                 {placeToStayDetails.rating}/5
               </Badge>
             </div> */}
-                            </CardContent>
-                            <CardFooter className="p-2 pt-0">
-                              <Button
-                                className="w-full"
-                                onClick={() =>
-                                  handlePlaceOneSelection(placeItem)
-                                }
-                              >
-                                Add to Itinerary
-                              </Button>
-                            </CardFooter>
-                          </Card>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>
+                              </CardContent>
+                              <CardFooter className="p-2 pt-0">
+                                <Button
+                                  className="w-full"
+                                  onClick={() =>
+                                    handlePlaceOneSelection(placeItem)
+                                  }
+                                >
+                                  Add to Itinerary
+                                </Button>
+                              </CardFooter>
+                            </Card>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                  </Carousel>
+                ) : (
+                  <div>
+                    <DialogHeader>
+                      <DialogTitle>
+                        Asking Gemini For Suggestions...
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="flex items-center space-x-4 h-[18vh]">
+                      <Skeleton className="h-12 w-12 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[280px]" />
+                        <Skeleton className="h-4 w-[280px]" />
+                        <Skeleton className="h-4 w-[280px]" />
+                        <Skeleton className="h-4 w-[250px]" />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </DialogContent>
             </Dialog>
           </div>
@@ -651,88 +599,10 @@ const PlacesCard = ({ map }) => {
             </Label>
           </div>
           {placeOneDetails?.timings ? (
-            <div>
-              <div className="grid gap-3">
-                <Select
-                  className="h-[32px] flex items-center text-primary-foreground bg-primary pointer-events-none"
-                  onValueChange={(e) => dispatch(addPlaceOneTiming(e))}
-                  value={placeOneDetails?.timings}
-                >
-                  <SelectTrigger
-                    id="place-one-time"
-                    className="items-start [&_[data-description]]:hidden h-[32px] flex items-center text-primary-foreground bg-primary pointer-events-none hide-svg"
-                  >
-                    <SelectValue placeholder="Choose time" className="" />
-                  </SelectTrigger>
-                  <SelectContent className="">
-                    <SelectItem value="6 AM to 8 AM">
-                      <div className="flex items-center gap-1 text-primary-foreground">
-                        <Clock className="w-[10px] text-primary-foreground" />
-                        <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                          <p>
-                            Early Morning{" "}
-                            <span className="font-medium text-primary-foreground">
-                              6 AM to 8 AM
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Want to start your day early with
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="9 AM to 12 PM">
-                      <div className="flex items-center gap-1 text-primary-foreground">
-                        <Clock className="w-[10px] text-primary-foreground" />
-                        <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                          <p>
-                            First half{" "}
-                            <span className="font-medium text-primary-foreground">
-                              9 AM to 12 PM
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Want to schedule it for first half of the day
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="3 PM to 5 PM">
-                      <div className="flex items-center gap-1 text-primary-foreground">
-                        <Clock className="w-[10px] text-primary-foreground" />
-                        <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                          <p>
-                            Second half{" "}
-                            <span className="font-medium text-primary-foreground">
-                              3 PM to 5 PM
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Want to schedule it for first half of the day
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="7 PM to 9 PM">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="w-[10px]" />
-                        <div className="grid gap-0.5 mt-[2px]">
-                          <p>
-                            Evening hours{" "}
-                            <span className="font-medium text-foreground">
-                              7 PM to 9 PM
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Schedule your evening
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            <Button className="h-[32px] justify-start w-full bg-primary text-primary-foreground pointer-events-none">
+              <Clock className="w-[16px] mr-4" />
+              {placeOneDetails?.timings}
+            </Button>
           ) : (
             <div>
               <div className="grid gap-3">
@@ -823,91 +693,10 @@ const PlacesCard = ({ map }) => {
             Second Place To Visit
           </Label>
           {placeTwoDetails?.name ? (
-            <>
-              <div>
-                <Select
-                  onValueChange={(e) => processPlaceResultArray(e, "placeTwo")}
-                  className="h-[32px] flex items-center text-primary-foreground bg-primary pointer-events-none"
-                >
-                  <SelectTrigger
-                    id="place-two"
-                    className="items-start [&_[data-description]]:hidden h-[32px] flex items-center hide-svg bg-primary text-primary-foreground travel-mode-trigger pointer-events-none"
-                  >
-                    <SelectValue placeholder={placeTwoDetails?.name} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Religious">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-[10px] text-primary-foreground" />
-                        <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                          <p>
-                            Heritages{" "}
-                            <span className="font-medium text-foreground text-primary-foreground">
-                              Religious & Cultural Gatherings
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Places that best describes the culture & heritage of
-                            the city.
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="Nature">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-[10px] text-primary-foreground" />
-                        <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                          <p>
-                            Nature{" "}
-                            <span className="font-medium text-foreground text-primary-foreground">
-                              Get close to Nature
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Get closer to nature in places like mountains,
-                            beaches, forests, zoo etc.
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="Shopping">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-[10px] text-primary-foreground" />
-                        <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                          <p>
-                            Lifestyle{" "}
-                            <span className="font-medium text-foreground text-primary-foreground">
-                              Shopping, Malls & Lifestyle
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Explore the city's biggest and best places for
-                            shopaholic
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="popular">
-                      <div className="flex items-center gap-1 text-muted-foreground text-primary-foreground">
-                        <MapPin className="w-[10px] text-primary-foreground" />
-                        <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                          <p>
-                            Something Else{" "}
-                            <span className="font-medium text-foreground text-primary-foreground">
-                              Nothing particular, let the app decide
-                            </span>
-                          </p>
-                          <p className="text-xs" data-description>
-                            Populates the best places in the city for you to
-                            choose
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </>
+            <Button className="h-[32px] justify-start w-full bg-primary text-primary-foreground pointer-events-none">
+              <MapPin className="w-[16px] mr-4" />
+              {placeTwoDetails?.name}
+            </Button>
           ) : (
             <>
               <div>
@@ -1005,79 +794,93 @@ const PlacesCard = ({ map }) => {
                   <Button variant="outline">Second Place Recommendation</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[450px] justify-center">
-                  {/* <DialogHeader>
-                  <DialogTitle>Top Recommendation</DialogTitle>
-                  <DialogDescription>
-                    Top places recommended by
-                  </DialogDescription>
-                </DialogHeader> */}
-                  <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
-                    <CarouselContent>
-                      {placeTwoOptions?.map((placeItem, index) => (
-                        <CarouselItem key={index}>
-                          <div className="p-1">
-                            <Card className="overflow-hidden">
-                              <CardHeader className="p-0">
-                                {placeItem?.photos?.length > 1 && (
-                                  <img
-                                    alt=""
-                                    className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                                    src={placeItem?.photos[0]}
-                                    style={{ height: "200px", width: "100%" }}
-                                  />
-                                )}
-                              </CardHeader>
-                              <CardContent className="flex  flex-col p-2">
-                                <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
-                                  <MapPin className="w-[10px]" />
-                                  {placeItem?.formatted_address
-                                    .split(",")
-                                    .slice(0, 3)
-                                    .join(", ")}
-                                </div>
-                                <div className="flex font-bold mb-3 justify-between items-center">
-                                  <div>
-                                    {placeItem?.name?.length > 15
-                                      ? placeItem?.name.substring(0, 15) + "..."
-                                      : placeItem?.name}
+                  {placeTwoOptions.length > 1 ? (
+                    <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
+                      <CarouselContent>
+                        {placeTwoOptions?.map((placeItem, index) => (
+                          <CarouselItem key={index}>
+                            <div className="p-1">
+                              <Card className="overflow-hidden">
+                                <CardHeader className="p-0">
+                                  {placeItem?.photos?.length > 1 && (
+                                    <img
+                                      alt=""
+                                      className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
+                                      src={placeItem?.photos[0]}
+                                      style={{ height: "200px", width: "100%" }}
+                                    />
+                                  )}
+                                </CardHeader>
+                                <CardContent className="flex  flex-col p-2">
+                                  <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
+                                    <MapPin className="w-[10px]" />
+                                    {placeItem?.formatted_address
+                                      .split(",")
+                                      .slice(0, 3)
+                                      .join(", ")}
                                   </div>
-                                  <div className="flex gap-5 font-bold h-[14px]">
-                                    <Badge className="">
-                                      <Star className="w-[10px] mr-[5px]" />
-                                      {placeItem?.rating}/5
-                                    </Badge>
+                                  <div className="flex font-bold mb-3 justify-between items-center">
+                                    <div>
+                                      {placeItem?.name?.length > 15
+                                        ? placeItem?.name.substring(0, 15) +
+                                          "..."
+                                        : placeItem?.name}
+                                    </div>
+                                    <div className="flex gap-5 font-bold h-[14px]">
+                                      <Badge className="">
+                                        <Star className="w-[10px] mr-[5px]" />
+                                        {placeItem?.rating}/5
+                                      </Badge>
+                                    </div>
                                   </div>
-                                </div>
-                                <div className="w-[250px]">
-                                  <p className="text-[10px] text-justify">
-                                    {placeItem?.placeInfo}
-                                  </p>
-                                </div>
-                                {/* <div className="flex gap-5 font-bold">
+                                  <div className="w-[250px]">
+                                    <p className="text-[10px] text-justify">
+                                      {placeItem?.placeInfo}
+                                    </p>
+                                  </div>
+                                  {/* <div className="flex gap-5 font-bold">
               <Badge>
                 <Star className="w-[10px]" />
                 {placeToStayDetails.rating}/5
               </Badge>
             </div> */}
-                              </CardContent>
-                              <CardFooter className="p-2 pt-0">
-                                <Button
-                                  className="w-full"
-                                  onClick={() =>
-                                    handlePlaceTwoSelection(placeItem)
-                                  }
-                                >
-                                  Add to Itinerary
-                                </Button>
-                              </CardFooter>
-                            </Card>
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                  </Carousel>
+                                </CardContent>
+                                <CardFooter className="p-2 pt-0">
+                                  <Button
+                                    className="w-full"
+                                    onClick={() =>
+                                      handlePlaceTwoSelection(placeItem)
+                                    }
+                                  >
+                                    Add to Itinerary
+                                  </Button>
+                                </CardFooter>
+                              </Card>
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                  ) : (
+                    <div>
+                      <DialogHeader>
+                        <DialogTitle>
+                          Asking Gemini For Suggestions...
+                        </DialogTitle>
+                      </DialogHeader>
+                      <div className="flex items-center space-x-4 h-[18vh]">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-[280px]" />
+                          <Skeleton className="h-4 w-[280px]" />
+                          <Skeleton className="h-4 w-[280px]" />
+                          <Skeleton className="h-4 w-[250px]" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </DialogContent>
               </Dialog>
             </div>
@@ -1088,86 +891,10 @@ const PlacesCard = ({ map }) => {
             </Label>
           </div>
           {placeTwoDetails?.timings ? (
-            <div className="grid gap-3">
-              <Select
-                onValueChange={(e) => dispatch(addPlaceTwoTiming(e))}
-                className="h-[32px]  flex items-center bg-primary text-primary-foreground"
-                value={placeTwoDetails?.timings}
-              >
-                <SelectTrigger
-                  id="place-one-time"
-                  className="items-start [&_[data-description]]:hidden h-[32px]  flex items-center text-primary-foreground travel-mode-trigger pointer-events-none hide-svg bg-primary"
-                >
-                  <SelectValue placeholder="Choose Time" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="6 AM to 8 AM">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="w-[10px] text-primary-foreground" />
-                      <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                        <p>
-                          Early Morning{" "}
-                          <span className="font-medium text-primary-foreground">
-                            6 AM to 8 AM
-                          </span>
-                        </p>
-                        <p className="text-xs" data-description>
-                          Want to start your day early with
-                        </p>
-                      </div>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="9 AM to 12 PM">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="w-[10px] text-primary-foreground" />
-                      <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                        <p>
-                          First half{" "}
-                          <span className="font-medium text-primary-foreground">
-                            9 AM to 12 PM
-                          </span>
-                        </p>
-                        <p className="text-xs" data-description>
-                          Want to schedule it for first half of the day
-                        </p>
-                      </div>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="3 PM to 5 PM">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="w-[10px] text-primary-foreground" />
-                      <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                        <p>
-                          Second half{" "}
-                          <span className="font-medium text-primary-foreground">
-                            3 PM to 5 PM
-                          </span>
-                        </p>
-                        <p className="text-xs" data-description>
-                          Want to schedule it for first half of the day
-                        </p>
-                      </div>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="7 PM to 9 PM">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="w-[10px] text-primary-foreground" />
-                      <div className="grid gap-0.5 mt-[2px] text-primary-foreground">
-                        <p>
-                          Evening hours{" "}
-                          <span className="font-medium text-primary-foreground">
-                            7 PM to 9 PM
-                          </span>
-                        </p>
-                        <p className="text-xs" data-description>
-                          Schedule your evening
-                        </p>
-                      </div>
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Button className="h-[32px] justify-start w-full bg-primary text-primary-foreground pointer-events-none">
+              <Clock className="w-[16px] mr-4" />
+              {placeTwoDetails?.timings}
+            </Button>
           ) : (
             <div className="grid gap-3">
               <Select

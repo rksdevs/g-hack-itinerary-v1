@@ -34,6 +34,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
+import { Skeleton } from "../ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -129,6 +130,7 @@ const FoodsCard = ({ map }) => {
     mapIsLoaded,
     foodPlanOptions,
     foodPlan,
+    itineraryResponseGemini,
     // googleMapInstance,
   } = useSelector((state) => state.plannerDetails);
   const genAi = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_KEY);
@@ -182,24 +184,43 @@ const FoodsCard = ({ map }) => {
   const processFoodResultArray = async (cuisine, foodPlanType) => {
     console.log(foodPlanType, "triggered");
     // event.preventDefault();
-    try {
-      const myArr = await generateFoodOptions(cuisine, foodPlanType);
-      // const promisesArr = myArr.map((item) => generateRestaurantDetails(item));
-      // const result = await Promise.all(promisesArr);
-      if (foodPlanType === "breakfast") {
+    if (foodPlanType === "breakfast") {
+      setOpenBreakfastDialog(true);
+      try {
+        const myArr = await generateFoodOptions(cuisine, foodPlanType);
         dispatch(addBreakfastOptions(myArr));
-        setOpenBreakfastDialog(true);
-      } else if (foodPlanType === "lunch") {
-        dispatch(addLunchOptions(myArr));
-        setOpenLunchDialog(true);
-      } else if (foodPlanType === "brunch") {
-        dispatch(addBrunchOptions(myArr));
-      } else {
-        dispatch(addDinnerOptions(myArr));
-        setOpenDinnerDialog(true);
+        // const promisesArr = myArr.map((item) => generateRestaurantDetails(item));
+        // const result = await Promise.all(promisesArr);
+        console.log(myArr, "247");
+      } catch (error) {
+        console.log(error);
       }
-      console.log(myArr, "247");
-    } catch (error) {}
+    } else if (foodPlanType === "lunch") {
+      setOpenLunchDialog(true);
+      try {
+        const myArr = await generateFoodOptions(cuisine, foodPlanType);
+        dispatch(addLunchOptions(myArr));
+        // const promisesArr = myArr.map((item) => generateRestaurantDetails(item));
+        // const result = await Promise.all(promisesArr);
+        console.log(myArr, "247");
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (foodPlanType === "brunch") {
+      // dispatch(addBrunchOptions(myArr));
+      console.log("Brunch to be configured");
+    } else {
+      setOpenDinnerDialog(true);
+      try {
+        const myArr = await generateFoodOptions(cuisine, foodPlanType);
+        dispatch(addDinnerOptions(myArr));
+        // const promisesArr = myArr.map((item) => generateRestaurantDetails(item));
+        // const result = await Promise.all(promisesArr);
+        console.log(myArr, "247");
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const handleContinueToItinerary = (event) => {
@@ -237,7 +258,11 @@ const FoodsCard = ({ map }) => {
   }, [placeOneDetails, placeTwoDetails]);
 
   return (
-    <Card>
+    <Card
+      className={`overflow-hidden w-full ${
+        itineraryResponseGemini ? "h-[41vh] overflow-y-auto" : ""
+      }`}
+    >
       <CardHeader className="flex flex-col items-start bg-muted/50 pt-3 pb-3 gap-[1rem] space-y-2">
         <CardTitle className="group flex items-center gap-2 text-lg">
           Foods
@@ -296,68 +321,87 @@ const FoodsCard = ({ map }) => {
                   <Button variant="outline">Breakfast Recommendation</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[450px] justify-center">
-                  <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
-                    <CarouselContent>
-                      {foodPlanOptions?.breakfastOptions?.map(
-                        (placeItem, index) => (
-                          <CarouselItem key={index}>
-                            <div className="p-1">
-                              <Card className="overflow-hidden">
-                                <CardHeader className="p-0">
-                                  <img
-                                    alt=""
-                                    className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                                    src={restaurant}
-                                    style={{ height: "150px", width: "100%" }}
-                                  />
-                                </CardHeader>
-                                <CardContent className="flex  flex-col p-2">
-                                  <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
-                                    <MapPin className="w-[10px]" />
-                                    {placeItem?.location?.address
-                                      .split(",")
-                                      .slice(0, 3)
-                                      .join(", ")}
-                                  </div>
-                                  <div className="flex font-bold mb-3 justify-between items-center">
-                                    <div>
-                                      {placeItem.title.length > 15
-                                        ? placeItem.title.substring(0, 15) +
-                                          "..."
-                                        : placeItem.title}
+                  {foodPlanOptions?.breakfastOptions.length > 1 ? (
+                    <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
+                      <CarouselContent>
+                        {foodPlanOptions?.breakfastOptions?.map(
+                          (placeItem, index) => (
+                            <CarouselItem key={index}>
+                              <div className="p-1">
+                                <Card className="overflow-hidden">
+                                  <CardHeader className="p-0">
+                                    <img
+                                      alt=""
+                                      className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
+                                      src={restaurant}
+                                      style={{ height: "150px", width: "100%" }}
+                                    />
+                                  </CardHeader>
+                                  <CardContent className="flex  flex-col p-2">
+                                    <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
+                                      <MapPin className="w-[10px]" />
+                                      {placeItem?.location?.address
+                                        .split(",")
+                                        .slice(0, 3)
+                                        .join(", ")}
                                     </div>
-                                    <div className="flex gap-5 font-bold h-[14px]">
-                                      <Badge className="">
-                                        <Star className="w-[10px] mr-[5px]" />
-                                        4/5
-                                      </Badge>
+                                    <div className="flex font-bold mb-3 justify-between items-center">
+                                      <div>
+                                        {placeItem.title.length > 15
+                                          ? placeItem.title.substring(0, 15) +
+                                            "..."
+                                          : placeItem.title}
+                                      </div>
+                                      <div className="flex gap-5 font-bold h-[14px]">
+                                        <Badge className="">
+                                          <Star className="w-[10px] mr-[5px]" />
+                                          4/5
+                                        </Badge>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="w-[250px]">
-                                    <p className="text-[10px] text-justify">
-                                      {placeItem.details}
-                                    </p>
-                                  </div>
-                                </CardContent>
-                                <CardFooter className="p-2 pt-0">
-                                  <Button
-                                    className="w-full"
-                                    onClick={() =>
-                                      handleBreakfastSelection(placeItem)
-                                    }
-                                  >
-                                    Add to Itinerary
-                                  </Button>
-                                </CardFooter>
-                              </Card>
-                            </div>
-                          </CarouselItem>
-                        )
-                      )}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                  </Carousel>
+                                    <div className="w-[250px]">
+                                      <p className="text-[10px] text-justify">
+                                        {placeItem.details}
+                                      </p>
+                                    </div>
+                                  </CardContent>
+                                  <CardFooter className="p-2 pt-0">
+                                    <Button
+                                      className="w-full"
+                                      onClick={() =>
+                                        handleBreakfastSelection(placeItem)
+                                      }
+                                    >
+                                      Add to Itinerary
+                                    </Button>
+                                  </CardFooter>
+                                </Card>
+                              </div>
+                            </CarouselItem>
+                          )
+                        )}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                  ) : (
+                    <div>
+                      <DialogHeader>
+                        <DialogTitle>
+                          Asking Gemini For Suggestions...
+                        </DialogTitle>
+                      </DialogHeader>
+                      <div className="flex items-center space-x-4 h-[18vh]">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-[280px]" />
+                          <Skeleton className="h-4 w-[280px]" />
+                          <Skeleton className="h-4 w-[280px]" />
+                          <Skeleton className="h-4 w-[250px]" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </DialogContent>
               </Dialog>
             </div>
@@ -409,68 +453,85 @@ const FoodsCard = ({ map }) => {
                   <Button variant="outline">Lunch Recommendation</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[450px] justify-center">
-                  <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
-                    <CarouselContent>
-                      {foodPlanOptions?.lunchOptions?.map(
-                        (placeItem, index) => (
-                          <CarouselItem key={index}>
-                            <div className="p-1">
-                              <Card className="overflow-hidden">
-                                <CardHeader className="p-0">
-                                  <img
-                                    alt=""
-                                    className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                                    src={restaurant}
-                                    style={{ height: "150px", width: "100%" }}
-                                  />
-                                </CardHeader>
-                                <CardContent className="flex  flex-col p-2">
-                                  <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
-                                    <MapPin className="w-[10px]" />
-                                    {placeItem?.location?.address
-                                      .split(",")
-                                      .slice(0, 3)
-                                      .join(", ")}
-                                  </div>
-                                  <div className="flex font-bold mb-3 justify-between items-center">
-                                    <div>
-                                      {placeItem.title.length > 15
-                                        ? placeItem.title.substring(0, 15) +
-                                          "..."
-                                        : placeItem.title}
+                  {foodPlanOptions?.lunchOptions.length > 1 ? (
+                    <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
+                      <CarouselContent>
+                        {foodPlanOptions?.lunchOptions?.map(
+                          (placeItem, index) => (
+                            <CarouselItem key={index}>
+                              <div className="p-1">
+                                <Card className="overflow-hidden">
+                                  <CardHeader className="p-0">
+                                    <img
+                                      alt=""
+                                      className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
+                                      src={restaurant}
+                                      style={{ height: "150px", width: "100%" }}
+                                    />
+                                  </CardHeader>
+                                  <CardContent className="flex  flex-col p-2">
+                                    <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
+                                      <MapPin className="w-[10px]" />
+                                      {placeItem?.location?.address
+                                        .split(",")
+                                        .slice(0, 3)
+                                        .join(", ")}
                                     </div>
-                                    <div className="flex gap-5 font-bold h-[14px]">
-                                      <Badge className="">
-                                        <Star className="w-[10px] mr-[5px]" />
-                                        4/5
-                                      </Badge>
+                                    <div className="flex font-bold mb-3 justify-between items-center">
+                                      <div>
+                                        {placeItem.title.length > 15
+                                          ? placeItem.title.substring(0, 15) +
+                                            "..."
+                                          : placeItem.title}
+                                      </div>
+                                      <div className="flex gap-5 font-bold h-[14px]">
+                                        <Badge className="">
+                                          <Star className="w-[10px] mr-[5px]" />
+                                          4/5
+                                        </Badge>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="w-[250px]">
-                                    <p className="text-[10px] text-justify">
-                                      {placeItem.details}
-                                    </p>
-                                  </div>
-                                </CardContent>
-                                <CardFooter className="p-2 pt-0">
-                                  <Button
-                                    className="w-full"
-                                    onClick={() =>
-                                      handleLunchSelection(placeItem)
-                                    }
-                                  >
-                                    Add to Itinerary
-                                  </Button>
-                                </CardFooter>
-                              </Card>
-                            </div>
-                          </CarouselItem>
-                        )
-                      )}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                  </Carousel>
+                                    <div className="w-[250px]">
+                                      <p className="text-[10px] text-justify">
+                                        {placeItem.details}
+                                      </p>
+                                    </div>
+                                  </CardContent>
+                                  <CardFooter className="p-2 pt-0">
+                                    <Button
+                                      className="w-full"
+                                      onClick={() =>
+                                        handleLunchSelection(placeItem)
+                                      }
+                                    >
+                                      Add to Itinerary
+                                    </Button>
+                                  </CardFooter>
+                                </Card>
+                              </div>
+                            </CarouselItem>
+                          )
+                        )}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                  ) : (
+                    <div>
+                      <DialogHeader>
+                        <DialogTitle>Asking Gemini For Suggestions</DialogTitle>
+                      </DialogHeader>
+                      <div className="flex items-center space-x-4 h-[18vh]">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-[280px]" />
+                          <Skeleton className="h-4 w-[280px]" />
+                          <Skeleton className="h-4 w-[280px]" />
+                          <Skeleton className="h-4 w-[250px]" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </DialogContent>
               </Dialog>
             </div>
@@ -521,69 +582,97 @@ const FoodsCard = ({ map }) => {
                 <Button variant="outline">Dinner Recommendation</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[450px] justify-center">
-                <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
-                  <CarouselContent>
-                    {foodPlanOptions?.dinnerOptions?.map((placeItem, index) => (
-                      <CarouselItem key={index}>
-                        <div className="p-1">
-                          <Card className="overflow-hidden">
-                            <CardHeader className="p-0">
-                              <img
-                                alt=""
-                                className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                                src={restaurant}
-                                style={{ height: "150px", width: "100%" }}
-                              />
-                            </CardHeader>
-                            <CardContent className="flex  flex-col p-2">
-                              <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
-                                <MapPin className="w-[10px]" />
-                                {placeItem?.location?.address
-                                  .split(",")
-                                  .slice(0, 3)
-                                  .join(", ")}
-                              </div>
-                              <div className="flex font-bold mb-3 justify-between items-center">
-                                <div>
-                                  {placeItem.title.length > 15
-                                    ? placeItem.title.substring(0, 15) + "..."
-                                    : placeItem.title}
-                                </div>
-                                <div className="flex gap-5 font-bold h-[14px]">
-                                  <Badge className="">
-                                    <Star className="w-[10px] mr-[5px]" />
-                                    4/5
-                                  </Badge>
-                                </div>
-                              </div>
-                              <div className="w-[250px]">
-                                <p className="text-[10px] text-justify">
-                                  {placeItem.details}
-                                </p>
-                              </div>
-                            </CardContent>
-                            <CardFooter className="p-2 pt-0">
-                              <Button
-                                className="w-full"
-                                onClick={() => handleDinnerSelection(placeItem)}
-                              >
-                                Add to Itinerary
-                              </Button>
-                            </CardFooter>
-                          </Card>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>
+                {foodPlanOptions?.dinnerOptions.length > 1 ? (
+                  <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
+                    <CarouselContent>
+                      {foodPlanOptions?.dinnerOptions?.map(
+                        (placeItem, index) => (
+                          <CarouselItem key={index}>
+                            <div className="p-1">
+                              <Card className="overflow-hidden">
+                                <CardHeader className="p-0">
+                                  <img
+                                    alt=""
+                                    className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
+                                    src={restaurant}
+                                    style={{ height: "150px", width: "100%" }}
+                                  />
+                                </CardHeader>
+                                <CardContent className="flex  flex-col p-2">
+                                  <div className="flex gap-1 font-bold text-muted-foreground text-[8px] items-center">
+                                    <MapPin className="w-[10px]" />
+                                    {placeItem?.location?.address
+                                      .split(",")
+                                      .slice(0, 3)
+                                      .join(", ")}
+                                  </div>
+                                  <div className="flex font-bold mb-3 justify-between items-center">
+                                    <div>
+                                      {placeItem.title.length > 15
+                                        ? placeItem.title.substring(0, 15) +
+                                          "..."
+                                        : placeItem.title}
+                                    </div>
+                                    <div className="flex gap-5 font-bold h-[14px]">
+                                      <Badge className="">
+                                        <Star className="w-[10px] mr-[5px]" />
+                                        4/5
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                  <div className="w-[250px]">
+                                    <p className="text-[10px] text-justify">
+                                      {placeItem.details}
+                                    </p>
+                                  </div>
+                                </CardContent>
+                                <CardFooter className="p-2 pt-0">
+                                  <Button
+                                    className="w-full"
+                                    onClick={() =>
+                                      handleDinnerSelection(placeItem)
+                                    }
+                                  >
+                                    Add to Itinerary
+                                  </Button>
+                                </CardFooter>
+                              </Card>
+                            </div>
+                          </CarouselItem>
+                        )
+                      )}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                  </Carousel>
+                ) : (
+                  <div>
+                    <DialogHeader>
+                      <DialogTitle>
+                        Asking Gemini For Suggestions...
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="flex items-center space-x-4 h-[18vh]">
+                      <Skeleton className="h-12 w-12 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[280px]" />
+                        <Skeleton className="h-4 w-[280px]" />
+                        <Skeleton className="h-4 w-[280px]" />
+                        <Skeleton className="h-4 w-[250px]" />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </DialogContent>
             </Dialog>
           </div>
         </div>
       </CardContent>
-      <Separator className="my-4 mb-[14rem]" />
+      <Separator
+        className={`my-4 ${
+          itineraryResponseGemini ? " mb-[2rem]" : "mb-[14rem]"
+        }`}
+      />
       <div className="p-4 pt-0">
         <Button
           className="h-[32px] w-full"
