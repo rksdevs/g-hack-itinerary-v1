@@ -270,7 +270,7 @@ function ItineraryPublic() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {itineraryInfo?.foodPlan?.breakfast?.title
                                 ?.length > 15
                                 ? itineraryInfo?.foodPlan?.breakfast?.title.substring(
@@ -332,8 +332,7 @@ function ItineraryPublic() {
                           alt=""
                           className="aspect-square w-full rounded rounded-[10px] object-cover"
                           src={
-                            itineraryInfo?.placeOneDetails?.photos[0] ||
-                            placeImg
+                            itineraryInfo?.placeOneDetails?.photos?.length > 1 ? itineraryInfo?.placeOneDetails?.photos[0] : placeImg
                           }
                           style={{
                             height: "175px",
@@ -342,7 +341,7 @@ function ItineraryPublic() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {itineraryInfo?.placeOneDetails?.name?.length > 15
                                 ? itineraryInfo?.placeOneDetails?.name.substring(
                                     0,
@@ -409,7 +408,7 @@ function ItineraryPublic() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {itineraryInfo?.foodPlan?.lunch?.title?.length >
                               15
                                 ? itineraryInfo?.foodPlan?.lunch?.title.substring(
@@ -470,8 +469,7 @@ function ItineraryPublic() {
                           alt=""
                           className="aspect-square w-full rounded rounded-[10px] object-cover"
                           src={
-                            itineraryInfo?.placeTwoDetails?.photos[0] ||
-                            placeImg
+                            itineraryInfo?.placeTwoDetails?.photos?.length > 1 ? itineraryInfo?.placeTwoDetails?.photos[0] : placeImg
                           }
                           style={{
                             height: "175px",
@@ -480,7 +478,7 @@ function ItineraryPublic() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {itineraryInfo?.placeTwoDetails?.name?.length > 15
                                 ? itineraryInfo?.placeTwoDetails?.name.substring(
                                     0,
@@ -547,7 +545,7 @@ function ItineraryPublic() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {itineraryInfo?.foodPlan?.dinner?.title?.length >
                               15
                                 ? itineraryInfo?.foodPlan?.dinner?.title.substring(

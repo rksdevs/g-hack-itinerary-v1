@@ -19,7 +19,12 @@ import {
   Turtle,
   CookingPot,
   CalendarCheck,
+  Home,
+  School,
+  Landmark,
   LogOut,
+  ListRestart,
+  CalendarPlus  
 } from "lucide-react";
 
 import { Badge } from "../ui/badge";
@@ -54,6 +59,7 @@ import { logout } from "../../slices/authSlice";
 import { useLogoutMutation } from "../../slices/userApiSlice";
 import { useToast } from "../ui/use-toast";
 import { clearPlanner } from "../../slices/plannerSlice";
+import { clearItinerary } from "../../slices/itinerarySlice";
 
 const Aside = () => {
   const location = useLocation();
@@ -69,7 +75,7 @@ const Aside = () => {
 
   const [logoutApiCall, { isLoading, error }] = useLogoutMutation();
   const logoutHandler = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     await logoutApiCall().unwrap();
     dispatch(clearPlanner());
     dispatch(logout());
@@ -78,6 +84,20 @@ const Aside = () => {
     });
     navigate("/login");
   };
+
+  const resetPlanner = (e) => {
+    e.preventDefault ();
+    dispatch(clearPlanner());
+    dispatch(clearItinerary());
+  }
+
+  const createNewItineraryHandler = (e) => {
+    e.preventDefault();
+    dispatch(clearPlanner());
+    dispatch(clearItinerary());
+    navigate("/")
+  }
+
   return (
     <aside
       className={`inset-y fixed  left-0 z-20 flex h-full flex-col border-r ${
@@ -92,7 +112,7 @@ const Aside = () => {
           className={`${homePage && "bg-primary"}`}
           onClick={() => navigate("/")}
         >
-          <Triangle className="size-5 fill-foreground m-0" />
+          <Landmark  className="size-5 fill-foreground m-0" />
         </Button>
       </div>
       <nav className="grid gap-1 p-2">
@@ -102,15 +122,15 @@ const Aside = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`${plannerPage && "bg-primary"} rounded-lg`}
-                aria-label="Models"
-                onClick={() => navigate("/planner")}
+                className="mt-auto rounded-lg"
+                aria-label="Account"
+                onClick={(e) => createNewItineraryHandler(e)}
               >
-                <MapPinned className="size-5 m-0" />
+                <CalendarPlus className="size-5 m-0" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={5}>
-              Planner
+              Create New Itinerary
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -120,33 +140,15 @@ const Aside = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`${eateriesPage && "bg-primary"} rounded-lg`}
-                aria-label="API"
-                onClick={() => navigate("/eateries")}
+                className="mt-auto rounded-lg"
+                aria-label="Account"
+                onClick={(e) => resetPlanner(e)}
               >
-                <CookingPot className="size-5 m-0" />
+                <ListRestart className="size-5 m-0" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={5}>
-              Eateries
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`${itineraryPage && "bg-primary"} rounded-lg`}
-                aria-label="Documentation"
-                onClick={() => navigate("/itinerary")}
-              >
-                <CalendarCheck className="size-5 m-0" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" sideOffset={5}>
-              Itinerary
+              Reset Itinerary
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

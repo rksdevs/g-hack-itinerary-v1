@@ -254,7 +254,7 @@ const ItineraryCard = ({ showItineraryCard }) => {
               </li>
             </ul>
             <Separator className="my-4" />
-            <ul
+            {/* <ul
               className={`grid gap-1 text-[12px] ${
                 itineraryRouteDetails ? "" : "hidden"
               }`}
@@ -279,11 +279,11 @@ const ItineraryCard = ({ showItineraryCard }) => {
                   <Skeleton className="h-4 w-[100px]" />
                 )}
               </li>
-            </ul>
+            </ul> */}
           </div>
-          <Separator
+          {/* <Separator
             className={`my-4 ${itineraryRouteDetails ? "" : "hidden"}`}
-          />
+          /> */}
           <div className="flex flex-col gap-2">
             <div className="font-semibold text-[12px]">Visiting Plans</div>
             <div className="flex gap-2 justify-between">
@@ -356,7 +356,7 @@ const ItineraryCard = ({ showItineraryCard }) => {
                   <CreditCard className="h-4 w-4 " />
                   Build Status
                 </dt>
-                <dd className="text-[12px]">Ready to Build</dd>
+                <dd className="text-[12px]">{itineraryReadyToBuild === "readyToBuild" ? "Ready To Build" : itineraryReadyToBuild === "completed" ? "Completed" : "Build In Progress"}</dd>
               </div>
             </dl>
           </div>

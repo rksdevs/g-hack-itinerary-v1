@@ -241,7 +241,7 @@ const FoodsCard = ({ map }) => {
 
   const handleContinueToItinerary = (event) => {
     event.preventDefault();
-    dispatch(readyToBuildItinerary());
+    dispatch(readyToBuildItinerary("readyToBuild"));
     dispatch(setDisableItineraryTab(false));
     dispatch(setCurrentItineraryTab("itinerary"));
   };

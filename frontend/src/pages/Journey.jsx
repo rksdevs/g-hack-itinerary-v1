@@ -149,6 +149,7 @@ import {
   setDisableFoodTab,
   setItineraryRouteDetails,
   setStaticMapUrl,
+  readyToBuildItinerary,
 } from "../slices/plannerSlice";
 import { logout } from "../slices/authSlice";
 import { useToast } from "../components/ui/use-toast";
@@ -161,7 +162,7 @@ import PlacesCard from "../components/assets/PlacesCard";
 import FoodsCard from "../components/assets/FoodsCard";
 import ItineraryCard from "../components/assets/ItineraryCard";
 import JourneyCard from "../components/assets/JourneyCard";
-import { setItinerary } from "../slices/itinerarySlice";
+import { clearItinerary, setItinerary } from "../slices/itinerarySlice";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { MAP_URL } from "../constants";
 import placeImg from "../components/images/placeImg.jpg";
@@ -358,6 +359,7 @@ function Journey() {
       }).unwrap();
       console.log({ ...res }, "132");
       dispatch(setItinerary({ ...res }));
+      dispatch(clearPlanner());
       navigate(`/itineraryPublic/${res._id}`);
     } catch (error) {
       console.log(error);
@@ -633,6 +635,7 @@ function Journey() {
   const logoutHandler = async () => {
     await logoutApiCall().unwrap();
     dispatch(clearPlanner());
+    dispatch(clearItinerary())
     dispatch(logout());
     toast({
       title: "Logout successful!",
@@ -720,7 +723,8 @@ function Journey() {
       foodPlan?.breakfast &&
       foodPlan?.lunch &&
       foodPlan?.dinner &&
-      itineraryResponseGemini
+      itineraryResponseGemini &&
+      itineraryReadyToBuild === "readyToBuild"
     ) {
       calculateRoute();
     }
@@ -732,9 +736,23 @@ function Journey() {
     foodPlan?.lunch,
     foodPlan?.dinner,
     itineraryResponseGemini,
+    itineraryReadyToBuild,
     toast,
     dispatch,
   ]);
+
+  const resetPlanner = (e) => {
+    // e.preventDefault ();
+    dispatch(clearPlanner());
+    dispatch(clearItinerary());
+  }
+
+  const createNewItineraryHandler = (e) => {
+    // e.preventDefault();
+    dispatch(clearPlanner());
+    dispatch(clearItinerary());
+    navigate("/")
+  }
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -742,7 +760,7 @@ function Journey() {
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Select
             onValueChange={(e) => {
-              e === "Profile" ? navigate("/profile") : logoutHandler();
+              e === "Profile" ? navigate("/profile") : e === "Reset" ? resetPlanner() : e === "Create" ? createNewItineraryHandler() : logoutHandler();
             }}
           >
             <SelectTrigger
@@ -750,10 +768,12 @@ function Journey() {
               aria-label="Select status"
               className="w-[280px]"
             >
-              <SelectValue placeholder={userInfo?.name || "User"} />
+              <SelectValue placeholder="More Actions" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Profile">Profile</SelectItem>
+              <SelectItem value="Profile">Visit Profile</SelectItem>
+              <SelectItem value="Reset">Reset Planner</SelectItem>
+              <SelectItem value="Create">New Itinerary</SelectItem>
               <SelectItem value="Logout">Logout</SelectItem>
             </SelectContent>
           </Select>
@@ -854,7 +874,7 @@ function Journey() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {foodPlan?.breakfast?.title?.length > 15
                                 ? foodPlan?.breakfast?.title.substring(0, 15) +
                                   "..."
@@ -910,7 +930,7 @@ function Journey() {
                         <img
                           alt=""
                           className="aspect-square w-full rounded rounded-[10px] object-cover"
-                          src={placeOneDetails?.photos[0] || placeImg}
+                          src={placeOneDetails?.photos?.length > 1 ? placeOneDetails?.photos[0] : placeImg}
                           style={{
                             height: "175px",
                             width: "500px",
@@ -918,7 +938,7 @@ function Journey() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {placeOneDetails?.name?.length > 15
                                 ? placeOneDetails?.name.substring(0, 15) + "..."
                                 : placeOneDetails?.name}
@@ -979,7 +999,7 @@ function Journey() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {foodPlan?.lunch?.title?.length > 15
                                 ? foodPlan?.lunch?.title.substring(0, 15) +
                                   "..."
@@ -1035,7 +1055,7 @@ function Journey() {
                         <img
                           alt=""
                           className="aspect-square w-full rounded rounded-[10px] object-cover"
-                          src={placeTwoDetails?.photos[0] || placeImg}
+                          src={placeTwoDetails?.photos?.length > 1 ? placeTwoDetails?.photos[0] : placeImg}
                           style={{
                             height: "175px",
                             width: "500px",
@@ -1043,7 +1063,7 @@ function Journey() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {placeTwoDetails?.name?.length > 15
                                 ? placeTwoDetails?.name.substring(0, 15) + "..."
                                 : placeTwoDetails?.name}
@@ -1104,7 +1124,7 @@ function Journey() {
                         />
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button className="absolute bottom-0 left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
+                            <Button className="absolute bottom-[5px] left-[10px] z-10 show-svg show-svg flex justify-center align-center w-[85%]">
                               {foodPlan?.dinner?.title?.length > 15
                                 ? foodPlan?.dinner?.title.substring(0, 15) +
                                   "..."
@@ -1659,7 +1679,7 @@ function Journey() {
                               </Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[450px] justify-center">
-                              {placeTwoOptions.length > 1 ? (
+                              {placeTwoOptions?.length > 1 ? (
                                 <Carousel className="w-full max-w-xs min-h-[316px] flex justify-between flex-col">
                                   <CarouselContent>
                                     {placeTwoOptions?.map(

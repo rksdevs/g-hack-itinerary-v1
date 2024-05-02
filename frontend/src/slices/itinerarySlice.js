@@ -11,10 +11,14 @@ export const itinerarySlice = createSlice({
         setItinerary: (state, action) => {
             state.itineraryDetails = action.payload;
             localStorage.setItem("itinerary", JSON.stringify(action.payload));
+        },
+        clearItinerary: (state) => {
+            state.itineraryDetails = null;
+            localStorage.getItem("itinerary") && localStorage.removeItem("itinerary")
         }
     }
 })
 
-export const { setItinerary } = itinerarySlice.actions;
+export const { setItinerary, clearItinerary } = itinerarySlice.actions;
 
 export default itinerarySlice.reducer;

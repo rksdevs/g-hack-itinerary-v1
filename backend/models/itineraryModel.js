@@ -19,7 +19,7 @@ const itinerarySchema = new mongoose.Schema({
         required: true,
   },
     itineraryReadyToBuild: {
-        type: Boolean,
+        type: String,
       required: true,
   },
     placeTwoDetails: {

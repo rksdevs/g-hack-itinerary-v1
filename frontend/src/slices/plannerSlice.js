@@ -1124,8 +1124,8 @@ staticMapUrl: null,
       localStorage.removeItem("plannerDetails");
       return initialState;
     },
-    readyToBuildItinerary: (state) => {
-      state.itineraryReadyToBuild = true;
+    readyToBuildItinerary: (state, action) => {
+      state.itineraryReadyToBuild = action.payload;
       const plannerDetails = localStorage.getItem("plannerDetails")
         ? JSON.parse(localStorage.getItem("plannerDetails"))
         : {
@@ -1167,7 +1167,7 @@ staticMapUrl: null,
               arrivalDate: null,
             },
           };
-      plannerDetails.itineraryReadyToBuild = true;
+      plannerDetails.itineraryReadyToBuild = action.payload;
       localStorage.setItem("plannerDetails", JSON.stringify(plannerDetails));
     },
     addPlaceToStay: (state, action) => {
