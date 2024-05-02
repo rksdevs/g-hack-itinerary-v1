@@ -1,6 +1,6 @@
 **Gemini Itinerary - For Google Gemini AI Hackathon** - Link: https://gemini-itinerary.onrender.com/ 
 
-**Caution** - Still under development fine tuning application, writing test cases, handling regression testing on local, so you might run into issues occasionally. Please bear with me :D
+**Caution** - Still under development, fine tuning application, writing test cases is pending, cleaning up the codebase is pending, currently doing regression testing on local, so you might run into issues occasionally. Hosted only because of hackthon submission. Please bear with me :D
 
 **About Project**
 
@@ -31,6 +31,7 @@ Constraints of this project:
 2. I've desingned and developed this on my laptop screen - I haven't had the time to work on responsiveness and mobile/tab/extra large screens yet. So please expect some layout issue based on screensize.
 3. A few error handling scenarios are yet to be done: Occasionally I run into Google Gemini Prompt erros which are not handled properly, because I can't really test them since they are not that frequent.
 4. I haven't yet written the test case code due to time constraints.
+5. Code cleanup is pending - a lot of commented codes, unused code lines are still there, due to time constraints havent been able to clean them up
 
 ## Challenges I ran into
 There were several challenge I ran into but below are some prominent ones:
