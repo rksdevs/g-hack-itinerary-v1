@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import { LoginForm } from './pages/Login';
-import Places from './pages/Places';
 import Planner from './pages/Planner';
 import { store } from './store';
 import { Provider } from 'react-redux';
