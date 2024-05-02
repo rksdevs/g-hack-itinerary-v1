@@ -5,7 +5,7 @@ dotenv.config();
 import { connect } from "./config/db.js";
 import { basicErrorHandler, notFound } from "./middlewares/errorHandlerMiddleware.js";
 import loginRoute from "./routes/authRoute.js"
-import keyRoute from "./routes/keyRoute.js";
+import mapRoute from "./routes/mapStaticRoute.js"
 import itineraryRoute from "./routes/itineraryRoute.js"
 import cors from 'cors'
 
@@ -29,7 +29,7 @@ app.get("/", (req, res)=> {
 })
 
 app.use("/api/users", loginRoute);
-app.use("/api/key", keyRoute);
+app.use("/api/map", mapRoute);
 app.use("/api/itinerary", itineraryRoute)
 
 

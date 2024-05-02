@@ -44,7 +44,11 @@ const itinerarySchema = new mongoose.Schema({
       itineraryResponse: {
           type: String,
           required: true,
-    }
+    },
+    itineraryRouteDetails: {
+      type: Object,
+      required: true,
+    },
 }, { timestamps: true });
 
 const Itinerary = mongoose.model("Itinerary", itinerarySchema);

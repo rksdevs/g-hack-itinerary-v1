@@ -19,6 +19,31 @@
   }
 }
 
+.show-svg > svg {
+  display: block !important;
+}
+
 .test-class-sheet {
   pointer-events: none !important;
+}
+
+::-webkit-scrollbar {
+    width: 5px; /* Width of the scrollbar */
+}
+
+/* Target the scrollbar track */
+::-webkit-scrollbar-track {
+    background-color: #F9F9FA; /* Background color of the track */
+    border-radius: 5px
+}
+
+/* Target the scrollbar thumb (the draggable handle) */
+::-webkit-scrollbar-thumb {
+    background-color: #F9D2DA; /* Color of the thumb */
+    border-radius: 10px; /* Border radius of the thumb */
+}
+
+/* Target the scrollbar corner (between the vertical and horizontal scrollbars) */
+::-webkit-scrollbar-corner {
+    background-color: #F9F9FA; /* Background color of the corner */
 }

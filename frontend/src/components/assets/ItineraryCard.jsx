@@ -26,9 +26,11 @@ import {
   MapPin,
   Star,
 } from "lucide-react";
+import { MAP_URL } from "../../constants";
 import Autoplay from "embla-carousel-autoplay";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 import {
   Drawer,
   DrawerContent,
@@ -89,14 +91,14 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useAddItineraryMutation } from "../../slices/itineraryApiSlice";
 import { setItinerary } from "../../slices/itinerarySlice";
 import { useNavigate } from "react-router-dom";
-import { setItineraryResponseGemini } from "../../slices/plannerSlice";
+import {
+  setItineraryResponseGemini,
+  setStaticMapUrl,
+} from "../../slices/plannerSlice";
 
-const ItineraryCard = () => {
+const ItineraryCard = ({ showItineraryCard }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [message, setMessage] = useState("Your message");
-  const [reply, setReply] = useState("Awaiting Response...");
-  const [topTenList, setTopTenList] = useState([]);
   const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   const [itineraryDetails, setItineraryDetails] = useState("");
@@ -111,56 +113,18 @@ const ItineraryCard = () => {
     foodPlan,
     itineraryReadyToBuild,
     itineraryResponseGemini,
+    itineraryRouteDetails,
   } = useSelector((state) => state.plannerDetails);
+
   const { toast } = useToast();
-  const itineraryLinkRef = useRef(window.location.href);
-
-  const formatDate = (updateDate) => {
-    const dateString = updateDate;
-    const date = new Date(dateString);
-
-    const options = { day: "2-digit", month: "short", year: "numeric" };
-    const formattedDate = date.toLocaleDateString("en-US", options);
-    return formattedDate;
-  };
-
-  const handleCopyLinkToClipboard = async (e) => {
-    e.preventDefault();
-    itineraryLinkRef.current.select();
-    document.execCommand("copy");
-    toast({
-      title: "Link copied to clipboard!",
-      variant: "primary",
-    });
-  };
-
-  const { userInfo } = useSelector((state) => state.auth);
-
-  const [createItinerary, { isLoading, error }] = useAddItineraryMutation();
-
-  const handleCreateItinerary = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await createItinerary({
-        name: `${destinationDetails.origin}-${destinationDetails.destination}`,
-        itineraryDetails: {
-          placeOneDetails,
-          placeTwoDetails,
-          placeToStayDetails,
-          itineraryReadyToBuild,
-          foodPlan,
-          destinationDetails,
-          itineraryResponse: itineraryDetails?.responseOne,
-        },
-      }).unwrap();
-      console.log({ ...res }, "132");
-      dispatch(setItinerary({ ...res }));
-      navigate(`/itineraryDetails/${res._id}`);
-    } catch (error) {}
-  };
+  const [shrinkCard, setShrinkCard] = useState(false);
+  const [loadingBuild, setLoadingBuild] = useState(false);
 
   const handleMessage = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
+    setShrinkCard(true);
+    showItineraryCard();
+    setLoadingBuild(true);
     try {
       const itineraryPrompt = `You are a tool that crafts itinerary for the day. You can utilize information like Breakfast, Lunch, Brunch, Dinner and their respective place/location/hotel to have the food, you can also utilize two places like place-one and place-two along with their location details and timing provided to you. You will then build an itinerary from the above information. 
       
@@ -221,122 +185,115 @@ const ItineraryCard = () => {
       const regex = /\{.*\}/s;
       console.log(response);
       const expectedJSON = response.match(regex);
-      console.log(expectedJSON);
       console.log(JSON.parse(expectedJSON[0]));
-      //   const segments = response.text().split(/\b(?:1|2|3|4|5|6|7|8|9|10)\./);
-      //   const listItems = segments
-      //     .filter((segment) => segment.trim() !== "")
-      //     .map((segment) => `${segment.trim()}`);
-      //   setReply("Your Top 10 List Is: ");
-      //   setTopTenList(listItems);
-      setItineraryDetails(JSON.parse(expectedJSON[0]));
-      dispatch(setItineraryResponseGemini(JSON.parse(expectedJSON[0])));
+      if (expectedJSON) {
+        setItineraryDetails(JSON.parse(expectedJSON[0]));
+        dispatch(setItineraryResponseGemini(JSON.parse(expectedJSON[0])));
+        setLoadingBuild(false);
+      } else {
+        setLoadingBuild(false);
+        toast({
+          title: "Couldn't format Gemini Response, please try again!",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.log(error);
+      toast({
+        title: error,
+        variant: "destructive",
+      });
+      setLoadingBuild(false);
     }
   };
-
-  useEffect(() => {
-    console.log("reply - ", reply);
-  }, [reply]);
   return (
     <div>
       <Card
         className={`overflow-hidden w-full ${
-          itineraryResponseGemini ? "h-[41vh] overflow-y-auto" : ""
+          shrinkCard || itineraryResponseGemini
+            ? "h-[41vh] overflow-y-auto"
+            : ""
         }`}
       >
-        <CardHeader className="flex flex-row items-start bg-muted/50 pt-3 pb-3">
-          <div className="grid gap-0.5">
-            <CardTitle className="group flex items-center gap-2 text-lg">
-              Itinerary
-              <Button
-                size="icon"
-                variant="outline"
-                className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-              >
-                <Copy className="h-3 w-3" />
-                <span className="sr-only">Copy Order ID</span>
-              </Button>
-            </CardTitle>
-            <CardDescription className="flex">
-              Date:{" "}
-              {destinationDetails?.travelDate
-                ? destinationDetails?.travelDate
-                : "To be decided"}
-            </CardDescription>
-          </div>
-          <div className="ml-auto flex items-center gap-1">
-            <Button size="sm" variant="outline" className="h-8 gap-1">
-              <Truck className="h-3.5 w-3.5" />
-              <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                Options
-              </span>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="outline" className="h-8 w-8">
-                  <MoreVertical className="h-3.5 w-3.5" />
-                  <span className="sr-only">More</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem>Export</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Trash</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        <CardHeader className="flex flex-col items-start bg-muted/50 pt-2 pb-4 gap-2 space-y-2">
+          <CardTitle className="group flex items-center text-lg">
+            Itinerary
+          </CardTitle>
+          <CardDescription className="text-left">
+            Your itinerary suggested by Gemini AI 💞
+          </CardDescription>
         </CardHeader>
+        <Separator className="my-4 mt-0" />
         <CardContent className="p-6 text-sm pt-2 pb-2">
           <div className="grid gap-1">
-            <div className="font-semibold">Destination Details</div>
-            <ul className="grid gap-1">
+            <div className="font-semibold text-[12px]">Destination Details</div>
+            <ul
+              className={`grid gap-1 text-[12px] ${
+                itineraryRouteDetails?.destination ? "" : "pt-[5px]"
+              }`}
+            >
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Origin</span>
-                <span>{destinationDetails?.origin}</span>
+                {itineraryRouteDetails?.origin ? (
+                  <span>{itineraryRouteDetails?.origin}</span>
+                ) : (
+                  <span>{placeToStayDetails?.name}</span>
+                )}
               </li>
-              <li className="flex items-center justify-between">
+              <li
+                className={`flex items-center justify-between ${
+                  itineraryRouteDetails?.destination ? "" : "hidden"
+                }`}
+              >
                 <span className="text-muted-foreground">Destination</span>
-                <span>{destinationDetails?.destination}</span>
+                {itineraryRouteDetails?.destination ? (
+                  <span>{itineraryRouteDetails?.destination}</span>
+                ) : (
+                  <Skeleton className="h-4 w-[100px]" />
+                )}
               </li>
             </ul>
             <Separator className="my-4" />
-            <ul className="grid gap-1">
+            <ul
+              className={`grid gap-1 text-[12px] ${
+                itineraryRouteDetails ? "" : "hidden"
+              }`}
+            >
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Mode of Travel</span>
-                <span>
-                  {destinationDetails?.modeOfTravel &&
-                    destinationDetails?.modeOfTravel.charAt(0).toUpperCase() +
-                      destinationDetails?.modeOfTravel.slice(1)}
-                </span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-muted-foreground">Date of Travel</span>
-                <span>{destinationDetails?.travelDate}</span>
+                {itineraryRouteDetails?.mode ? (
+                  <span>
+                    {itineraryRouteDetails?.mode &&
+                      itineraryRouteDetails?.mode.charAt(0).toUpperCase() +
+                        itineraryRouteDetails?.mode.slice(1)}
+                  </span>
+                ) : (
+                  <Skeleton className="h-4 w-[100px]" />
+                )}
               </li>
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Distance</span>
-                <span>{destinationDetails?.travelDistance}</span>
-              </li>
-              <li className="flex items-center justify-between font-semibold">
-                <span className="text-muted-foreground">Arriving On</span>
-                <span>{destinationDetails?.travelDate}</span>
+                {itineraryRouteDetails?.distance ? (
+                  <span>{itineraryRouteDetails?.distance}</span>
+                ) : (
+                  <Skeleton className="h-4 w-[100px]" />
+                )}
               </li>
             </ul>
           </div>
-          <Separator className="my-4" />
+          <Separator
+            className={`my-4 ${itineraryRouteDetails ? "" : "hidden"}`}
+          />
           <div className="flex flex-col gap-2">
-            <div className="font-semibold">Visiting Plans</div>
+            <div className="font-semibold text-[12px]">Visiting Plans</div>
             <div className="flex gap-2 justify-between">
               <div className="grid gap-1 text-left">
-                <div className="font-semibold">
+                <div className="font-semibold text-[12px]">
                   {placeOneDetails?.name?.length > 20
                     ? placeOneDetails?.name?.substring(0, 20) + "..."
                     : placeOneDetails?.name}
                 </div>
-                <div className="grid gap-0.5 not-italic text-muted-foreground">
+                <div className="grid gap-0.5 not-italic text-muted-foreground text-[12px]">
                   {placeOneDetails?.formatted_address
                     .split(",")
                     .slice(0, 3)
@@ -345,13 +302,13 @@ const ItineraryCard = () => {
                     ))}
                 </div>
               </div>
-              <div className="grid auto-rows-max gap-1 text-right">
-                <div className="font-semibold">
+              <div className="grid auto-rows-max gap-1 text-right text-[12px]">
+                <div className="font-semibold text-[12px]">
                   {placeTwoDetails?.name?.length > 20
                     ? placeTwoDetails?.name?.substring(0, 20) + "..."
                     : placeTwoDetails?.name}
                 </div>
-                <div className="grid gap-0.5 not-italic text-muted-foreground">
+                <div className="grid gap-0.5 not-italic text-muted-foreground text-[12px]">
                   {placeTwoDetails?.formatted_address
                     .split(",")
                     .slice(0, 3)
@@ -364,23 +321,23 @@ const ItineraryCard = () => {
           </div>
           <Separator className="my-4" />
           <div className="grid gap-1">
-            <div className="font-semibold">Food Plans</div>
+            <div className="font-semibold text-[12px]">Food Plans</div>
             <dl className="grid gap-1">
               <div className="flex items-center justify-between">
-                <dt className="text-muted-foreground">Breakfast</dt>
-                <dd>
+                <dt className="text-muted-foreground text-[12px]">Breakfast</dt>
+                <dd className="text-[12px]">
                   {foodPlan?.breakfast?.title
                     ? foodPlan?.breakfast?.title
                     : "Skipped"}
                 </dd>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between text-[12px]">
                 <dt className="text-muted-foreground">Lunch</dt>
                 <dd>
                   {foodPlan?.lunch?.title ? foodPlan?.lunch?.title : "Skipped"}
                 </dd>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between text-[12px]">
                 <dt className="text-muted-foreground">Dinner</dt>
                 <dd>
                   {foodPlan?.dinner?.title
@@ -392,41 +349,42 @@ const ItineraryCard = () => {
           </div>
           <Separator className="my-4" />
           <div className="grid gap-1">
-            <div className="font-semibold">Confirm Itinerary</div>
+            <div className="font-semibold text-[12px]">Confirm Itinerary</div>
             <dl className="grid gap-1">
               <div className="flex items-center justify-between">
-                <dt className="flex items-center gap-1 text-muted-foreground">
-                  <CreditCard className="h-4 w-4" />
+                <dt className="flex items-center gap-1 text-muted-foreground text-[12px]">
+                  <CreditCard className="h-4 w-4 " />
                   Build Status
                 </dt>
-                <dd>Ready to Build</dd>
+                <dd className="text-[12px]">Ready to Build</dd>
               </div>
             </dl>
-            <Button onClick={handleMessage}>Build</Button>
           </div>
         </CardContent>
-        <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-2">
-          <div className="text-xs text-muted-foreground">
-            Updated <time dateTime="2023-11-23">November 23, 2023</time>
-          </div>
-          <Pagination className="ml-auto mr-0 w-auto">
-            <PaginationContent>
-              <PaginationItem>
-                <Button size="icon" variant="outline" className="h-6 w-6">
-                  <ChevronLeft className="h-3.5 w-3.5" />
-                  <span className="sr-only">Previous Order</span>
-                </Button>
-              </PaginationItem>
-              <PaginationItem>
-                <Button size="icon" variant="outline" className="h-6 w-6">
-                  <ChevronRight className="h-3.5 w-3.5" />
-                  <span className="sr-only">Next Order</span>
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </CardFooter>
+        <Separator
+          className={`my-4 h-[0.5px] mt-[3rem] ${
+            itineraryResponseGemini && "mt-[2rem]"
+          }`}
+        />
+        <div className="p-4 pb-6">
+          <Button onClick={handleMessage} className="w-full text-[12px]">
+            {itineraryResponseGemini ? "Build Again" : "Build"}
+          </Button>
+        </div>
       </Card>
+      {/* <Card
+        className={`flex items-center space-x-4 h-[40vh] w-[21.7vw] bottom-[22px] absolute z-10 p-6 ${
+          loadingBuild ? "" : "hidden"
+        }`}
+      >
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[280px]" />
+          <Skeleton className="h-4 w-[280px]" />
+          <Skeleton className="h-4 w-[280px]" />
+          <Skeleton className="h-4 w-[250px]" />
+        </div>
+      </Card> */}
     </div>
   );
 };

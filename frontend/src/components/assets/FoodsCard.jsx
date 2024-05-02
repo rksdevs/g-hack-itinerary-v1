@@ -1,6 +1,8 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import breakfastImg from "../images/breakfast.jpg";
+import lunchImg from "../images/lunch.jpg";
 import {
   Bird,
   Book,
@@ -116,10 +118,6 @@ const FoodsCard = ({ map }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const placeOfStay = useRef();
-  //   const { isLoaded } = useJsApiLoader({
-  //     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_KEY,
-  //     libraries,
-  //   });
   const {
     placeOneDetails,
     placeOneOptions,
@@ -135,6 +133,7 @@ const FoodsCard = ({ map }) => {
   } = useSelector((state) => state.plannerDetails);
   const genAi = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_KEY);
   const model = genAi.getGenerativeModel({ model: "gemini-pro" });
+  const { toast } = useToast();
   //for eateries
   const [allCuisines, setAllCuisines] = useState([
     "Italian",
@@ -162,28 +161,36 @@ const FoodsCard = ({ map }) => {
   const [openBreakfastDialog, setOpenBreakfastDialog] = useState(false);
   const [openLunchDialog, setOpenLunchDialog] = useState(false);
   const [openDinnerDialog, setOpenDinnerDialog] = useState(false);
+  const [enableProceed, setEnableProceed] = useState(true);
 
   //to generate food options
   const generateFoodOptions = async (cuisine, foodPlanType) => {
-    console.log("triggered generating options", cuisine);
     try {
       const foodOptionsPrompt = `top 3 places to have ${foodPlanType} with ${cuisine} cuisines, in ${destinationDetails.destination}, send the response as a Javascript JSON array of objects, each object is a place, each object has three properties first is a "title" property and its value is a string of the Name of the place, second is the "details" property and its value is a string of details about the place in not more than 20 words and third is "location" property which has the location information of the place, the value of location is an object with three properties first "address" which is a string of the full address of the place, including state and country and zip code, second is "lng" which is the longitude coordinates of the place and third is "lat" which is the latitude coorinates of the place`;
       const result = await model.generateContent(foodOptionsPrompt);
       const response = result.response.text();
-      console.log(response, "seg");
       const regex = /(\[.*?\])/s;
       const expectedJSON = response.match(regex);
       console.log(JSON.parse(expectedJSON[0]));
-      return JSON.parse(expectedJSON[0]);
+      if (expectedJSON) {
+        return JSON.parse(expectedJSON[0]);
+      } else {
+        toast({
+          title: "Couldn't format Gemini Response, please try again!",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.log(error);
+      toast({
+        title: error,
+        variant: "destructive",
+      });
     }
   };
 
   //to unwrapp the array of the promises returned by generateFoodOptions func above
   const processFoodResultArray = async (cuisine, foodPlanType) => {
-    console.log(foodPlanType, "triggered");
-    // event.preventDefault();
     if (foodPlanType === "breakfast") {
       setOpenBreakfastDialog(true);
       try {
@@ -191,9 +198,12 @@ const FoodsCard = ({ map }) => {
         dispatch(addBreakfastOptions(myArr));
         // const promisesArr = myArr.map((item) => generateRestaurantDetails(item));
         // const result = await Promise.all(promisesArr);
-        console.log(myArr, "247");
       } catch (error) {
         console.log(error);
+        toast({
+          title: error,
+          variant: "destructive",
+        });
       }
     } else if (foodPlanType === "lunch") {
       setOpenLunchDialog(true);
@@ -202,9 +212,12 @@ const FoodsCard = ({ map }) => {
         dispatch(addLunchOptions(myArr));
         // const promisesArr = myArr.map((item) => generateRestaurantDetails(item));
         // const result = await Promise.all(promisesArr);
-        console.log(myArr, "247");
       } catch (error) {
         console.log(error);
+        toast({
+          title: error,
+          variant: "destructive",
+        });
       }
     } else if (foodPlanType === "brunch") {
       // dispatch(addBrunchOptions(myArr));
@@ -216,9 +229,12 @@ const FoodsCard = ({ map }) => {
         dispatch(addDinnerOptions(myArr));
         // const promisesArr = myArr.map((item) => generateRestaurantDetails(item));
         // const result = await Promise.all(promisesArr);
-        console.log(myArr, "247");
       } catch (error) {
         console.log(error);
+        toast({
+          title: error,
+          variant: "destructive",
+        });
       }
     }
   };
@@ -228,34 +244,38 @@ const FoodsCard = ({ map }) => {
     dispatch(readyToBuildItinerary());
     dispatch(setDisableItineraryTab(false));
     dispatch(setCurrentItineraryTab("itinerary"));
-
-    // navigate("/itinerary");
   };
 
   const handleBreakfastSelection = (item) => {
+    if (item.location.lat && item.location.lng) {
+      map.panTo({ lat: item?.location?.lat, lng: item?.location?.lng });
+    }
     dispatch(addBreakfast(item));
     setOpenBreakfastDialog(false);
   };
 
   const handleLunchSelection = (item) => {
+    if (item.location.lat && item.location.lng) {
+      map.panTo({ lat: item?.location?.lat, lng: item?.location?.lng });
+    }
     dispatch(addLunch(item));
     setOpenLunchDialog(false);
   };
 
   const handleDinnerSelection = (item) => {
+    if (item.location.lat && item.location.lng) {
+      map.panTo({ lat: item?.location?.lat, lng: item?.location?.lng });
+    }
     dispatch(addDinner(item));
     setOpenDinnerDialog(false);
   };
 
+  //enable proceed button when all food plans are set up
   useEffect(() => {
-    if (placeOneDetails && placeOneDetails?.timings) {
-      setOpenPlaceTwoSelect(true);
+    if (foodPlan.breakfast && foodPlan.lunch && foodPlan.dinner) {
+      setEnableProceed(false);
     }
-
-    if (placeTwoDetails) {
-      //do something
-    }
-  }, [placeOneDetails, placeTwoDetails]);
+  }, [foodPlan]);
 
   return (
     <Card
@@ -263,10 +283,8 @@ const FoodsCard = ({ map }) => {
         itineraryResponseGemini ? "h-[41vh] overflow-y-auto" : ""
       }`}
     >
-      <CardHeader className="flex flex-col items-start bg-muted/50 pt-3 pb-3 gap-[1rem] space-y-2">
-        <CardTitle className="group flex items-center gap-2 text-lg">
-          Foods
-        </CardTitle>
+      <CardHeader className="flex flex-col items-start bg-muted/50 pt-2 pb-4 gap-2 space-y-2">
+        <CardTitle className="group flex items-center text-lg">Foods</CardTitle>
         <CardDescription className="text-left">
           Choose from various cuisines and top restaurants suggested by Gemini.
         </CardDescription>
@@ -274,30 +292,33 @@ const FoodsCard = ({ map }) => {
       <Separator className="my-4 mt-0" />
       <CardContent className="space-y-2 p-0">
         <div className="space-y-2 p-4 flex flex-col">
-          <Label htmlFor="breakfast" className="text-[1rem]">
+          <Label htmlFor="breakfast" className="text-[12px]">
             Breakfast
           </Label>
           {foodPlan?.breakfast?.title ? (
-            <Button className="text-primary-foreground bg-primary pointer-events-none h-[32px]">
+            <Button className="text-primary-foreground bg-primary pointer-events-none h-[32px] text-[12px]">
               {foodPlan?.breakfast?.title}
             </Button>
           ) : (
             <Select
-              className="h-[32px] flex items-center"
+              className="h-[32px] flex items-center text-[12px]"
               onValueChange={(e) => processFoodResultArray(e, "breakfast")}
             >
               <SelectTrigger
                 id="breakfast"
-                className="items-start [&_[data-description]]:hidden h-[32px]  flex items-center"
+                className="items-start [&_[data-description]]:hidden h-[32px]  flex items-center text-[12px]"
               >
-                <SelectValue placeholder="Choose cuisine" className="" />
+                <SelectValue
+                  placeholder="Choose cuisine"
+                  className="text-[12px]"
+                />
               </SelectTrigger>
               <SelectContent className="">
                 {allCuisines.map((item, index) => (
                   <SelectItem value={item} key={index}>
                     <div className="flex items-center gap-1 text-muted-foreground">
-                      <Utensils className="w-[10px]" />
-                      <div className="grid gap-0.5 mt-[2px]">
+                      <Utensils className="w-[12px]" />
+                      <div className="grid gap-0.5 mt-[2px] text-[12px]">
                         <p>
                           {item}{" "}
                           <span className="font-medium text-foreground">
@@ -333,7 +354,7 @@ const FoodsCard = ({ map }) => {
                                     <img
                                       alt=""
                                       className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                                      src={restaurant}
+                                      src={breakfastImg}
                                       style={{ height: "150px", width: "100%" }}
                                     />
                                   </CardHeader>
@@ -409,30 +430,33 @@ const FoodsCard = ({ map }) => {
         </div>
         <Separator className="my-4 w-full" />
         <div className="space-y-2 p-4 flex flex-col">
-          <Label htmlFor="lunch" className="text-[1rem]">
+          <Label htmlFor="lunch" className="text-[12px]">
             Lunch
           </Label>
           {foodPlan?.lunch?.title ? (
-            <Button className=" text-primary-foreground bg-primary pointer-events-none h-[32px]">
+            <Button className=" text-primary-foreground bg-primary pointer-events-none h-[32px] text-[12px]">
               {foodPlan?.lunch?.title}
             </Button>
           ) : (
             <Select
-              className="h-[32px]  flex items-center"
+              className="h-[32px] flex items-center"
               onValueChange={(e) => processFoodResultArray(e, "lunch")}
             >
               <SelectTrigger
                 id="breakfast"
-                className="items-start [&_[data-description]]:hidden h-[32px]  flex items-center"
+                className="items-start [&_[data-description]]:hidden h-[32px]  flex items-center text-[12px]"
               >
-                <SelectValue placeholder="Choose cuisine" className="" />
+                <SelectValue
+                  placeholder="Choose cuisine"
+                  className="text-[12px]"
+                />
               </SelectTrigger>
               <SelectContent className="">
                 {allCuisines.map((item, index) => (
                   <SelectItem value={item} key={index}>
                     <div className="flex items-center gap-1 text-muted-foreground">
-                      <Utensils className="w-[10px]" />
-                      <div className="grid gap-0.5 mt-[2px]">
+                      <Utensils className="w-[12px]" />
+                      <div className="grid gap-0.5 mt-[2px] text-[12px]">
                         <p>
                           {item}{" "}
                           <span className="font-medium text-foreground">
@@ -465,7 +489,7 @@ const FoodsCard = ({ map }) => {
                                     <img
                                       alt=""
                                       className="aspect-square w-full rounded-tl-lg rounded-tr-lg rounded-bl-none rounded-br-none object-cover"
-                                      src={restaurant}
+                                      src={lunchImg}
                                       style={{ height: "150px", width: "100%" }}
                                     />
                                   </CardHeader>
@@ -538,31 +562,34 @@ const FoodsCard = ({ map }) => {
           </div>
         </div>
         <Separator className="my-4" />
-        <div className={`space-y-2 p-4 pb-0 flex flex-col`}>
-          <Label htmlFor="dinner" className="text-[1rem]">
+        <div className={`space-y-2 p-4 flex flex-col`}>
+          <Label htmlFor="dinner" className="text-[12px]">
             Dinner
           </Label>
           {foodPlan?.dinner?.title ? (
-            <Button className=" text-primary-foreground bg-primary pointer-events-none h-[32px]">
+            <Button className=" text-primary-foreground bg-primary pointer-events-none h-[32px] text-[12px]">
               {foodPlan?.dinner?.title}
             </Button>
           ) : (
             <Select
-              className="h-[32px]  flex items-center"
+              className="h-[32px] flex items-center"
               onValueChange={(e) => processFoodResultArray(e, "dinner")}
             >
               <SelectTrigger
                 id="dinner"
-                className="items-start [&_[data-description]]:hidden h-[32px]  flex items-center"
+                className="items-start [&_[data-description]]:hidden h-[32px]  flex items-center text-[12px]"
               >
-                <SelectValue placeholder="Choose cuisine" className="" />
+                <SelectValue
+                  placeholder="Choose cuisine"
+                  className="text-[12px]"
+                />
               </SelectTrigger>
               <SelectContent className="">
                 {allCuisines.map((item, index) => (
                   <SelectItem value={item} key={index}>
                     <div className="flex items-center gap-1 text-muted-foreground">
-                      <Utensils className="w-[10px]" />
-                      <div className="grid gap-0.5 mt-[2px]">
+                      <Utensils className="w-[12px]" />
+                      <div className="grid gap-0.5 mt-[2px] text-[12px]">
                         <p>
                           {item}{" "}
                           <span className="font-medium text-foreground">
@@ -669,19 +696,15 @@ const FoodsCard = ({ map }) => {
         </div>
       </CardContent>
       <Separator
-        className={`my-4 ${
-          itineraryResponseGemini ? " mb-[2rem]" : "mb-[14rem]"
+        className={`my-4 h-[0.5px] ${
+          itineraryResponseGemini ? " mb-[2rem]" : "mt-[8.5rem]"
         }`}
       />
-      <div className="p-4 pt-0">
+      <div className="p-4 pb-6">
         <Button
           className="h-[32px] w-full"
           onClick={handleContinueToItinerary}
-          disabled={
-            !foodPlan?.breakfast?.title &&
-            !foodPlan?.lunch?.title &&
-            !foodPlan?.dinner?.title
-          }
+          disabled={enableProceed}
         >
           Proceed
         </Button>

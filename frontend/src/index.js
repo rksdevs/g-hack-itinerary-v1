@@ -15,21 +15,22 @@ import Itinerary from './pages/Itinerary';
 import PrivateRoutes from './components/assets/PrivateRoutes';
 import ItineraryDetails from './pages/ItineraryDetails';
 import Journey from './pages/Journey';
+import ItineraryPublic from './pages/ItineraryPublic';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route path="/login" element={<LoginForm/>} />
       <Route path='/register' element={<Register />} />
-      <Route path='/itineraryDetails/:id' element={<ItineraryDetails />} />
-      <Route path='/journey' element={<Journey />} />
+      <Route path='/itineraryPublic/:id' element={<ItineraryPublic />} />
 
       <Route path='' element={<PrivateRoutes />}>
-        <Route index={true} path='/' element={<SetupDestination />} />
-        <Route path='/planner' element={<Planner />} />
+        <Route index={true} path='/' element={<Journey />} />
+        {/* <Route path='/journey' element={<Journey />} /> */}
+        {/* <Route path='/planner' element={<Planner />} />
         <Route path='/places' element={<Places />} />
         <Route path='/eateries' element={<Eateries />} />
-        <Route path='/itinerary' element={<Itinerary />} />
+        <Route path='/itinerary' element={<Itinerary />} /> */}
       </Route>
 
     </Route>

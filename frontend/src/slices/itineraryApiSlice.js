@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-import { ITINERARY_URL } from "../constants";
+import { ITINERARY_URL, MAP_URL } from "../constants";
 
 export const itineraryApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({

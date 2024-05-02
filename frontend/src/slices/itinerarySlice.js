@@ -11,7 +11,7 @@ export const itinerarySlice = createSlice({
         setItinerary: (state, action) => {
             state.itineraryDetails = action.payload;
             localStorage.setItem("itinerary", JSON.stringify(action.payload));
-        },
+        }
     }
 })
 

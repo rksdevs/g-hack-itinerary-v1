@@ -4,5 +4,5 @@ export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localho
 // export const ORDERS_URL = '/api/orders';
 export const USERS_URL = '/api/users';
 // export const UPLOAD_URL = '/api/upload';
-export const KEY_URL = '/api/key';
+export const MAP_URL = '/api/map';
 export const ITINERARY_URL = '/api/itinerary'
