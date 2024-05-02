@@ -14,7 +14,7 @@ In this application I generate the top places suggestion (limited top 3 places r
 
 By the end the user is able to select 2 places to visit and 3 places to have breakfast, lunch and dinner based on interests and cuisines respectively. Then I take Gemini AI's help to create an itinerary to visit these places and restaurants selected by the user. User can save the itinerary to their account and share the public link of the itinerary.
 
-## How we built it
+## How I built it
 I've used React JS in the client side and Node JS with Express and Mongo DB for server side requirements. I've used Shadcn UI as the frontend UI library, and some other libraries like react-router-dom, redux toolkit, jsonwebtoken, bcrypt etc.
 
 Current Status: The application hosted at Render free tier might need multiple reloads to load initially (free tier constraints), it is not responsive to mobile screen - which I'm yet to do and couldnt do due to time constraints as solo developer.
@@ -32,13 +32,13 @@ Constraints of this project:
 3. A few error handling scenarios are yet to be done: Occasionally I run into Google Gemini Prompt erros which are not handled properly, because I can't really test them since they are not that frequent.
 4. I haven't yet written the test case code due to time constraints.
 
-## Challenges we ran into
+## Challenges I ran into
 There were several challenge I ran into but below are some prominent ones:
 1. Time constraint - I'm the only developer on this project, juggling between, job/family has been hectic
 2. Sometimes Gemini AI response are not correct, so I get errors while parsing the responses. This is rare and hence I haven't been able to handle the error properly
 3. One major Issue with Google Places API -- when I add the address of restaurants, the Google Places API shows the street address and photos for the restaurants, but not the exact restaurants, but this works just fine for places. I haven't been able to find a reason behind this, I've also raised this in Google Maps channel in the discord. To work around this - The restaurant data shown in the application are purely from Gemini AI's data and not from Google Places API. Hence you might see the static images I've added repeating themselves in the carousels. Apart from the images every other data are from Gemini AI
 
-## Accomplishments that we're proud of
+## Accomplishments that I'm proud of
 I'm super excited as I've build my first AI powered working app to improve Google Maps experience.
 
 I'm proud of actually making it work by juggling between multiple APIs offered by Google. This enhances the user's experience by adding Gemini AI's suggestions into the Google places API. 
@@ -47,7 +47,7 @@ So what I've achieved is to enchance the existing Google Places API experience, 
  
 My goal is to enchance the existing APIs with the help of Gemini AI, although the goal is a little far, but I'll take one step at a time.
 
-## What we learned
+## What I learned
 I've learned a lot of things pretty sure I can not list all of them, but few very important are as follows:
 1. Integrating Gemini AI to MERN stack application
 2. Working with Gemini AI prompts
